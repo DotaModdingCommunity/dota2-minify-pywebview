@@ -7,5 +7,10 @@
       "https://egezenn.github.io/dota2-minify/wiki/#/troubleshooting_faq?id=things-are-broken"
     ],
     "versions": ["1.13"]
+  },
+  {
+    "time": "1785489797+",
+    "text": "English language is now automatically handled on v1.14rc6!\n\nYou can select english for the game language, it'll automatically enable the fix and use the dutch language to mount the VPKs properly.\n\nIf something doesn't work, verify your files then retry.",
+    "urls": ["https://egezenn.github.io/dota2-minify/"]
   }
 ]

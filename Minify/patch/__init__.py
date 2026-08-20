@@ -20,6 +20,8 @@ from patch import blacklist, manifest_utils, replacer, styling, vpk_utils, xml_u
 
 dota_version_changed = False
 
+dota_version_changed = False
+
 
 def _remove_staged_mod_files(mod_path: str, dest_root: str) -> None:
     if not mod_path or not os.path.exists(mod_path):
@@ -349,14 +351,12 @@ def patcher(mod: str | None = None, pakname: str | None = None) -> bool:
                                     files_uncompiled_dir,
                                     constants.minify_dota_compile_input_path,
                                     dirs_exist_ok=True,
-                                    ignore=shutil.ignore_patterns("*.gitkeep"),
                                 )
                         if os.path.exists(files_dir):
                             shutil.copytree(
                                 files_dir,
                                 constants.minify_dota_compile_output_path,
                                 dirs_exist_ok=True,
-                                ignore=shutil.ignore_patterns("*.gitkeep"),
                             )
 
                         if conditions.workshop_installed and xml_mod_file and os.path.exists(xml_mod_file):
@@ -442,7 +442,7 @@ def patcher(mod: str | None = None, pakname: str | None = None) -> bool:
                 output.add_text("&extracted_terminal", len(set(dota_extracts) | set(core_extracts)), msg_type="success")
                 modal_shared.set_progress(35, "&status_extracting")
                 # ---------------------------------- STEP 2 ---------------------------------- #
-                # ------------------- Decompile all files in "build" folder ------------------ #
+                # ------------------- Decompile all files to "build" folder ------------------ #
                 # ---------------------------------------------------------------------------- #
                 output.add_section("&decompiling_terminal")
 
@@ -530,7 +530,6 @@ def patcher(mod: str | None = None, pakname: str | None = None) -> bool:
                     base.build_dir,
                     constants.minify_dota_compile_input_path,
                     dirs_exist_ok=True,
-                    ignore=shutil.ignore_patterns("*.vcss_c", "*.vxml_c"),
                 )
 
                 helper.run_resource_compiler()

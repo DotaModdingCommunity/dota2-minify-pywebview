@@ -18,8 +18,6 @@ import conditions
 import helper
 from core import base, config, constants, fs, output
 
-mod_name = os.path.basename(current_dir)
-
 
 def main():
     img_available, vid_available = False, False
@@ -98,7 +96,7 @@ def main():
                 config.save_mod_config(
                     mod_name,
                     {
-                        "bg_img_style": 'url("s2r://panorama/images/backgrounds/background_png.vtex"), url("s2r://panorama/images/loadingscreens/international_2025_ls_3/loadingscreen.vtex")'
+                        "bg_img_style": 'url("s2r://panorama/images/backgrounds/background_png.vtex"), url("s2r://panorama/images/loadingscreens/international_2026_ls_5/loadingscreen.vtex")'
                     },
                 )
 

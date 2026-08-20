@@ -271,6 +271,83 @@ def remove_minify_lang():
 
 </details>
 
+## `restore_boot_language()`
+
+Restores the UILanguage in boot.vcfg to english if symbolic english (dutch) was used.
+
+<details open><summary>Source</summary>
+
+```python
+def restore_boot_language():
+    """
+    Restores the UILanguage in boot.vcfg to english if symbolic english (dutch) was used.
+    """
+    if config.get("output_locale") != "english":
+        return False
+
+    boot_vcfg_path = os.path.join(LIBRARY, "steamapps", "common", "dota 2 beta", "game", "dota", "cfg", "boot.vcfg")
+    if not os.path.exists(boot_vcfg_path):
+        return False
+
+    try:
+        with utils.open_utf8R(boot_vcfg_path) as file:
+            data = vdf.load(file)
+    except Exception:
+        log.write_warning("Error reading boot.vcfg")
+        return False
+
+    if data.get("boot", {}).get("UILanguage") != "dutch":
+        return False
+
+    data["boot"]["UILanguage"] = "english"
+    with utils.open_utf8(boot_vcfg_path, "w") as file:
+        vdf.dump(data, file, pretty=True)
+    return True
+
+```
+
+</details>
+
+## `fix_boot_language(check_only)`
+
+Ensures UILanguage in boot.vcfg matches the resolved locale (e.g. dutch for english).
+
+<details open><summary>Source</summary>
+
+```python
+def fix_boot_language(check_only=False):
+    """
+    Ensures UILanguage in boot.vcfg matches the resolved locale (e.g. dutch for english).
+    """
+
+    locale = config.get_locale()
+
+    boot_vcfg_path = os.path.join(LIBRARY, "steamapps", "common", "dota 2 beta", "game", "dota", "cfg", "boot.vcfg")
+    if not os.path.exists(boot_vcfg_path):
+        return False
+
+    try:
+        with utils.open_utf8R(boot_vcfg_path) as file:
+            data = vdf.load(file)
+    except Exception:
+        log.write_warning("Error reading boot.vcfg")
+        return False
+
+    if data.get("boot", {}).get("UILanguage") == locale:
+        return False
+
+    if check_only:
+        return True
+
+    data["boot"]["UILanguage"] = locale
+    with utils.open_utf8(boot_vcfg_path, "w") as file:
+        vdf.dump(data, file, pretty=True)
+    return True
+
+```
+
+</details>
+
 ## `find_library_from_vdf(steam_root)`
 
 Find the Dota2 library from VDF

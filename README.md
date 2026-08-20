@@ -22,7 +22,7 @@
 [![platform-windows](https://custom-icon-badges.demolab.com/badge/Windows-0078D6?style=for-the-badge&logo=windows11&logoColor=white)](https://egezenn.github.io/dota2-minify)
 [![platform-linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://egezenn.github.io/dota2-minify)
 [![platform-aur](https://img.shields.io/badge/AUR-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white)](https://aur.archlinux.org/packages/dota2-minify-bin)
-[![platform-macos](https://img.shields.io/badge/macOS%20(Partial)-000000?style=for-the-badge&logo=apple&logoColor=white)](https://egezenn.github.io/dota2-minify/wiki/#/development?id=running-from-the-source)
+[![platform-macos](https://img.shields.io/badge/macOS%20[Partial]-000000?style=for-the-badge&logo=apple&logoColor=white)](https://egezenn.github.io/dota2-minify/wiki/#/development?id=running-from-the-source)
 
 [![Translations via Weblate](https://img.shields.io/badge/Translations%20via-Weblate-2eccaa?style=for-the-badge&logo=weblate&logoColor=white)](https://hosted.weblate.org)
 
@@ -130,7 +130,7 @@ This project wouldn't be available without the work of the community. Thanks to 
 | [ruff](https://github.com/astral-sh/ruff)      | Linter and formatter | [MIT license](https://github.com/astral-sh/ruff/blob/main/LICENSE)    |
 
 <div align="center">
-  
+
 ## Sponsors
 
 <table align="center">

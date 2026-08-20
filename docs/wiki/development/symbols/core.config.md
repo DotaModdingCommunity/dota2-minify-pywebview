@@ -306,3 +306,19 @@ def validate() -> bool:
 ```
 
 </details>
+
+## `get_locale(default)`
+
+*No documentation available.*
+
+<details open><summary>Source</summary>
+
+```python
+def get_locale(default="english"):
+    from core import constants
+
+    return constants.resolve_locale(get("output_locale", default))
+
+```
+
+</details>

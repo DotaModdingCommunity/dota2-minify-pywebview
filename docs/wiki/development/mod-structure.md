@@ -37,12 +37,14 @@ mods
 ### `manifest.json`
 
 ```json
-{ // defaults doesn't need to be indicated
+{
+  // defaults doesn't need to be indicated
   "always": false, // false by default, apply them without checking mods.json or checkbox
   "dependencies": ["<mod>"], // None by default, add a mod dependency's name here
   "conflicts": ["<mod>"], // None by default, add names of mutually exclusive mods here
   "order": 1, // default is 1, ordered from negative to positive to resolve any conflicts
   "visual": true, // true by default, show it in the UI as a checkbox
+  "skip_workshop_check": false, // false by default, if true the mod won't be disabled when workshop tools are missing (use it for mods that can still function without workshop capabilities)
   "version": ">=1.13,<=1.14", // optional, enforces a Minify version requirement (supports operators: >=, <=, >, <, ==)
   "skip_workshop_check": false, // false by default, keeps the mod enabled even without Workshop Tools (see below)
   "styling_mode": "source", // "direct" (default), "source", or "disabled" — see ui-modding.md
@@ -88,7 +90,7 @@ mods
       "text": "Display Name",
       "force": false, // false by default, always show setting regardless of mod state
       "default": "example_value",
-      "type": "inputbox",
+      "type": "inputbox"
     },
     {
       "key": "example_checkbox",
@@ -207,6 +209,7 @@ An image is rendered at the top if the file `preview.jpg` (or `preview.png`) exi
 
 ```markdown
 <!-- LANG:EN -->
+
 Normal text supports `inline code` (pink) and https://example.com (orange).
 
 - This is a list item.
@@ -218,7 +221,7 @@ Normal text supports `inline code` (pink) and https://example.com (orange).
 !!: And https://example.com links.
 ```
 
-![notes](https://github.com/Egezenn/dota2-minify/raw/main/docs/assets/example-notes.jpg)
+![notes](../../assets/example-notes.jpg)
 
 ### `blacklist.txt`
 
@@ -276,4 +279,4 @@ Example:
 }
 ```
 
-![example-replacer](https://github.com/Egezenn/dota2-minify/raw/main/docs/assets/example-replacer.jpg)
+![example-replacer](../../assets/example-replacer.jpg)

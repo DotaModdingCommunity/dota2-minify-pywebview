@@ -39,6 +39,7 @@ permissions:
   contents: write
   pages: write
   id-token: write
+  actions: read
 
 jobs:
   build:
@@ -53,6 +54,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
+          enable-cache: true
           python-version: "3.13"
 
       - name: Set up Node
@@ -120,7 +122,7 @@ jobs:
         shell: pwsh
         run: |
           Set-Location scripts
-          pyinstaller Minify.spec
+          uv run pyinstaller Minify.spec
 
       - name: Move project dependencies
         shell: pwsh
@@ -164,7 +166,7 @@ jobs:
         shell: pwsh
         run: |
           Set-Location scripts
-          python version_util.py
+          uv run python version_util.py
           & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
 
       # --- SIGNING STEP 2: Sign Installer (disabled for 2.0.0rc1; re-enable before final) ---
@@ -225,6 +227,7 @@ jobs:
 
       - name: Create Release (Codeberg Windows)
         if: matrix.os == 'windows-latest'
+        continue-on-error: true
         uses: akkuman/gitea-release-action@v1
         with:
           server_url: https://codeberg.org
@@ -246,6 +249,7 @@ jobs:
 
       - name: Create Release (Codeberg Linux)
         if: matrix.os == 'ubuntu-latest'
+        continue-on-error: true
         uses: akkuman/gitea-release-action@v1
         with:
           server_url: https://codeberg.org

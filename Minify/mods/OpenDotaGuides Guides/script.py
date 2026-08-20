@@ -18,7 +18,7 @@ import requests
 from core import config, fs, log, output, steam
 
 dota_itembuilds_path = os.path.join(steam.LIBRARY, "steamapps", "common", "dota 2 beta", "game", "dota", "itembuilds")
-odg_bkup_path = os.path.join(minify_root, "backup", "OpenDotaGuides Guides")
+odg_bkup_path = os.path.join(minify_root, "backup", os.path.basename(current_dir))
 odg_latest = "https://github.com/Egezenn/OpenDotaGuides/releases/latest/download/itembuilds.zip"
 odg_release_api = "https://api.github.com/repos/Egezenn/OpenDotaGuides/releases/latest"
 zip_path = os.path.join(current_dir, "files", "OpenDotaGuides.zip")

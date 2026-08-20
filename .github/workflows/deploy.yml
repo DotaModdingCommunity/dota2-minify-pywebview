@@ -3,7 +3,7 @@ name: Deploy website
 on:
   push:
     branches: [main]
-    paths: ['docs/**']
+    paths: ["docs/**"]
   workflow_dispatch:
   workflow_call:
 
@@ -53,6 +53,7 @@ jobs:
         uses: actions/deploy-pages@v4
 
       - name: Deploy to Codeberg Pages
+        continue-on-error: true
         env:
           CODEBERG_TOKEN: ${{ secrets.CODEBERG_TOKEN }}
         run: |

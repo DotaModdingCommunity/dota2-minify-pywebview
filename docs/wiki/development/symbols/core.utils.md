@@ -154,3 +154,17 @@ def sanitize_win_path(name: str) -> str:
 ```
 
 </details>
+
+## `sanitize_win_path(name)`
+
+*No documentation available.*
+
+<details open><summary>Source</summary>
+
+```python
+def sanitize_win_path(name):
+    return re.sub(r'[<>:"/\\|?*\x00-\x1f]', "_", name).rstrip(" .") or uuid.uuid4().hex[:8]
+
+```
+
+</details>

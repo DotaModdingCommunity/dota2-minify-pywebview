@@ -9,6 +9,8 @@ from ui import modal_shared
 
 PAK_PATTERN = re.compile(r"^pak\d{2}_dir\.vpk$")
 
+from patch import vpk_utils
+
 
 def _uninstall(progress: bool = False) -> None:
     output.clean()

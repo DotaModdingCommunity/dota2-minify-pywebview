@@ -5,6 +5,10 @@ from typing import Any
 
 _original_cwd = os.getcwd()
 
+from core import base
+
+base.original_cwd = os.getcwd()
+
 # Ensure root directories
 _app_dir = (
     os.path.dirname(os.path.abspath(__file__))

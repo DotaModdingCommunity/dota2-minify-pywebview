@@ -1,6 +1,9 @@
 {
   "basedpyright.analysis.typeCheckingMode": "off",
   "editor.inlayHints.enabled": "offUnlessPressed",
-  "basedpyright.disableLanguageServices": false,
-  "basedpyright.analysis.extraPaths": ["./Minify"]
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.dll": true,
+    "**/*.so": true
+  }
 }

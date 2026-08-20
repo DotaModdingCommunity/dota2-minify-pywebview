@@ -22,6 +22,7 @@ import os
 import sys
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
+mod_name = os.path.basename(current_dir)
 minify_root = os.path.abspath(os.path.join(current_dir, os.pardir, os.pardir))
 os.chdir(minify_root)
 
@@ -228,10 +229,7 @@ import helper
 from core import output
 
 # Compile a folder of raw UI assets into a VPK
-helper.compile_assets(
-    input_path="my_raw_assets",
-    pak_path="my_mod.vpk"
-)
+helper.compile_assets(input_path="my_raw_assets", pak_path="my_mod.vpk")
 
 # Log the result to the UI
 output.add_text("Compilation finished!", msg_type="success")

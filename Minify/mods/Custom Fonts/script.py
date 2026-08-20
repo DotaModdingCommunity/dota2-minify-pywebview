@@ -2,6 +2,7 @@ import os
 import sys
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
+mod_name = os.path.basename(current_dir)
 minify_root = os.path.abspath(os.path.join(current_dir, os.pardir, os.pardir))
 if os.getcwd() != minify_root:
     os.chdir(minify_root)
@@ -11,15 +12,16 @@ if minify_root not in sys.path:
 
 # isort: split
 
+import hashlib
 import shutil
 import struct
 import uuid
 
-from core import config, fs, output, steam
+from core import base, config, fs, output, steam, utils
 from ui.fonts import find_system_font
 
 dota_fonts_path = os.path.join(steam.LIBRARY, "steamapps", "common", "dota 2 beta", "game", "dota", "panorama", "fonts")
-bkup_path = os.path.join(minify_root, "backup", "Custom Fonts")
+bkup_path = os.path.join(minify_root, "backup", os.path.basename(current_dir))
 
 REPLACE_MAP = {
     "radiance-black.otf": ("Radiance Black", "Radiance Black", "Radiance-Black"),
@@ -54,6 +56,35 @@ REPLACE_MAP = {
 }
 
 FONT_EXTENSIONS = (".otf", ".ttf")
+
+
+def _is_patched(font_path, family, fullname, postscript):
+    with open(font_path, "rb") as f:
+        data = f.read()
+
+    num_tables = struct.unpack_from(">H", data, 4)[0]
+    name_offset = None
+    for i in range(num_tables):
+        entry = 12 + i * 16
+        if data[entry : entry + 4] == b"name":
+            name_offset = struct.unpack_from(">I", data, entry + 8)[0]
+            break
+
+    if name_offset is None:
+        return False
+
+    count = struct.unpack_from(">H", data, name_offset + 2)[0]
+    strings_base = name_offset + struct.unpack_from(">H", data, name_offset + 4)[0]
+    rec_start = name_offset + 6
+
+    names = {}
+    for i in range(count):
+        r_start = rec_start + i * 12
+        platformID, _, _, nameID, length, offset = struct.unpack_from(">6H", data, r_start)
+        if platformID == 3 and nameID in (1, 4, 6):
+            names[nameID] = data[strings_base + offset : strings_base + offset + length].decode("utf-16-be")
+
+    return names.get(1) == family and names.get(4) == fullname and names.get(6) == postscript
 
 
 def _patch_font(font_path, family, fullname, postscript):
@@ -145,9 +176,25 @@ def main():
 
     fs.backup_directory(dota_fonts_path, bkup_path)
 
+    with open(found_font, "rb") as f:
+        found_font_data = f.read()
+
+    try:
+        source_hash = hashlib.sha256(found_font_data).hexdigest()
+        stored_hash = utils.get_mod_state(mod_name, "source_hash")
+    except Exception:
+        source_hash = None
+        stored_hash = None
+
     for name, (family, fullname, postscript) in REPLACE_MAP.items():
-        fs.remove_path(os.path.join(dota_fonts_path, name))
         dest = os.path.join(dota_fonts_path, name)
+        is_patched = os.path.exists(dest) and _is_patched(dest, family, fullname, postscript)
+        if is_patched and source_hash is not None and source_hash == stored_hash:
+            output.add_text(f"Skipped (already patched): {name}")
+            continue
+        if is_patched:
+            output.add_text(f"Font changed, re-patching: {name}")
+        fs.remove_path(dest)
         shutil.copy2(found_font, dest)
         _patch_font(dest, family, fullname, postscript)
         output.add_detail(f"Installed: {name}")

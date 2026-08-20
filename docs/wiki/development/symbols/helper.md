@@ -220,6 +220,8 @@ def exec_script(
         output.add_text("&script_success", mod_name, order_name, msg_type="success")
     return result
 
+    return None
+
 ```
 
 </details>

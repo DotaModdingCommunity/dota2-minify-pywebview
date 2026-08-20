@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   lint-and-test:
@@ -22,10 +22,10 @@ jobs:
         run: uv sync --group dev
 
       - name: Run Ruff Format Check
-        run: uv run ruff format --check
+        run: uv run ruff format --check Minify
 
       - name: Run Ruff Check
-        run: uv run ruff check .
+        run: uv run ruff check Minify
 
       - name: Run Pytest
         run: uv run pytest

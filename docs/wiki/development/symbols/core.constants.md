@@ -154,6 +154,32 @@ LOCALE_MOD_REQUIREMENTS: dict[str, list[str]] = {
 
 </details>
 
+### `LOCALE_ALIASES`
+
+<details open><summary>Source</summary>
+
+```python
+LOCALE_ALIASES = {
+    "english": "dutch",
+}
+
+```
+
+</details>
+
+### `LOCALE_MOD_REQUIREMENTS`
+
+<details open><summary>Source</summary>
+
+```python
+LOCALE_MOD_REQUIREMENTS = {
+    "english": ["#English Fix"],
+}
+
+```
+
+</details>
+
 ### `minify_output_list`
 
 <details open><summary>Source</summary>

@@ -1,7 +1,9 @@
 # -*- mode: python ; coding: utf-8 -*-
+import glob
 import os
 import platform
 import sys
+import sysconfig
 
 
 # Import version utility to generate metadata files

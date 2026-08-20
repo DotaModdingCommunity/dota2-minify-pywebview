@@ -297,3 +297,63 @@ class Update:
 ```
 
 </details>
+
+## `LanguageSetup()`
+
+*No documentation available.*
+
+<details open><summary>Source</summary>
+
+```python
+class LanguageSetup:
+    @staticmethod
+    def show():
+        modal_shared.show(
+            title="Set Languages",
+            messages=["Set Languages"],
+            buttons=[
+                {
+                    "label": "OK",
+                    "callback": lambda s, a, u: LanguageSetup._callback(),
+                    "width": 120,
+                },
+            ],
+            width=500,
+            height=350,
+            dropdowns=[
+                {
+                    "tag": "landing_int_lang",
+                    "label": "Interface Language",
+                    "items": localization.localizations,
+                    "default_value": config.get("locale", "EN"),
+                },
+                {
+                    "tag": "landing_dota_lang",
+                    "label": "Dota2 Language",
+                    "items": constants.minify_output_list,
+                    "default_value": config.get("output_locale", "russian"),
+                },
+            ],
+        )
+
+    @staticmethod
+    def _callback():
+        app_lang = dpg.get_value("landing_int_lang")
+        dota_lang = dpg.get_value("landing_dota_lang")
+
+        config.set("locale", app_lang)
+        config.set("output_locale", dota_lang)
+        resolved = constants.resolve_locale(dota_lang)
+        config.set(
+            "output_path",
+            [lang for lang in constants.minify_dota_possible_language_output_paths if resolved in lang][0],
+        )
+
+        dpg.configure_item("lang_select", default_value=app_lang)
+        dpg.configure_item("output_select", default_value=dota_lang)
+        localization.change(init=True)
+        config.set("language_modal_shown", True)
+
+```
+
+</details>

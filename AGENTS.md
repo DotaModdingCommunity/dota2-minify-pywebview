@@ -115,6 +115,7 @@ Regardless of whether you are an AI agent or a human developer, following these 
   ```python
   import os
   import sys
+
   sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../Minify")))
   ```
 
@@ -157,6 +158,7 @@ Keep tests independent, fast, and focused on behavior rather than implementation
   ```python
   from unittest.mock import MagicMock
   import core.config
+
   core.config.get = MagicMock(side_effect=lambda key, default=None: default)
   core.config.set = MagicMock()
   ```
