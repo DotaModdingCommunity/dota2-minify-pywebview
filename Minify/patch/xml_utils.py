@@ -1,21 +1,26 @@
 import os
 import re
 import xml.etree.ElementTree as ET
+from typing import Any
 
 import defusedxml.ElementTree as dET
 from core import log
 
+TAG_CHAR = r"[a-zA-Z0-9_:-]"
+ID_CHAR = r"[a-zA-Z0-9_:-]"
+CLASS_CHAR = r"[a-zA-Z0-9_:.-]"
+ATTR_CHAR = r"[a-zA-Z0-9_:.-]"
 SELECTOR_PATTERN = (
-    r"^([a-zA-Z0-9_-]+)?(?:#([a-zA-Z0-9_-]+))?((?:\.[a-zA-Z0-9_-]+)*)((?:\[[a-zA-Z0-9_-]+=['\"]?[^'\"\]]+['\"]?\])*)$"
+    rf"^({TAG_CHAR}+)?(?:#({ID_CHAR}+))?((?:\.{CLASS_CHAR}+)*)((?:\[{ATTR_CHAR}+(?:=['\"]?[^'\"\]]+['\"]?)?\])*)$"
 )
-ATTRIBUTE_PATTERN = r"\[([a-zA-Z0-9_-]+)=['\"]?([^'\"\]]+)['\"]?\]"
+ATTRIBUTE_PATTERN = r"\[([a-zA-Z0-9_:.-]+)(?:=(['\"]?)([^'\"\]]*)\2)?\]"
 
 
 SELECTOR_RE = re.compile(SELECTOR_PATTERN)
 ATTRIBUTE_RE = re.compile(ATTRIBUTE_PATTERN)
 
 
-def find_by_selector(root, selector):
+def find_by_selector(root: ET.Element, selector: str) -> ET.Element | None:
     if not selector:
         return None
     match = SELECTOR_RE.match(selector)
@@ -27,10 +32,12 @@ def find_by_selector(root, selector):
     target_attrs = {}
     if attrs_str:
         attr_matches = ATTRIBUTE_RE.findall(attrs_str)
-        for k, v in attr_matches:
+        for m in attr_matches:
+            k = m[0]
+            v = m[2] if m[1] or m[2] else None
             target_attrs[k] = v
 
-    def matches(elem):
+    def matches(elem: ET.Element) -> bool:
         if tag_name and elem.tag != tag_name:
             return False
         if element_id and elem.get("id") != element_id:
@@ -40,7 +47,7 @@ def find_by_selector(root, selector):
             if not all(cls in elem_classes for cls in target_classes):
                 return False
         if target_attrs:
-            if not all(elem.get(k) == v for k, v in target_attrs.items()):
+            if not all((k in elem.attrib) if v is None else elem.get(k) == v for k, v in target_attrs.items()):
                 return False
         return True
 
@@ -54,7 +61,7 @@ def find_by_selector(root, selector):
     return None
 
 
-def find_with_parent_by_selector(root, selector):
+def find_with_parent_by_selector(root: ET.Element, selector: str) -> tuple[ET.Element | None, ET.Element | None]:
     if not selector:
         return None, None
     match = SELECTOR_RE.match(selector)
@@ -66,10 +73,12 @@ def find_with_parent_by_selector(root, selector):
     target_attrs = {}
     if attrs_str:
         attr_matches = ATTRIBUTE_RE.findall(attrs_str)
-        for k, v in attr_matches:
+        for m in attr_matches:
+            k = m[0]
+            v = m[2] if m[1] or m[2] else None
             target_attrs[k] = v
 
-    def matches(elem):
+    def matches(elem: ET.Element) -> bool:
         if tag_name and elem.tag != tag_name:
             return False
         if element_id and elem.get("id") != element_id:
@@ -79,7 +88,7 @@ def find_with_parent_by_selector(root, selector):
             if not all(cls in elem_classes for cls in target_classes):
                 return False
         if target_attrs:
-            if not all(elem.get(k) == v for k, v in target_attrs.items()):
+            if not all((k in elem.attrib) if v is None else elem.get(k) == v for k, v in target_attrs.items()):
                 return False
         return True
 
@@ -92,14 +101,18 @@ def find_with_parent_by_selector(root, selector):
     return None, None
 
 
-def find_by_id(root, node_id):
+def find_by_id(root: ET.Element, node_id: str | None) -> ET.Element | None:
+    if not node_id:
+        return None
     if root.get("id") == node_id:
         return root
     return root.find(f".//*[@id='{node_id}']")
 
 
-def find_with_parent_by_id(root, node_id):
+def find_with_parent_by_id(root: ET.Element, node_id: str | None) -> tuple[ET.Element | None, ET.Element | None]:
     # Returns (element, parent) or (None, None)
+    if not node_id:
+        return None, None
     for parent in root.iter():
         for child in parent:
             if child.get("id") == node_id:
@@ -110,7 +123,7 @@ def find_with_parent_by_id(root, node_id):
     return None, None
 
 
-def ensure_unique_include(root, container_tag, src_value):
+def ensure_unique_include(root: ET.Element, container_tag: str, src_value: str) -> None:
     container = root.find(container_tag)
     if container is None:
         container = ET.Element(container_tag)
@@ -124,13 +137,14 @@ def ensure_unique_include(root, container_tag, src_value):
     include.set("src", src_value)
 
 
-def apply_modifications(xml_file, modifications):
+def apply_modifications(xml_file: str, modifications: list[dict[str, Any]]) -> None:
     if not os.path.exists(xml_file):
         log.write_warning(f"[Missing XML] '{xml_file}' not found; skipping modifications")
         return
     try:
         tree = dET.parse(xml_file)
         root = tree.getroot()
+        assert root is not None, "parsed XML has no root element"
     except Exception:
         log.write_warning(f"[XML ParseError] Could not parse {xml_file}")
         return
@@ -265,3 +279,8 @@ def apply_modifications(xml_file, modifications):
         tree.write(xml_file, encoding="utf-8", xml_declaration=False)
     except TypeError:
         tree.write(xml_file)
+
+
+def get_xml_mod_file(mod_path: str) -> str | None:
+    xml_json = os.path.join(mod_path, "xml.json")
+    return xml_json if os.path.exists(xml_json) else None

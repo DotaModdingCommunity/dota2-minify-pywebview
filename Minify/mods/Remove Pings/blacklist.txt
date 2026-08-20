@@ -1,2 +1,6 @@
+# ════════════════════════════════════════════════════════════════════════
+#  blacklist.txt — Removes all ping particles and sounds.
+# ════════════════════════════════════════════════════════════════════════
+
 **particles/ui_mouseactions/.*ping.*\.vpcf_c
 **sounds/ui/.*ping.*\.vsnd_c

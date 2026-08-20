@@ -1,3 +1,12 @@
+/* ══════════════════════════════════════════════════════════════════════════════
+   styling.css — Hides player and friend showcases.
+   ══════════════════════════════════════════════════════════════════════════════
+   Path markers must stay on their own single line:
+     "g:" targets a GAME pak style path, "c:" a CORE pak style path.
+   Everything below a marker belongs to that file until the next marker.
+   NOTE: never write the literal marker forms in prose comments inside this
+   file — the parser will mistake them for real markers.
+   ══════════════════════════════════════════════════════════════════════════════ */
 /* g:panorama/styles/context_menus/context_menu_player */
 #MenuOptionsPanel {
     transition-duration: 0s;

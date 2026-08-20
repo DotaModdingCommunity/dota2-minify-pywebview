@@ -1,0 +1,32 @@
+{
+  // User Styles — source-mode CSS overrides. Each checkbox below gates a
+  // matching "@key:<name>" block in this folder's styling.css.
+  "styling_mode": "source",
+  "settings": [
+    { "key": "remove_hero_portraits", "text": "Remove Hero Portraits", "type": "checkbox", "default": true },
+    { "key": "remove_stat_filters", "text": "Remove Stat Filters from Search", "type": "checkbox", "default": true },
+    { "key": "remove_dota_plus_ads", "text": "Remove Dota+ Ad Banner", "type": "checkbox", "default": true },
+    { "key": "remove_play_button_bg", "text": "Remove Play Button Backgrounds", "type": "checkbox", "default": true },
+    { "key": "dashboard_cleanup", "text": "Dashboard Cleanup", "type": "checkbox", "default": true },
+    { "key": "remove_useless_item_info", "text": "Remove Useless Item Info (Ability Details)", "type": "checkbox", "default": true },
+    { "key": "remove_madstone_animations", "text": "Remove Madstone Animations", "type": "checkbox", "default": true },
+    { "key": "remove_tooltip_transitions", "text": "Remove Tooltip Transitions", "type": "checkbox", "default": true },
+    { "key": "remove_dims_blurs", "text": "Remove Dims & Blurs (Popups)", "type": "checkbox", "default": true },
+    { "key": "expand_pregame_ui", "text": "Expand Pregame UI", "type": "checkbox", "default": true },
+    { "key": "collapse_friend_sections", "text": "Collapse Friends Sections (Guild, Pending)", "type": "checkbox", "default": true },
+    { "key": "color_context_menu", "text": "Color Context Menu Backgrounds", "type": "checkbox", "default": true },
+    { "key": "sell_color", "text": "Sell Color", "type": "color", "default": "#c92424", "depends_on": "color_context_menu" },
+    { "key": "mark_for_sell_color", "text": "Mark for Sell Color", "type": "color", "default": "#c95824", "depends_on": "color_context_menu" },
+    { "key": "disassemble_color", "text": "Disassemble Color", "type": "color", "default": "#9524c9", "depends_on": "color_context_menu" },
+    { "key": "unmark_for_sell_color", "text": "Unmark for Sell Color", "type": "color", "default": "#2487c9", "depends_on": "color_context_menu" },
+    { "key": "combine_lock_color", "text": "Combine Lock Color", "type": "color", "default": "#24c955", "depends_on": "color_context_menu" },
+    { "key": "combine_unlock_color", "text": "Combine Unlock Color", "type": "color", "default": "#24c9bb", "depends_on": "color_context_menu" },
+    { "key": "shrink_shop_ui", "text": "Shrink Shop UI", "type": "checkbox", "default": true },
+    { "key": "shop_ui_scale", "text": "Shop UI Scale (%)", "type": "slider", "default": 90, "min": 50, "max": 150, "step": 5, "depends_on": "shrink_shop_ui" },
+    { "key": "remove_monster_hunter_overlay", "text": "Remove Monster Hunter Overlay", "type": "checkbox", "default": true },
+    { "key": "remove_hero_badge_model", "text": "Remove Hero Badge Model", "type": "checkbox", "default": true },
+    { "key": "remove_seasonal_ability_bar", "text": "Remove Seasonal Ability Bar", "type": "checkbox", "default": true },
+    { "key": "remove_last_match_details", "text": "Remove Last Match Details (Home Page)", "type": "checkbox", "default": true },
+    { "key": "remove_event_containers", "text": "Remove Event Containers (Home Page)", "type": "checkbox", "default": true }
+  ]
+}

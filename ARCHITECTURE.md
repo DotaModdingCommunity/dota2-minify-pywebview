@@ -1,6 +1,6 @@
 # Architecture of Dota2 Minify
 
-This document provides a detailed overview of the system architecture, component relationships, and core workflows of `dota2-minify`.
+How the pieces fit together: the component layout, the patch pipeline, and the modding hooks that make Minify tick.
 
 ## High-Level Overview
 
@@ -16,14 +16,20 @@ This document provides a detailed overview of the system architecture, component
 
 ## System Components
 
-### 1. GUI Layer (DearPyGui)
+### 1. GUI Layer (pywebview + Svelte)
 
 The UI is managed primarily in `Minify/ui/`. It is a consumer of the backend logic and serves as one of the possible interfaces.
 
-- **`gui.py`**: Manages the interaction lock (`interactive_lock`) to prevent UI operations during heavy I/O.
-- **`terminal.py`**: A virtualized terminal that registers itself as a consumer of `core.output` to display build logs in the GUI.
-- **`checkboxes.py`**: Handles the state of mod selection and persistence (`mods.json`).
-- **`settings.py`**: Dynamically generates UI components based on `manifest.json` files found in mod directories.
+- **`web_window.py`**: pywebview window creation, JS API binding, and dark title bar styling.
+- **`actions.py`**: All JS-facing API methods, each wrapped with the `@_api_call` error envelope.
+- **`output_bridge.py`**: Bridges `core/output.py` to the JS window, buffering messages before the window is ready.
+- **`dialogs.py`**: Native file/folder dialogs used by mod scripts and the frontend.
+- **`fonts.py`**: Registers the web frontend's font assets.
+- **`localization.py`**: JSON-based i18n loading (key-value pairs with locale keys).
+- **`announcements.py`**: Timestamp-based announcement system.
+- **`modal_shared.py`**: Blocking modal system (`threading.Event` + JS callbacks).
+- **`modals.py`**: Implementations of specific modals (Uninstall, Announcements, Update dialogs).
+- **`web/`**: Svelte 5 frontend source (`App.svelte`, `src/lib/api.ts`, `src/lib/stores/`, `src/lib/components/`).
 
 ### 2. CLI Layer (Headless)
 
@@ -35,13 +41,16 @@ Fundamental utilities used by both the UI and the Build pipeline.
 
 - **`core/fs.py`**: Specialized file system operations (atomic moves, safe deletions, recursive creation).
 - **`core/steam.py`**: Handles Steam library detection, game path resolution, and launch option patching.
-- **`core/vpk_utils.py`**: High-level wrapper for `vpk` operations, including metadata generation (`minify_version.txt`).
-- **`core/output.py`**: The communication backbone. It provides an agnostic interface for logging and user feedback, supporting multiple callbacks (e.g., standard print for CLI, and the terminal window for GUI).
-- **`core/registry.py`**: A central registry for third-party browsers to hook into the system lifecycle.
+- **`core/net.py`**: Thin `requests` wrapper with offline-simulation support for tests and dev runs.
+- **`core/migrations.py`**: One-shot legacy migrations (e.g. `modcfg.json` → `manifest.json`, `xml_mod.json` → `xml.json`).
+- **`core/output.py`**: The communication backbone. It provides an agnostic interface for logging and user feedback, supporting multiple callbacks (e.g., standard print for CLI, and the output bridge for the JS GUI).
+- **`patch/vpk_utils.py`**: High-level wrapper for `vpk` operations, including metadata generation (`minify_version.txt`).
 
-### 3. Build Pipeline
+### 4. Build Pipeline
 
 The `Minify/patch/` package contains the "Patch" engine. It follows a strictly ordered pipeline.
+
+Updates are handled in `ui/modals.py`: the app polls the GitHub releases API, picks the asset matching the current platform (`-windows.zip`, `-linux.zip`, `-macos.zip`, or the `.exe` installer), downloads it, and either launches the installer or extracts alongside the app.
 
 ---
 
@@ -131,18 +140,27 @@ B -- Hooks --> MAP
 Mods are identified by the presence of a folder in `Minify/mods/`. The system scans these folders and interprets them based on their contents:
 
 - **`manifest.json`**: Metadata and UI configuration.
-- **`notes.md`**: Localized descriptions shown in the details view.
+- **`notes.md`**: Localized descriptions shown in the mod panel.
 - **`files/`**: Static assets copied directly into the output VPK.
 - **`files_uncompiled/`**: Raw assets (XML/CSS) that require the `resourcecompiler`.
 - **`script_*.py`**: Python hooks that run at specific stages (initial, after_patch, etc.).
 
 ### Hook Lifecycle
 
-1. **`script_initial.py`**: Runs on app startup.
+Not every hook runs for every mod — they're all optional. The stage names come from the file names:
+
+1. **`script_initial.py`**: Runs on app startup for every enabled mod.
 2. **`script.py`**: Runs during the collection phase of the patcher.
 3. **`script_after_decompile.py`**: Runs after `Source2Viewer` has extracted and decompiled assets.
-4. **`script_after_patch.py`**: Runs after the VPK has been saved and cleaned up.
-5. **`script_uninstall.py`**: Runs when the user triggers uninstallation.
+4. **`script_after_recompile.py`**: Runs after `ResourceCompiler` has recompiled the assets.
+5. **`script_after_patch.py`**: Runs after the VPK has been saved and cleaned up.
+6. **`script_prelaunch.py`**: Runs right before the game is launched.
+7. **`script_uninstall.py`**: Runs when the user triggers uninstallation.
+
+Two more hooks are invoked on demand rather than in the bulk loop:
+
+- **`script_setup.py`**: Runs when the mod's settings are first collected (the setup flow), typically to prompt the user for config.
+- **`script_utility.py`**: Loaded on demand via `helper.exec_script_function()`, usually to back `function`-type settings (buttons).
 
 ---
 
@@ -150,6 +168,5 @@ Mods are identified by the presence of a folder in `Minify/mods/`. The system sc
 
 The Browser system (found in `Minify/browsers/`) allows for complex integrations.
 
-- **Registration**: Browsers register themselves using `core.registry.register_browser(sys.modules[__name__])`.
-- **UI Integration**: Browsers can add their own buttons to the main footer and open custom windows.
-- **Build Hooks**: Browsers implement an `on_build(mod_list, current_mod)` function that is called at the end of the standard patching process, allowing them to perform specialized VPK merging or asset manipulation (as seen in `d2pfx/build_hook.py`).
+- **UI Integration**: Browsers provide custom UI components (D2PFX ships its own browser tab and mod detail views).
+- **Build Hooks**: Browsers implement a build hook (`build_hook.py`) that is called during the patching process, allowing them to perform specialized VPK merging or asset manipulation (as seen in `d2pfx/build_hook.py`).

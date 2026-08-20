@@ -1,10 +1,13 @@
 import os
 import re
+from typing import Any
 
-from core import config, log
+from core import config
+
+_VersionPart = tuple[int, int, int]
 
 
-def _parse_version(v: str) -> tuple:
+def _parse_version(v: str) -> tuple[_VersionPart, ...]:
     parts = []
     for part in str(v).split("."):
         match = re.match(r"^(\d+)(.*)$", part)
@@ -27,7 +30,7 @@ def _parse_version(v: str) -> tuple:
     return tuple(parts)
 
 
-def is_version_at_least(current: str, requirements: str) -> bool:
+def is_version_at_least(current: str | None, requirements: str | None) -> bool:
     """
     Compares current version against a requirement string (e.g., ">=1.13,<=1.14" or "1.13").
     If no operator is provided, defaults to ">=".
@@ -68,7 +71,7 @@ def is_version_at_least(current: str, requirements: str) -> bool:
         return False
 
 
-def get_mod(mod_path):
+def get_mod(mod_path: str) -> dict[str, Any]:
     manifest_json = os.path.join(mod_path, "manifest.json")
 
     if os.path.exists(manifest_json):

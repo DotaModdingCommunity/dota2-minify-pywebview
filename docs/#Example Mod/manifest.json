@@ -1,0 +1,104 @@
+{
+  // ═══════════════════════════════════════════════════════════════════════
+  //  manifest.json — mod metadata + settings schema
+  // ═══════════════════════════════════════════════════════════════════════
+  //  Read with a JSONC parser, so // and /* */ comments are allowed.
+  //  Everything in this file is optional unless noted.
+
+  // ── Top-level fields ───────────────────────────────────────────────────
+  //  always ................ bool (default false). Apply on every patch even
+  //                         if the user never toggles the mod (see #base).
+  //  order .................. int (default 1). Lower patches first; ties are
+  //                         broken by alphabetical folder name. #base = 0.
+  //  visual ................. bool (default true). false hides the mod from
+  //                         the mods grid UI entirely (still patches if on).
+  //  version ................ string. Minimum Minify version required.
+  //                         Operators: >=  <=  >  <  ==  (default >=);
+  //                         comma-separate several, e.g. ">=1.0,<2.0".
+  //  dependencies ........... array of mod folder names that must be enabled
+  //                         first (see Dark Terrain → ["Remove Foilage"]).
+  //  conflicts ............. array of mod folder names that cannot run
+  //                         alongside this one (see Remove Pings).
+  //  skip_workshop_check .... bool (default false). true skips the "Workshop
+  //                         Tools required" gate (see Auto Accept Match).
+  //  preview_file ........... string. Base name of a preview image/video
+  //                         looked up in <config>/<name>.<ext> (png/jpg/
+  //                         jpeg/webp/mp4/webm) and shown in the settings
+  //                         modal. The file is normally dropped there by a
+  //                         script_utility.py button (see Custom Backgrounds);
+  //                         omit this field if you have no such file. A
+  //                         preview.png in the mod folder is shown on the
+  //                         mods grid automatically without this field.
+  //  styling_mode ........... "direct" (default) | "source" | "disabled".
+  //                         "source" enables @key gating + <&placeholder>
+  //                         substitution in styling.css; "disabled" skips
+  //                         styling entirely.
+  //  presets ................ array of { name: string, values: {...} } —
+  //                         one-click combinations of setting values.
+
+  "visual": true,
+  "order": 1,
+  "version": ">=2.0",
+  "dependencies": ["#base"],
+  "conflicts": ["User Styles"],
+  "skip_workshop_check": false,
+  "styling_mode": "source",
+
+  "presets": [
+    { "name": "Bolder & Green", "values": { "title_weight": "bolder", "accent_color": "#40ff80", "letter_spacing": 2 } },
+    { "name": "Plain & Blue", "values": { "title_weight": "normal", "accent_color": "#2487c9", "letter_spacing": 0 } }
+  ],
+
+  // ── Settings ───────────────────────────────────────────────────────────
+  //  Required: key (unique id), text (UI label), type, default.
+  //  Optional: depends_on, advanced.
+  "settings": [
+    // ── inputbox — free text. params: none.
+    { "key": "greeting_text", "text": "Greeting Text", "type": "inputbox", "default": "Hello, Dota 2!" },
+
+    // ── checkbox — boolean toggle. params: none.
+    { "key": "accent_title", "text": "Accent Title", "type": "checkbox", "default": true },
+
+    // ── combo — pick one of "items" (array of strings).
+    { "key": "title_weight", "text": "Title Weight", "type": "combo", "default": "bold", "items": ["normal", "bold", "bolder"] },
+
+    // ── number — numeric stepper. params: var_type ("int" | "float"),
+    //             min, max, step.
+    { "key": "hud_scale_int", "text": "HUD Scale (int %)", "type": "number", "var_type": "int", "default": 100, "min": 50, "max": 150, "step": 5 },
+    { "key": "opacity_float", "text": "Opacity (float)", "type": "number", "var_type": "float", "default": 1.0, "min": 0.0, "max": 1.0, "step": 0.05 },
+
+    // ── slider — range picker. params: min, max, step (defaults 0 / 100 / 1).
+    { "key": "letter_spacing", "text": "Letter Spacing (px)", "type": "slider", "default": 2, "min": 0, "max": 8, "step": 1 },
+
+    // ── color — hex picker. default MUST be #RRGGBB (6 hex digits).
+    { "key": "accent_color", "text": "Accent Color", "type": "color", "default": "#c92424" },
+
+    // ── list — editable string list (one input row per item). params:
+    //           items = optional one-click suggestions to append.
+    { "key": "ignored_items", "text": "Ignored Items", "type": "list", "default": ["blink"], "items": ["blink", "tango", "salve"] },
+
+    // ── file — native file picker. params: file_types (filter string).
+    { "key": "log_file", "text": "Log File", "type": "file", "file_types": "Text Files (*.txt)" },
+
+    // ── button — calls script_utility.py's function named after this key
+    //             ("run_utility"). params: none.
+    { "key": "run_utility", "text": "Run Utility", "type": "button" },
+
+    // ── depends_on — string key of another setting. This entry is greyed
+    //                 out while that setting is off / falsy.
+    { "key": "color_context_menu", "text": "Color Context Menu", "type": "checkbox", "default": true },
+    { "key": "sell_color", "text": "Sell Color", "type": "color", "default": "#c92424", "depends_on": "color_context_menu" },
+
+    // ── @key gates — checkboxes that toggle blocks in styling.css and
+    //                 blacklist.txt (see those files). Off by default.
+    { "key": "animate_credits", "text": "Animate Credits on Hover", "type": "checkbox", "default": false },
+    { "key": "plain_tooltips", "text": "Instant Tooltips (no fade)", "type": "checkbox", "default": false },
+
+    // ── @key gates in blacklist.txt — every block there is gated behind
+    //     one of these keys, so nothing is blanked until you opt in.
+    { "key": "mute_announcer", "text": "Blank Announcer Sounds", "type": "checkbox", "default": false },
+    { "key": "mute_tip_sounds", "text": "Blank UI Tip Sounds", "type": "checkbox", "default": false },
+    { "key": "mute_button_clicks", "text": "Blank Button Click Sounds", "type": "checkbox", "default": false },
+    { "key": "mute_ui_sounds_except_some", "text": "Blank UI Sounds (Keep Click / Pour)", "type": "checkbox", "default": false }
+  ]
+}

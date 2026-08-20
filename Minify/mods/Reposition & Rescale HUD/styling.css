@@ -1,33 +1,42 @@
+/* ══════════════════════════════════════════════════════════════════════════════
+   styling.css — Rescales and repositions HUD elements.
+   ══════════════════════════════════════════════════════════════════════════════
+   Path markers must stay on their own single line:
+     "g:" targets a GAME pak style path, "c:" a CORE pak style path.
+   Everything below a marker belongs to that file until the next marker.
+   NOTE: never write the literal marker forms in prose comments inside this
+   file — the parser will mistake them for real markers.
+   ══════════════════════════════════════════════════════════════════════════════ */
 /* g:panorama/styles/chat */
 DOTAChat#HudChat {
-    y: -145px;
+    y: <&chat_y_offset>px;
 }
 
 /* g:panorama/styles/hud/dota_hud_top_bar */
 DOTATopBar {
-    ui-scale: 75%;
+    ui-scale: <&topbar_scale>%;
 }
 
 #TimeOfDay {
-    ui-scale: 125%;
+    ui-scale: <&clock_scale>%;
 }
 
 #TimeOfDayBG {
-    ui-scale: 125%;
+    ui-scale: <&clock_scale>%;
 }
 
 /* g:panorama/styles/hud/hud_reborn */
 #lower_hud,
 #minimap_container {
-    ui-scale: 90%;
+    ui-scale: <&hud_scale>%;
     margin-left: 10%;
     margin-right: 10%;
 }
 
 #SpectatorToastManager {
-    ui-scale: 75%;
+    ui-scale: <&spectator_scale>%;
 }
 
 #center_with_stats {
-    ui-scale: 85%;
+    ui-scale: <&center_stats_scale>%;
 }

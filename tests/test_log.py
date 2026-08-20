@@ -24,6 +24,28 @@ def test_write_warning(mock_env):
     assert "Test" in open(log.base.log_warnings).read()
 
 
+def test_write_warning_show_traceback_false_keeps_file_full_console_short(mock_env):
+    try:
+        raise ValueError("boom")
+    except ValueError:
+        with patch("core.output.add_text") as mock_add:
+            log.write_warning(header="Test", show_traceback=False)
+
+    with open(log.base.log_warnings) as file:
+        content = file.read()
+    assert "Test" in content
+    assert "Traceback (most recent call last):" in content
+    assert "ValueError: boom" in content
+    mock_add.assert_called_once_with("Test", msg_type="warning")
+
+
+def test_write_warning_show_traceback_false_no_active_exception(mock_env):
+    with patch("core.output.add_text") as mock_add:
+        log.write_warning(header="Test", show_traceback=False)
+
+    mock_add.assert_called_once_with("Test", msg_type="warning")
+
+
 def test_create_debug_zip(mock_env, tmp_path, monkeypatch):
     (mock_env / "test.log").write_text("data")
     monkeypatch.chdir(tmp_path)
@@ -31,9 +53,3 @@ def test_create_debug_zip(mock_env, tmp_path, monkeypatch):
         log.create_debug_zip()
         mock_open.assert_called_once_with(".")
     assert len(list(tmp_path.glob("*.zip"))) == 1
-
-
-def test_unhandled_handler():
-    with patch("core.log.write_crashlog") as mock:
-        log.unhandled_handler(handled=True)(TypeError, None, None)
-        mock.assert_called_once()

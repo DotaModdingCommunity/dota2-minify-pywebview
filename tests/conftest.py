@@ -27,8 +27,6 @@ import core.config
 def fake_config_get(key, default=None):
     if key in ("steam_root", "steam_library"):
         return "/fake/steam"
-    if key == "apply_for_all":
-        return True
     if key == "output_locale":
         return "minify"
     return default
@@ -36,13 +34,6 @@ def fake_config_get(key, default=None):
 
 core.config.get = MagicMock(side_effect=fake_config_get)
 core.config.set = MagicMock()
-
-# 3. Mock UI and other side-effect heavy modules
-sys.modules["ui.terminal"] = MagicMock()
-sys.modules["tkinter"] = MagicMock()
-sys.modules["tkinter.filedialog"] = MagicMock()
-sys.modules["tkinter.messagebox"] = MagicMock()
-sys.modules["playsound3"] = MagicMock()
 
 # 4. Mock os.path.exists to avoid entering the steam discovery loops
 import os
@@ -53,7 +44,7 @@ original_exists = os.path.exists
 
 
 def fake_exists(path):
-    if "/fake/steam" in path or "steamapps" in path or "dota" in path or path == base.mods_dir:
+    if str(path).startswith("/fake/steam"):
         return True
     return original_exists(path)
 
@@ -65,6 +56,8 @@ original_listdir = os.listdir
 
 def fake_listdir(path):
     if path == base.mods_dir:
+        return []
+    if "/fake" in str(path):
         return []
     return original_listdir(path)
 

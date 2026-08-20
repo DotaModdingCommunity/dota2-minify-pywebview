@@ -1,0 +1,10 @@
+{
+  "settings": [
+    { "key": "hud_scale", "text": "HUD & Minimap Scale", "default": 90, "type": "slider", "min": 50, "max": 150, "step": 5 },
+    { "key": "topbar_scale", "text": "Top Bar Scale", "default": 75, "type": "slider", "min": 50, "max": 125, "step": 5 },
+    { "key": "clock_scale", "text": "Clock Scale", "default": 125, "type": "slider", "min": 50, "max": 175, "step": 5 },
+    { "key": "spectator_scale", "text": "Spectator Toast Scale", "default": 75, "type": "slider", "min": 50, "max": 125, "step": 5 },
+    { "key": "center_stats_scale", "text": "Center Stats Scale", "default": 85, "type": "slider", "min": 50, "max": 125, "step": 5 },
+    { "key": "chat_y_offset", "text": "Chat Y Offset", "default": -145, "type": "number", "var_type": "int", "step": 1 }
+  ]
+}

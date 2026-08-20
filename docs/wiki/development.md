@@ -6,13 +6,23 @@ If you have any questions or just want to share your progress, join us on [Disco
 
 ## Running from the source
 
-Prerequisites are `git`, `python` and `uv`. (also `tk` for tkinter and `wine` for workshop tools executables on Linux)
+Prerequisites are `git`, `python`, `uv` and Node.js (for the frontend). On non-Windows systems you'll also need `wine` to run the Workshop Tools executables (Linux/macOS), and on Linux the pywebview GTK backend packages (see the README).
 
 ```shell
 git clone https://github.com/Egezenn/dota2-minify
 cd dota2-minify
-uv run Minify
+uv sync
+
+# build the Svelte frontend once (required before launching the GUI)
+cd Minify/ui/web
+npm ci
+npm run build
+cd ../..
+
+uv run python -m Minify
 ```
+
+The CLI works the same way: `uv run python -m Minify patch --help`.
 
 ## Creating mods
 
@@ -20,17 +30,17 @@ Minify has a programmatical approach to most modifications to keep everything mi
 
 | Modifications to file                                                   | Restart required for changes | Workshop requirement |
 | ----------------------------------------------------------------------- | ---------------------------- | -------------------- |
-| [`files`](development/mod-structure.md#filesfiles_uncompiled-directory) | No                           | No<sup>1</sup>       |
-| [`manifest.json`](development/mod-structure.md#modcfgjson)              | Yes<sup>2</sup>              | -                    |
+| [`files`](development/mod-structure.md#files-and-files_uncompiled-directories) | No                           | No<sup>1</sup>       |
+| [`manifest.json`](development/mod-structure.md#manifestjson)            | Yes<sup>2</sup>              | -                    |
 | [`notes.md`](development/mod-structure.md#notesmd)                      | Yes                          | -                    |
 | `preview.jpg` \| `preview.png`                                          | Yes                          | -                    |
 | [`blacklist.txt`](development/mod-structure.md#blacklisttxt)            | No                           | No                   |
-| [`replacer.csv`](development/mod-structure.md#replacercsv)              | No                           | No                   |
+| [`replacer.json`](development/mod-structure.md#replacerjson)            | No                           | No                   |
 | [`script.py`](development/scripting.md#scriptpy)                        | No<sup>3</sup>               | No                   |
 | [`styling.css`](development/ui-modding.md#stylingcss)                   | No                           | Yes                  |
-| [`xml_mod.json`](development/ui-modding.md#xml_modjson)                 | No                           | Yes                  |
+| [`xml.json`](development/ui-modding.md#xmljson)                         | No                           | Yes                  |
 
-<sup>1</sup>: [Uncompiled files](development/mod-structure.md#filesfiles_uncompiled-directory).  
+<sup>1</sup>: [Uncompiled files](development/mod-structure.md#files-and-files_uncompiled-directories).  
 <sup>2</sup>: The build engine pulls `always` and `dependencies` dynamically each time a patch is started. However, keys that define the mod's presence or configuration in the UI (like `order`, `visual`, and `settings` structure) are only loaded during the initial scan; changing these requires clicking **Refresh** in the Settings menu or restarting the application to re-render the components.  
 <sup>3</sup>: Initial scripts(`script_initial.py`).
 

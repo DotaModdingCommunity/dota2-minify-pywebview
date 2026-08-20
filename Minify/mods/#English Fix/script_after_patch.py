@@ -1,0 +1,114 @@
+import os
+import sys
+
+import vpk
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+minify_root = os.path.abspath(os.path.join(current_dir, os.pardir, os.pardir))
+os.chdir(minify_root)
+
+if minify_root not in sys.path:
+    sys.path.insert(0, minify_root)
+
+# isort: split
+
+import helper
+import patch
+from core import config, constants, fs, output, utils
+from patch import vpk_utils
+
+
+def main():
+    output.add_section("&localization_swaps_section")
+    if swap_needed() or patch.dota_version_changed or "-f" in sys.argv:
+        swap_localizations()
+    else:
+        output.add_text("&localization_swaps_skipped", msg_type="success")
+
+
+def swap_needed():
+    vpk_dest = os.path.join(helper.get_output_path(), "pak99_dir.vpk")
+    if not os.path.exists(vpk_dest) or not vpk_utils.is_minify_pak(vpk_dest):
+        return True
+
+    game_root = os.path.dirname(os.path.dirname(constants.dota_game_pak_path))
+    locale_file = os.path.join(game_root, "core", "panorama", "localization", f"core_tools_{config.get_locale()}.txt")
+    if not os.path.isfile(locale_file):
+        return True
+
+    with utils.open_utf8R(locale_file) as file:
+        lines = file.read().splitlines()
+    if len(lines) < 6:
+        return True
+    return not ('"WorkshopCfg_Title"' in lines[5] and '"Title"' in lines[5])
+
+
+def swap_localizations():
+    english_files = []
+    dota_pak = vpk.open(constants.dota_game_pak_path)
+
+    for filepath in dota_pak:
+        if filepath.endswith("_english.txt") or filepath.endswith("_english.vtt"):
+            english_files.append(filepath)
+
+    game_root = os.path.dirname(os.path.dirname(constants.dota_game_pak_path))
+    locale = config.get_locale()
+
+    disk_locale_files = []
+    disk_walk_dirs = ["core", "dota_addons"]
+    for sub in disk_walk_dirs:
+        walk_root = os.path.join(game_root, sub)
+        if not os.path.isdir(walk_root):
+            continue
+        for dirpath, _, filenames in os.walk(walk_root):
+            for fname in filenames:
+                if fname.endswith(f"_{locale}.txt") or fname.endswith(f"_{locale}.vtt"):
+                    abs_path = os.path.join(dirpath, fname)
+                    rel_path = os.path.relpath(abs_path, game_root).replace("\\", "/")
+                    disk_locale_files.append(rel_path)
+
+    if not english_files and not disk_locale_files:
+        output.add_text("&localization_swaps_no_files", msg_type="warning")
+        return
+
+    compile_dir = os.path.join(current_dir, "compile")
+    vpk_dest = os.path.join(helper.get_output_path(), "pak99_dir.vpk")
+    fs.remove_path(compile_dir, vpk_dest)
+    fs.create_dirs(compile_dir)
+
+    for filepath in english_files:
+        data = dota_pak[filepath].read()
+        renamed_paths = filepath.replace("_english.txt", f"_{locale}.txt").replace("_english.vtt", f"_{locale}.vtt")
+        dest = os.path.join(compile_dir, renamed_paths)
+        fs.create_dirs(os.path.dirname(dest))
+        with open(dest, "wb") as f:
+            f.write(data)
+
+    bkup_dir = os.path.join(minify_root, "backup", "#English Fix")
+    for rel_path in disk_locale_files:
+        locale_file = os.path.join(game_root, rel_path)
+        english_file = os.path.join(
+            game_root, rel_path.replace(f"_{locale}.txt", "_english.txt").replace(f"_{locale}.vtt", "_english.vtt")
+        )
+        if not os.path.isfile(english_file):
+            continue
+        bkup_dest = os.path.join(bkup_dir, rel_path)
+        fs.create_dirs(os.path.dirname(bkup_dest))
+        with open(locale_file, "rb") as src_f, open(bkup_dest, "wb") as bk_f:
+            bk_f.write(src_f.read())
+        with open(english_file, "rb") as src_f, open(locale_file, "wb") as dst_f:
+            dst_f.write(src_f.read())
+
+    total = len(english_files) + len(disk_locale_files)
+    output.add_text("&localization_swaps_extracted", total, len(disk_locale_files), msg_type="success")
+
+    vpk_utils.dump_metadata(compile_dir, mod_name=os.path.basename(current_dir))
+    pak = vpk.new(compile_dir)
+    pak.save(vpk_dest)
+    output.add_text("&localization_swaps_saved", vpk_dest, msg_type="success")
+
+    fs.remove_path(compile_dir)
+
+
+if __name__ == "__main__":
+    main()

@@ -15,6 +15,14 @@ $ErrorActionPreference = "Stop"
 Set-Location $PSScriptRoot
 
 if (-not $OnlyInstaller) {
+    Write-Host "Building frontend if missing..." -ForegroundColor Cyan
+    if (-not (Test-Path "..\Minify\ui\web\dist\index.html")) {
+        Set-Location "..\Minify\ui\web"
+        npm ci
+        npm run build
+        Set-Location "$PSScriptRoot"
+    }
+
     Write-Host "Cleaning dist/ directory..." -ForegroundColor Cyan
     if (Test-Path "dist") {
         Remove-Item -Recurse -Force "dist"

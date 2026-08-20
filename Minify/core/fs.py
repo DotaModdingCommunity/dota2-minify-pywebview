@@ -6,14 +6,11 @@ import shutil
 import stat
 import subprocess
 import tarfile
-import time
+import threading
 import zipfile
-from typing import Optional
+from collections.abc import Callable
 
-import dearpygui.dearpygui as dpg
-import requests
-
-from core import base, log, output, utils
+from core import base, log, net, output, utils
 
 
 def open_thing(path: str, args: str = "") -> None:
@@ -22,7 +19,7 @@ def open_thing(path: str, args: str = "") -> None:
     try:
         # If args are provided and target is executable, prefer launching directly
         if args:
-            if base.OS == base.WIN:
+            if base.is_win:
                 os.startfile(path, arguments=args)
                 return
             # POSIX: launch executable directly when possible
@@ -35,16 +32,16 @@ def open_thing(path: str, args: str = "") -> None:
 
         # No args path open
         if os.path.isdir(path):
-            if base.OS == base.WIN:
+            if base.is_win:
                 os.startfile(path)
-            elif base.OS == base.MAC:
+            elif base.is_mac:
                 subprocess.run(["open", path])
             else:
                 subprocess.run(["xdg-open", path])
         else:
-            if base.OS == base.WIN:
+            if base.is_win:
                 os.startfile(path)
-            elif base.OS == base.MAC:
+            elif base.is_mac:
                 # Reveal the file in Finder to avoid missing-app association errors
                 subprocess.run(["open", "-R", path])
             else:
@@ -53,7 +50,7 @@ def open_thing(path: str, args: str = "") -> None:
         output.add_text("&open_thing_fail", path, msg_type="error")
 
 
-def move_path(src: str, dst: str) -> Optional[None]:
+def move_path(src: str, dst: str) -> None:
     "Superset of `shutil.move`, `os.rename` to handle permissions for moving and renaming."
     try:
         shutil.move(src, dst)
@@ -81,26 +78,32 @@ def move_path(src: str, dst: str) -> Optional[None]:
 
             return move_path(src, dst)
         except Exception:
-            log.write_warning()
+            log.write_warning(f"Failed to move {src} -> {dst}")
     except FileNotFoundError:
-        print(f"Skipped move of: {src} (not found)")
+        output.add_text("&fs_skip_move_not_found", src, msg_type="warning")
 
 
-def remove_path(*paths: str) -> Optional[None]:
-    "Superset of `shutil.rmtree` & `os.remove` to handle permissions. Takes in list of paths."
+def remove_path(*paths: str, if_exists: bool = True) -> None:
+    """Superset of `shutil.rmtree` & `os.remove` to handle permissions. Takes in list of paths.
+    Missing paths are silently skipped (the deletion end-state is already reached);
+    pass `if_exists=False` to warn when a path does not exist."""
     try:
         for path in paths:
+            if if_exists and not os.path.exists(path):
+                continue
             try:
                 if os.path.isdir(path):
                     shutil.rmtree(path)
                 else:
                     os.remove(path)
             except FileNotFoundError:
-                print(f"Skipped deletion of: {path}")
+                output.add_text("&skipped_deletion", path, msg_type="warning")
 
     except PermissionError:
         try:
             for path in paths:
+                if if_exists and not os.path.exists(path):
+                    continue
                 if os.path.isdir(path):
                     for root, _, filenames in os.walk(path):
                         current_dir_mode = os.stat(root).st_mode
@@ -114,9 +117,20 @@ def remove_path(*paths: str) -> Optional[None]:
                     current_file_mode = os.stat(path).st_mode
                     os.chmod(path, current_file_mode | stat.S_IWUSR)
 
-            return remove_path(*paths)
+            # Retry once after granting write permissions (chmod won't unlock
+            # handles held by other processes, so never recurse unboundedly)
+            for path in paths:
+                if if_exists and not os.path.exists(path):
+                    continue
+                try:
+                    if os.path.isdir(path):
+                        shutil.rmtree(path)
+                    else:
+                        os.remove(path)
+                except FileNotFoundError:
+                    output.add_text("&skipped_deletion", path, msg_type="warning")
         except Exception:
-            log.write_warning()
+            log.write_warning(f"Failed to remove paths: {', '.join(paths)}")
 
 
 def create_dirs(*paths: str) -> None:
@@ -149,69 +163,93 @@ def restore_directory(source: str, backup: str) -> None:
     remove_path(backup)
 
 
-def download_file(url: str, target_path: str, progress_tag: Optional[str] = None) -> bool:
+def download_file(
+    url: str,
+    target_path: str,
+    progress_callback: Callable[[int, int], None] | None = None,
+    log_level: str = "error",
+    dedupe_set: set | None = None,
+) -> bool:
     """
     Downloads a file from url to target_path using requests.
-    Updates the UI progress_tag with \"Downloading: X.XX/Y.YY MB\" if provided.
+    Calls progress_callback(downloaded, total) on each chunk if provided.
+    On failure, logs with msg_type=log_level (None = silent). If dedupe_set is
+    provided, the unique error is only logged the first time it is encountered.
     """
 
     try:
-        response = requests.get(url, stream=True)
+        response = net.get(url, stream=True, timeout=(5, 15))
         response.raise_for_status()
         total_size = int(response.headers.get("content-length", 0))
         block_size = 8192
         downloaded = 0
-        last_report_time = 0
 
-        with open(target_path, "wb") as f:
+        tmp_path = f"{target_path}.tmp.{os.getpid()}.{threading.get_ident()}"
+        with open(tmp_path, "wb") as f:
             for chunk in response.iter_content(chunk_size=block_size):
                 if chunk:
                     f.write(chunk)
                     downloaded += len(chunk)
-                    if progress_tag:
-                        current_time = time.time()
-                        if current_time - last_report_time >= 0.1:
-                            downloaded_mb = downloaded / (1024 * 1024)
-                            total_size_mb = total_size / (1024 * 1024)
-                            if total_size > 0:
-                                # TODO: localize texts, use single string for downloads
-                                #       \"Downloading {}\".format(item)
-                                #       \"Downloading {}\".format(progress)
-                                dpg.set_value(
-                                    progress_tag,
-                                    f"Downloading: {downloaded_mb:.2f}/{total_size_mb:.2f} MB",
-                                )
-                            else:
-                                dpg.set_value(progress_tag, f"Downloading: {downloaded_mb:.2f} MB")
-                            last_report_time = current_time
+                    if progress_callback:
+                        progress_callback(downloaded, total_size)
 
-        if progress_tag:
-            downloaded_mb = downloaded / (1024 * 1024)
-            total_size_mb = total_size / (1024 * 1024)
-            if total_size > 0:
-                dpg.set_value(progress_tag, f"Downloading: {downloaded_mb:.2f}/{total_size_mb:.2f} MB")
-            else:
-                dpg.set_value(progress_tag, f"Downloading: {downloaded_mb:.2f} MB")
-
+        os.replace(tmp_path, target_path)
         return True
     except Exception as e:
-        output.add_text(f"Failed to open {target_path}: {e}", msg_type="error")
+        if log_level is not None:
+            error_key = str(e)
+            if dedupe_set is None or error_key not in dedupe_set:
+                if dedupe_set is not None:
+                    dedupe_set.add(error_key)
+                output.add_text("&fs_download_failed", target_path, e, msg_type=log_level)
         return False
 
 
-def extract_archive(archive_path: str, extract_dir: str = ".", target_file: Optional[str] = None) -> bool:
+def extract_archive(
+    archive_path: str,
+    extract_dir: str = ".",
+    target_file: str | None = None,
+    progress_callback: Callable[[float, str], None] | None = None,
+) -> bool:
     """
     Extracts an archive (zip or tar.gz).
     If target_file is provided, extracts only that file (or directory structure leading to it).
+    progress_callback(fraction, status_text) is invoked with a byte-weighted
+    fraction in [0, 1] as members are extracted, including increments within
+    individual large members, when provided.
     """
 
     try:
         if archive_path.endswith(".zip"):
             with zipfile.ZipFile(archive_path) as zip_ref:
+                extract_dir_abs = os.path.abspath(extract_dir)
+                members = zip_ref.infolist()
                 if target_file:
-                    zip_ref.extract(target_file, path=extract_dir)
-                else:
-                    zip_ref.extractall(extract_dir)
+                    members = [m for m in members if m.filename == target_file]
+                    if not members:
+                        raise KeyError(target_file)
+                total = sum(m.file_size for m in members if not m.is_dir()) or 1
+                done = 0
+                for member in members:
+                    member_path = os.path.abspath(os.path.join(extract_dir_abs, member.filename))
+                    if os.path.commonpath([extract_dir_abs, member_path]) != extract_dir_abs:
+                        continue
+                    if member.is_dir():
+                        os.makedirs(member_path, exist_ok=True)
+                        continue
+                    os.makedirs(os.path.dirname(member_path), exist_ok=True)
+                    with zip_ref.open(member) as src, open(member_path, "wb") as dst:
+                        while True:
+                            chunk = src.read(1024 * 256)
+                            if not chunk:
+                                break
+                            dst.write(chunk)
+                            done += len(chunk)
+                            if progress_callback:
+                                progress_callback(min(1.0, done / total), member.filename)
+                    mode = (member.external_attr >> 16) & 0o777
+                    if mode:
+                        os.chmod(member_path, mode)
         elif archive_path.endswith((".tar.gz", ".tgz")):
             with tarfile.open(archive_path, "r:gz") as tar:
                 extract_dir_abs = os.path.abspath(extract_dir)
@@ -237,15 +275,50 @@ def extract_archive(archive_path: str, extract_dir: str = ".", target_file: Opti
                     else:
                         tar.extractall(path=extract_dir, members=safe_members)
         else:
-            output.add_text(f"Unsupported archive format: {archive_path}", msg_type="error")
+            output.add_text("&fs_unsupported_archive", archive_path, msg_type="error")
             return False
         return True
     except Exception as e:
-        output.add_text(f"Extraction failed: {e}", msg_type="error")
+        output.add_text("&fs_extraction_failed", e, msg_type="error")
         return False
 
 
-def get_file_type(path: str) -> Optional[str]:
+def copy_file(
+    src: str,
+    dst: str,
+    progress_callback: Callable[[float, str], None] | None = None,
+) -> bool:
+    """
+    Copies a single file with optional byte-weighted progress reporting.
+    progress_callback(fraction, status_text) is invoked as chunks are written.
+    """
+    tmp = f"{dst}.tmp.{os.getpid()}.{threading.get_ident()}"
+    try:
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        total = os.path.getsize(src) or 1
+        done = 0
+        with open(src, "rb") as src_file, open(tmp, "wb") as dst_file:
+            while True:
+                chunk = src_file.read(1024 * 256)
+                if not chunk:
+                    break
+                dst_file.write(chunk)
+                done += len(chunk)
+                if progress_callback:
+                    progress_callback(min(1.0, done / total), os.path.basename(dst))
+        os.replace(tmp, dst)
+        return True
+    except Exception as e:
+        output.add_text("&fs_copy_failed", src, e, msg_type="error")
+        try:
+            if os.path.exists(tmp):
+                os.remove(tmp)
+        except OSError:
+            pass
+        return False
+
+
+def get_file_type(path: str) -> str | None:
     """
     Identifies the file type. It first checks magic bytes (e.g., '.png', '.jpg', '.webm'),
     and falls back to extracting the extension from the first dot in the filename if no known magic bytes are found.

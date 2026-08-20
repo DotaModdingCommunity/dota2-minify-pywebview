@@ -1,0 +1,13 @@
+{
+  // ═══════════════════════════════════════════════════════════════════════
+  //  replacer.json — copy one game file over another
+  // ═══════════════════════════════════════════════════════════════════════
+  //  Read with a JSONC parser, so // comments are allowed.
+  //
+  //  Format:  { "<target game path>": "<source game path>" }
+  //    source — extracted from the game pak at patch time
+  //    target — written into the patched pak at that path
+  //
+  //  The example below reuses the "pour" sound for the "click" sound.
+  "sounds/ui/buttonclick.vsnd_c": "sounds/ui/bottle_pour.vsnd_c"
+}

@@ -1,13 +1,14 @@
 import os
 import re
+from typing import Any
 
 from core import base, fs, utils
 
 
-def apply_styles_to_file(item):
+def apply_styles_to_file(item: tuple[str, list[str]]) -> None:
     file_path, styles_to_apply = item
 
-    def remove_braced_block(text, start_pattern):
+    def remove_braced_block(text: str, start_pattern: str) -> str:
         while True:
             match = re.search(start_pattern, text)
             if not match:
@@ -65,9 +66,12 @@ def apply_styles_to_file(item):
         start_pattern = rf"@keyframes\s+(?:'|\")?{re.escape(keyframe_name)}(?:'|\")?"
         content = remove_braced_block(content, start_pattern)
 
+    COLLAPSE_WS_RE = re.compile(r"\s+")
     unique_styles_to_add = []
     for style in styles_to_apply:
-        if style not in content and style not in unique_styles_to_add:
+        normalized_style = COLLAPSE_WS_RE.sub(" ", style).strip()
+        normalized_content = COLLAPSE_WS_RE.sub(" ", content)
+        if normalized_style not in normalized_content and style not in unique_styles_to_add:
             unique_styles_to_add.append(style)
 
     with utils.open_utf8(file_path, "w") as file:
@@ -76,10 +80,29 @@ def apply_styles_to_file(item):
             file.write("\n" + "\n".join(unique_styles_to_add))
 
 
-def parse_styling_file(styling_css, mod_cfg, folder, mod_settings, styling_dictionary, core_extracts, dota_extracts):
+def parse_styling_file(
+    styling_css: str,
+    mod_cfg: dict[str, Any],
+    folder: str,
+    mod_settings: dict[str, Any],
+    styling_dictionary: dict[str, tuple[str, str]],
+    core_extracts: list[str],
+    dota_extracts: list[str],
+) -> None:
     with utils.open_utf8(styling_css) as file:
         content = file.read()
+    parse_styling_content(content, mod_cfg, folder, mod_settings, styling_dictionary, core_extracts, dota_extracts)
 
+
+def parse_styling_content(
+    content: str,
+    mod_cfg: dict[str, Any],
+    folder: str,
+    mod_settings: dict[str, Any],
+    styling_dictionary: dict[str, tuple[str, str]],
+    core_extracts: list[str],
+    dota_extracts: list[str],
+) -> None:
     # Fallback to manifest defaults
     defaults = {
         s["key"]: s["default"]

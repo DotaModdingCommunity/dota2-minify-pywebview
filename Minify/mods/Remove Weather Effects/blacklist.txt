@@ -1,3 +1,7 @@
+# ════════════════════════════════════════════════════════════════════════
+#  blacklist.txt — Removes all weather effects.
+# ════════════════════════════════════════════════════════════════════════
+
 >>particles/rain_fx
 materials/skybox/sky_dota_00.vmat_c
 materials/skybox/sky_dota_001.vmat_c

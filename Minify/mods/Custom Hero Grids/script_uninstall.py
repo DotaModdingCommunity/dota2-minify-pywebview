@@ -54,7 +54,7 @@ def main():
 
     else:
         log.write_warning(
-            f"A valid user ID or path to your steam installation couldn't be found for {mod_name}, manually set it from `minify_config.json` under `modconf` > `{mod_name}` key with `steam_path`"
+            f"A valid user ID or path to your steam installation couldn't be found for {mod_name}, manually set the top-level `steam_id` key in `minify_config.json` to your Steam account ID"
         )
 
 

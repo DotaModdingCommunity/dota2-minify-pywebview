@@ -1,3 +1,12 @@
+/* ══════════════════════════════════════════════════════════════════════════════
+   styling.css — Custom dashboard backgrounds.
+   ══════════════════════════════════════════════════════════════════════════════
+   Path markers must stay on their own single line:
+     "g:" targets a GAME pak style path, "c:" a CORE pak style path.
+   Everything below a marker belongs to that file until the next marker.
+   NOTE: never write the literal marker forms in prose comments inside this
+   file — the parser will mistake them for real markers.
+   ══════════════════════════════════════════════════════════════════════════════ */
 /* g:panorama/styles/dashboard */
 DOTADashboard,
 #DashboardCore,
@@ -21,12 +30,10 @@ DOTADashboard,
 }
 
 /* VIDEO */
-
 /* g:panorama/styles/dashboard_background_last_match */
-#BackgroundMovie
-{
+#BackgroundMovie {
     /* width & height can be removed if the stretch effect isn't desired */
-    width: 100%; 
+    width: 100%;
     height: 100%;
     vertical-align: center;
     horizontal-align: center;
@@ -34,13 +41,11 @@ DOTADashboard,
 }
 
 /* g:panorama/styles/dashboard_background_manager */
-.DashboardBackground
-{
-	visibility: visible;
+.DashboardBackground {
+    visibility: visible;
 }
 
 /* g:panorama/styles/hero_loadout_background_images */
-#HeroLoadoutBackgroundImageContainer
-{
-	visibility: collapse;
+#HeroLoadoutBackgroundImageContainer {
+    visibility: collapse;
 }

@@ -1,5 +1,9 @@
-materials/blends/dire_lava_tint_00.vmat_c
+# ════════════════════════════════════════════════════════════════════════
+#  blacklist.txt — Removes the river, its walking sounds and splash particles.
+# ════════════════════════════════════════════════════════════════════════
+
 materials/blends/dire_lava.vmat_c
+materials/blends/dire_lava_tint_00.vmat_c
 materials/models/effects/fountain_dire_01.vmat_c
 materials/models/effects/fountain_radiant_00.vmat_c
 materials/models/effects/fountain_waterfall_00.vmat_c

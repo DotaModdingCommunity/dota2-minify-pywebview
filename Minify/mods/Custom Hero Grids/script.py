@@ -19,43 +19,68 @@ from core import base, config, log, output, steam
 
 IMPORT_SUFFIX = " #Minify-Import"
 REMOTE_URL = "https://github.com/Egezenn/dota2-precompiled-grids/releases/latest/download/hero_grid_config.json"
+RELEASE_API = "https://api.github.com/repos/Egezenn/dota2-precompiled-grids/releases/latest"
+
+
+def _latest_release_tag():
+    try:
+        response = requests.get(RELEASE_API, timeout=10)
+        if response.status_code == 200:
+            return response.json().get("tag_name")
+    except Exception as e:
+        log.write_warning(f"Connection error while checking for grid updates: {e}")
+    return None
 
 
 def main():
     steam_id_config = config.get("steam_id", "")
 
     userdata_path = os.path.join(steam.ROOT, "userdata")
-    found = False
+    dest_path = None
     new_grid_data = None
-
     if steam_id_config and os.path.exists(userdata_path):
-        id_to_use_path = os.path.join(userdata_path, str(steam_id_config))
-        dest_path = os.path.join(id_to_use_path, base.STEAM_DOTA_ID, "remote", "cfg")
-        if os.path.exists(dest_path):
-            found = True
+        dest_path = os.path.join(
+            os.path.join(userdata_path, str(steam_id_config)),
+            base.STEAM_DOTA_ID,
+            "remote",
+            "cfg",
+        )
 
-    if not found:
+    if not dest_path or not os.path.exists(dest_path):
         log.write_warning(
-            f"A valid user ID or path to your steam installation couldn't be found for {mod_name}, manually set it from `minify_config.json` under `modconf` > `{mod_name}` key with `steam_path`"
+            f"A valid user ID or path to your steam installation couldn't be found for {mod_name}, manually set the top-level `steam_id` key in `minify_config.json` to your Steam account ID"
         )
         return
 
     # Check for local config first
-    local_config_path = os.path.join(current_dir, "config", "hero_grid_config.json")
+    local_config_path = os.path.join(base.config_dir, "hero_grid_config.json")
     if os.path.exists(local_config_path):
         new_grid_data = config.read_json_file(local_config_path)
     else:
+        tag = _latest_release_tag()
+        if tag is None:
+            output.add_text("&connection_error", msg_type="warning")
+            return
+
+        stored = config.get_mod_config(mod_name).get("release_tag")
+        if tag == stored:
+            output.add_text(f"Hero grids are up to date ({tag}).", msg_type="success")
+            return
+
         # Fetch from remote
         try:
             response = requests.get(REMOTE_URL, timeout=10)
             if response.status_code == 200:
                 new_grid_data = response.json()
+                mod_config = config.get_mod_config(mod_name)
+                mod_config["release_tag"] = tag
+                config.save_mod_config(mod_name, mod_config)
             else:
                 log.write_warning(f"Couldn't fetch grids from {REMOTE_URL}. Status: {response.status_code}")
-                output.add_text("&connection_error", msg_type="error")
+                output.add_text("&connection_error", msg_type="warning")
         except Exception as e:
             log.write_warning(f"Failed to fetch remote grids: {e}")
-            output.add_text("&connection_error", msg_type="error")
+            output.add_text("&connection_error", msg_type="warning")
 
     if new_grid_data and "configs" in new_grid_data:
         original_grid_path = os.path.join(dest_path, "hero_grid_config.json")

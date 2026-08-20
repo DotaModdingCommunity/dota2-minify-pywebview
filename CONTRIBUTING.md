@@ -19,10 +19,26 @@ Thank you for your interest in contributing! Whether you're fixing a bug, sugges
    This project uses `uv` for dependency management.
 
    ```shell
-   uv run Minify
+   uv sync
    ```
 
-   *Note: This will automatically handle the environment and dependencies.*
+3. **Build the frontend** (required once before running the GUI):
+
+   ```shell
+   cd Minify/ui/web
+   npm ci
+   npm run build
+   cd ../..
+   ```
+
+4. **Run**:
+
+   ```shell
+   uv run python -m Minify
+   ```
+
+   *Note: `uv run` handles the environment and dependencies for you. The CLI
+   works the same way — `uv run python -m Minify patch --help`.*
 
 ## Development Workflow
 
@@ -50,7 +66,7 @@ Other handy tasks available via `Tasks: Run Task` include:
 - **Clean**: Clears out build directories (`build/`, `dist/`).
 - **Launch Setup / Installed App**: Quickly test the generated installer or the installed application.
 
-Debugger configurations are also available in `.vscode/launch.json`. However, the overhead of a debugger is rarely worth it; you can typically achieve the same results much faster through rapid iteration—simply run the application and fix errors as they appear in the terminal or `Minify/logs`. For testing logic without a GUI, you can use the CLI mode: `uv run minify --help`.
+Debugger configurations are also available in `.vscode/launch.json`. However, the overhead of a debugger is rarely worth it; you can typically achieve the same results much faster through rapid iteration—simply run the application and fix errors as they appear in the terminal or `Minify/logs`. For testing logic without a GUI, you can use the CLI mode: `uv run python -m Minify patch --help`.
 
 ## Mod Development
 
@@ -62,13 +78,25 @@ If you are contributing new mods or features to existing ones:
 
 ## Translations
 
-We use **Weblate** for community translations. To make this work with our single `localization.json` structure, we use a helper script:
+We use **Weblate** for community translations. Translations are pushed to the `weblate-main` branch, and the localization tooling lives in `scripts/`:
 
 1. **Translating**: Contribute via our Weblate instance (linked on the website).
-2. **Syncing**: If you are a maintainer merging new translations:
-    - Weblate will push individual JSON files to `scripts/weblate/`.
-    - Run `uv run scripts/localization_manager.py merge` to update the main `Minify/bin/localization.json`.
-    - Commit the updated `localization.json`.
+2. **Syncing** (maintainers):
+   - After Weblate pushes new translations to `weblate-main`, fetch it:
+     ```shell
+     git fetch upstream weblate-main
+     ```
+   - Split the main `Minify/bin/localization.json` into per-language files:
+     ```shell
+     uv run scripts/localization_manager.py split
+     ```
+   - Merge translated files back into `Minify/bin/localization.json` and mod `notes.md`:
+     ```shell
+     uv run scripts/localization_manager.py merge
+     ```
+   - Commit the updated `localization.json` and mod notes.
+
+   Note: only the trusted languages (`EN`, `RU`, `TR`) are exported to Weblate; other languages stay machine-translated inside `localization.json`.
 
 ## Pull Request Process
 

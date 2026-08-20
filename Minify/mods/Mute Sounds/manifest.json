@@ -1,0 +1,11 @@
+{
+  // Mute Sounds — blanks sound files. Each checkbox gates a matching
+  // "@key:<name>" block in this folder's blacklist.txt.
+  "settings": [
+    { "key": "mute_ambient", "text": "Mute Ambient Sounds", "type": "checkbox", "default": true },
+    { "key": "mute_announcer", "text": "Mute Default Announcer Lines", "type": "checkbox", "default": true },
+    { "key": "mute_killstreak", "text": "Mute Default Killstreak Lines", "type": "checkbox", "default": true },
+    { "key": "mute_taunts", "text": "Mute Taunt Sounds", "type": "checkbox", "default": true },
+    { "key": "mute_voice_lines", "text": "Mute Voice Line Sounds", "type": "checkbox", "default": true }
+  ]
+}

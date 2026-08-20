@@ -1,21 +1,9 @@
-import os
-import sys
+"""script_initial.py — legacy DearPyGui hook.
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-minify_root = os.path.abspath(os.path.join(current_dir, os.pardir, os.pardir))
-if os.getcwd() != minify_root:
-    os.chdir(minify_root)
-
-if minify_root not in sys.path:
-    sys.path.insert(0, minify_root)
-
-# isort: split
-
-from core import base
-import conditions
-import dearpygui.dearpygui as dpg
+No-op in the pywebview UI: mod state is managed via manifest.json + config,
+so the old DPG checkbox toggle this file performed is no longer needed.
+"""
 
 
 def main():
-    if not conditions.workshop_installed and not base.HEADLESS:
-        dpg.configure_item(os.path.basename(current_dir), enabled=True)
+    pass

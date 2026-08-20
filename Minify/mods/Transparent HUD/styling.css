@@ -1,3 +1,12 @@
+/* ══════════════════════════════════════════════════════════════════════════════
+   styling.css — Makes HUD panels transparent.
+   ══════════════════════════════════════════════════════════════════════════════
+   Path markers must stay on their own single line:
+     "g:" targets a GAME pak style path, "c:" a CORE pak style path.
+   Everything below a marker belongs to that file until the next marker.
+   NOTE: never write the literal marker forms in prose comments inside this
+   file — the parser will mistake them for real markers.
+   ══════════════════════════════════════════════════════════════════════════════ */
 /* g:panorama/styles/hud/dota_hud_ability_panel */
 .Reborn #AbilityBevel,
 #InvokerSpellCardButton,
@@ -52,7 +61,6 @@ DOTAHeroStatue.Visible {
 }
 
 /* ----------------------------------------------------- */
-
 /* g:panorama/styles/dota_hud_tormentor_timer */
 DOTATormentorTimer {
     background-image: none;
@@ -127,7 +135,6 @@ DOTAItemImage.Reborn #ButtonWell {
 }
 
 /* ----------------------------------------------------- */
-
 /* g:panorama/styles/dota_hud_netgraph */
 DOTANetGraph {
     background-color: none;
@@ -184,7 +191,6 @@ DOTAScoreboardPlayer {
 }
 
 /* ----------------------------------------------------- */
-
 /* g:panorama/styles/dota_hud_radar_button */
 #ChargeCount {
     box-shadow: fill #00000000 0px 0px 0px 0px;
@@ -203,14 +209,14 @@ DOTAScoreboardPlayer {
 
 /* g:panorama/styles/dota_hud_netgraph */
 #LeftColumn Label {
-    color: #FFFFFF;
+    color: #ffffff;
     letter-spacing: 1px;
     font-size: 10px;
 }
 
 #RightColumn_1 Label,
 #RightColumn_2 Label {
-    color: #FFFFFF;
+    color: #ffffff;
 }
 
 /* g:panorama/styles/hud/dota_hud_ability_panel */
@@ -236,7 +242,7 @@ DOTAScoreboardPlayer {
 
 .Reborn #center_block .InventoryItem.BackpackSlot,
 #ButtonSize {
-    box-shadow: inset #000000AA 0px 0px 0px 0px;
+    box-shadow: inset #000000aa 0px 0px 0px 0px;
 }
 
 /* g:panorama/styles/hud/dota_hud_health_mana */
@@ -245,12 +251,28 @@ DOTAScoreboardPlayer {
 }
 
 .Reborn #HealthProgress .ProgressBarRight {
-    background-color: gradient(linear, 0% 0%, 0% 100%, from(#212121), color-stop(0.2, #2e2e2e), color-stop(.5, #2e2e2e), to(#212121));
+    background-color: gradient(
+        linear,
+        0% 0%,
+        0% 100%,
+        from(#212121),
+        color-stop(0.2, #2e2e2e),
+        color-stop(0.5, #2e2e2e),
+        to(#212121)
+    );
     background-color-opacity: 0.5;
 }
 
 .Reborn #ManaProgress .ProgressBarRight {
-    background-color: gradient(linear, 0% 0%, 0% 100%, from(#212121), color-stop(0.2, #2e2e2e), color-stop(.5, #2e2e2e), to(#212121));
+    background-color: gradient(
+        linear,
+        0% 0%,
+        0% 100%,
+        from(#212121),
+        color-stop(0.2, #2e2e2e),
+        color-stop(0.5, #2e2e2e),
+        to(#212121)
+    );
     background-color-opacity: 0.5;
 }
 
@@ -361,16 +383,16 @@ DOTAScoreboardPlayer.LocalPlayer {
 
 .BranchChoice .StatBonusLabel,
 .StatBonusDescription {
-    color: #FFFFFF;
+    color: #ffffff;
 }
 
 .BranchChoice.Disabled .StatBonusLabel,
 .StatBonusDescription {
-    color: #AAAAAA;
+    color: #aaaaaa;
 }
 
 .BranchDescription {
-    background-color: #000000A0;
+    background-color: #000000a0;
 }
 
 .LevelBG,
@@ -381,7 +403,7 @@ DOTAScoreboardPlayer.LocalPlayer {
 
 .StatBranchCenter {
     background-image: none;
-    background-color: #000000D8;
+    background-color: #000000d8;
 }
 
 #UpgradeStat,
@@ -394,7 +416,7 @@ DOTAStatBranch:not(.ShowStatBranchAsTooltip) .BranchPair.BranchActive.RightBranc
 DOTAStatBranch:not(.ShowStatBranchAsTooltip) .BranchPair.LeftBranchActive:not(.RightBranchActive),
 DOTAStatBranch:not(.ShowStatBranchAsTooltip) .BranchPair.RightBranchActive:not(.LeftBranchActive) {
     background-image: none;
-    background-color: #40251EC0;
+    background-color: #40251ec0;
 }
 
 /* g:panorama/styles/hud/dota_hud_top_bar */
@@ -462,18 +484,18 @@ DOTATopBarPlayer #HeroBadgeOverlay {
 /* g:panorama/styles/popups/popup_settings_reborn */
 .SettingsContainer,
 #SettingsNavigationContainer {
-    background-color: #000000D8;
+    background-color: #000000d8;
 }
 
 /* c:panorama/styles/tooltips/tooltip_base */
 #Contents {
-    background-color: #000000D8;
+    background-color: #000000d8;
     border: 0;
 }
 
 /* g:panorama/styles/tooltips/tooltip_ability */
 #Contents.AbilityContents {
-    background-color: #000000D8;
+    background-color: #000000d8;
 }
 
 #stats_container_bg {
@@ -483,7 +505,7 @@ DOTATopBarPlayer #HeroBadgeOverlay {
 /* g:panorama/styles/tooltips/tooltip_innate */
 .FacetContainer,
 .InnateContainer {
-    background-color: #000000D8;
+    background-color: #000000d8;
 }
 
 DOTAFacetDetails#FacetDetails {
@@ -492,22 +514,22 @@ DOTAFacetDetails#FacetDetails {
 
 /* g:panorama/styles/tooltips/tooltip_radar */
 DOTATooltipRadar #Contents {
-    background-color: #000000D8;
+    background-color: #000000d8;
 }
 
 /* g:panorama/styles/hud/tooltip_glyph */
 DOTATooltipGlyph #Contents {
-    background-color: #000000D8;
+    background-color: #000000d8;
 }
 
 /* g:panorama/styles/tooltips/tooltip_roshantimer */
 #Contents.RoshanTimerContents {
-    background-color: #000000D8;
+    background-color: #000000d8;
 }
 
 /* g:panorama/styles/hud/tooltip_unit_damage_armor */
 DOTATooltipUnitDamageArmor #Contents {
-    background-color: #000000D8;
+    background-color: #000000d8;
 }
 
 #AttackContainer,
@@ -520,18 +542,18 @@ DOTATooltipUnitDamageArmor #Contents {
 #TopSection,
 #AghsTooltipConnecter,
 #BottomSection {
-    background-color: #000000D8;
+    background-color: #000000d8;
     background-image: none;
 }
 
 /* g:panorama/styles/tooltips/tooltip_neutral_crafting */
 #Contents {
-    background-color: #000000D8;
+    background-color: #000000d8;
 }
 
 /* g:panorama/styles/hud/tooltip_gold */
 DOTATooltipGold #Contents {
-    background-color: #000000D8;
+    background-color: #000000d8;
 }
 
 /* g:panorama/styles/hud/dota_hud_scoreboard */
@@ -539,7 +561,7 @@ DOTATooltipGold #Contents {
 .SharedUnitControl#SharedUnitControl,
 DOTASharedContent#SharedContent,
 #ScoreboardCoaches {
-    background-color: #000000D8;
+    background-color: #000000d8;
     background-image: none;
     box-shadow: none;
 }

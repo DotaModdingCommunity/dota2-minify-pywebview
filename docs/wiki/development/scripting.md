@@ -3,11 +3,11 @@
 Extensive symbol dump that lists docstrings, source codes is available [here](/development/symbols/).
 
 > [!NOTE]
-> The API might change, however with 1.13.1's base, you'll have compatibility until the next major release.
+> The API can change between major versions. Scripts written for 2.0 should stay compatible until the next major release.
 >
 > Not all variables are dumped in the symbol index; only [core.base](/development/symbols/core.base) and [core.constants](/development/symbols/core.constants) include them to keep the documentation focused.
 
-Following are necesities for modders, briefly explained:
+Following are necessities for modders, briefly explained:
 
 ### `script.py` template
 
@@ -52,30 +52,25 @@ if __name__ == "__main__":
 When writing scripts, you often need to handle platform differences or check for app compatibility. The [Minify/core/base.py](/development/symbols/core.base) module provides several pre-calculated variables for this:
 
 - **[`VERSION`](/development/symbols/core.base#version)**: The current Minify version string. Use it for compatibility checks.
-- **[`OS`](/development/symbols/core.base#os)**: The current operating system name.
-- **[`WIN`](/development/symbols/core.base#win)**, **[`LINUX`](/development/symbols/core.base#linux)**, **[`MAC`](/development/symbols/core.base#mac)**: Constants for comparison.
-  - `base.WIN` is `"Windows"`
-  - `base.LINUX` is `"Linux"`
-  - `base.MAC` is `"Darwin"`
+- **[`OS`](/development/symbols/core.base#os)**: The current operating system name (`Windows`, `Linux` or `Darwin`).
+- **[`is_win`](/development/symbols/core.base#is_win)**, **[`is_linux`](/development/symbols/core.base#is_linux)**, **[`is_mac`](/development/symbols/core.base#is_mac)**: Booleans for the current platform — the easy way to branch per-OS.
 - **[`MACHINE`](/development/symbols/core.base#machine)**: The hardware architecture (e.g., `x86_64`, `arm64`).
 - **[`ARCHITECTURE`](/development/symbols/core.base#architecture)**: Either `64bit` or `32bit`.
 
-#### Example: Platform & Version checks
+#### Example: Platform checks
 
 ```python
-from core import base, utils
-
-# Compatibility check (Robust comparison)
-if not utils.is_version_at_least(base.VERSION, "1.13.1"):
-    print("This script requires Minify 1.13.1 or newer.")
-    return
+from core import base
 
 # Platform-specific logic
-if base.OS == base.WIN:
+if base.is_win:
     # Windows specific code
     pass
-elif base.OS == base.LINUX:
+elif base.is_linux:
     # Linux specific code
+    pass
+elif base.is_mac:
+    # macOS specific code
     pass
 
 # Handling ARM devices
@@ -91,15 +86,17 @@ You can find the standard directories and executable paths in [Minify/core/base.
 - **[`mods_dir`](/development/symbols/core.base#mods_dir)**: The root directory where all mods are stored (`mods`).
 - **[`config_dir`](/development/symbols/core.base#config_dir)**: Where configuration files and mod-specific assets are kept (`config`).
 
+Both are relative to the app root, which is the working directory when Minify runs your script.
+
 #### Example: Common Paths
 
 ```python
 from core import base
 
-# Accessing the mods directory
-mods_path = os.path.join(base.minify_root, base.mods_dir)
+# Mod scripts run with the app root as the working directory
+mods_path = os.path.join(os.getcwd(), base.mods_dir)
 
-# Checking if a specific tool exists
+# Checking if a specific file exists
 mod_file = os.path.join(base.config_dir, "file_needed_for_my_mod")
 ```
 
@@ -109,8 +106,8 @@ The [Minify/core/config.py](/development/symbols/core.config) module provides ea
 
 - **[`get(key, default_value)`](/development/symbols/core.config#getkey-default_value)**: Retrieve a value from the main config. If it doesn't exist, it is created with the `default_value`.
 - **[`set(key, value)`](/development/symbols/core.config#setkey-value)**: Update a value in the main config.
-- **[`get_mod(mod_name, default)`](/development/symbols/core.config#get_modmod_name-default)**: Get the configuration dictionary for a specific mod.
-- **[`set_mod(mod_name, config_data)`](/development/symbols/core.config#set_modmod_name-config_data)**: Save configuration data for a specific mod.
+- **[`get_mod_config(mod_name)`](/development/symbols/core.config#get_mod_configmod_name)**: Get the runtime configuration for a specific mod (persisted per-mod in `config/<mod_name> config.json`).
+- **[`save_mod_config(mod_name, data)`](/development/symbols/core.config#save_mod_configmod_name-data)**: Save the configuration data for a specific mod.
 
 #### Example: Configuration Management
 
@@ -124,24 +121,23 @@ is_debug = config.get("debug_env", False)
 config.set("my_mod_last_run", "2024-04-13")
 
 # Access mod-specific settings
-my_config = config.get_mod("my_mod_name")
+my_config = config.get_mod_config("my_mod_name")
 my_config["enabled"] = True
-config.set_mod("my_mod_name", my_config)
+config.save_mod_config("my_mod_name", my_config)
 ```
 
 ### Dota 2 Environment Paths
 
-The [Minify/core/constants.py](/development/symbols/core.constants) module contains absolute paths to critical Dota 2 and Minify directories, resolved using the user's Steam library:
+The [Minify/core/constants.py](/development/symbols/core.constants) module exposes absolute paths to critical Dota 2 and Minify directories, resolved using the user's Steam library. All path globals are populated by **[`init_paths()`](/development/symbols/core.constants#init_paths)**, which runs once at import and is re-invoked to refresh paths (e.g. after Workshop Tools extraction):
 
-- **[`minify_dota_compile_input_path`](/development/symbols/core.constants#minify_dota_compile_input_path)**: The source directory for mod compilation (Addons content).
-- **[`minify_dota_compile_output_path`](/development/symbols/core.constants#minify_dota_compile_output_path)**: The destination directory for compiled assets (Addons game).
-- **[`minify_dota_tools_required_path`](/development/symbols/core.constants#minify_dota_tools_required_path)**: Path required for Dota 2 Workshop Tools interaction.
-- **[`minify_default_dota_pak_output_path`](/development/symbols/core.constants#minify_default_dota_pak_output_path)**: Default location where Minify exports patched VPKs.
-- **[`dota2_executable`](/development/symbols/core.constants#dota2_executable)**: Path to the `dota2.exe` (or platform equivalent).
-- **[`dota2_tools_executable`](/development/symbols/core.constants#dota2_tools_executable)**: Path to the Dota 2 configuration/tools launcher.
-- **[`dota_game_pak_path`](/development/symbols/core.constants#dota_game_pak_path)**: Path to the main `pak01_dir.vpk`.
-- **[`dota_core_pak_path`](/development/symbols/core.constants#dota_core_pak_path)**: Path to the core engine `pak01_dir.vpk`.
-- **[`dota_resource_compiler_path`](/development/symbols/core.constants#dota_resource_compiler_path)**: Path to the `resourcecompiler.exe`.
+- **`minify_dota_compile_input_path`**: The source directory for mod compilation (Addons content).
+- **`minify_dota_compile_output_path`**: The destination directory for compiled assets (Addons game).
+- **`minify_dota_tools_required_path`**: Path required for Dota 2 Workshop Tools interaction.
+- **`minify_default_dota_pak_output_path`**: Default location where Minify exports patched VPKs.
+- **`dota2_tools_executable`**: Path to the Dota 2 configuration/tools launcher.
+- **`dota_game_pak_path`**: Path to the main `pak01_dir.vpk`.
+- **`dota_core_pak_path`**: Path to the core engine `pak01_dir.vpk`.
+- **`dota_resource_compiler_path`**: Path to the `resourcecompiler.exe`.
 
 ### Steam Integration
 
@@ -165,8 +161,8 @@ Miscellaneous utilities to help with common script tasks:
 - **[`move_path(src, dst)`](/development/symbols/core.fs#move_pathsrc-dst)**: Safely move or rename a file or directory, handling permissions automatically.
 - **[`remove_path(*paths)`](/development/symbols/core.fs#remove_path)**: Recursively delete files or directories, handling permissions and skipping missing paths.
 - **[`create_dirs(*paths)`](/development/symbols/core.fs#create_dirspaths)**: Recursively creates directories (like `mkdir -p`).
-- **[`download_file(url, target_path, progress_tag)`](/development/symbols/core.fs#download_fileurl-target_path-progress_tag)**: Downloads a file from a URL. If a `progress_tag` is provided, it updates the UI with the download status.
-- **[`extract_archive(archive_path, extract_dir, target_file)`](/development/symbols/core.fs#extract_archivearchive_path-extract_dir-target_file)**: Extracts a `.zip` or `.tar.gz` archive. Can optionally extract a single `target_file`.
+- **[`download_file(url, target_path, progress_callback=None, log_level="error", dedupe_set=None)`](/development/symbols/core.fs#download_fileurl-target_path-progress_callback)**: Downloads a file from a URL. If a `progress_callback` is provided, it reports download progress to the UI.
+- **[`extract_archive(archive_path, extract_dir=".", target_file=None, progress_callback=None)`](/development/symbols/core.fs#extract_archivearchive_path-extract_dir-target_file-progress_callback)**: Extracts a `.zip` or `.tar.gz` archive. Can optionally extract a single `target_file`.
 - **[`get_file_type(path)`](/development/symbols/core.fs#get_file_typepath)**: Identifies the file type. It first checks magic bytes (e.g., `.png`, `.jpg`, `.webm`), and falls back to extracting the extension from the first dot in the filename if no known magic bytes are found.
 
 ### Logging
@@ -199,35 +195,37 @@ with utils.try_pass():
 
 The [Minify/helper.py](/development/symbols/helper) module tracks the current session's state:
 
-- **[`output_path`](/development/symbols/helper#output_path)**: The absolute path where the main VPK will be exported. It tracks the final destination and is dynamically set based on user's settings.
+- **[`get_output_path()`](/development/symbols/helper#get_output_path)**: The absolute path where the main VPK will be exported. It tracks the final destination and is dynamically set based on user's settings.
 
 #### Example: Checking Output Path
 
 ```python
 import helper
 
-print(f"VPKs will be saved to: {helper.output_path}")
+print(f"VPKs will be saved to: {helper.get_output_path()}")
 ```
 
 ### Dota 2 Asset Compilation
 
 The [Minify/helper.py](/development/symbols/helper) module includes tools for compiling raw assets for the Source 2 engine:
 
-- **[`compile_assets(input_path, ...)`](/development/symbols/helper#compile_assetsinput_path-output_path-pak_path-sender-app_data-user_data)**: A wrapper for the Dota 2 Resource Compiler. It automatically handles image compilation, creates necessary XML references, and can optionally package the result into a `.vpk`.
+- **[`compile_assets(input_path, output_path, pak_path)`](/development/symbols/helper#compile_assetsinput_path-output_path-pak_path)**: A wrapper for the Dota 2 Resource Compiler. It automatically handles image compilation, creates necessary XML references, and can optionally package the result into a `.vpk`.
 
-### Terminal UI
+### Logging & User Feedback
 
-Interact with the application's built-in terminal window from your scripts:
+Interact with the application's messaging/logging system from your scripts:
 
-- **[`add_text(text_or_id, *args, msg_type)`](/development/symbols/ui.terminal#add_texttext_or_id-args-msg_type-kwargs)**: (from `ui.terminal`) Adds a line of text to the terminal. If the string starts with `&`, it will be localized. `msg_type` can be `"error"`, `"warning"`, or `"success"`.
-- **[`add_seperator()`](/development/symbols/ui.terminal#add_seperator)**: Adds a horizontal separator line to the terminal.
-- **[`clean()`](/development/symbols/ui.terminal#clean)**: Clears all history and text from the terminal window.
+- **[`add_text(text_or_id, *args, msg_type)`](/development/symbols/core.output#add_texttext_or_id-args-msg_type-kwargs)**: (from `core.output`) Adds a line of text to the terminal. If the string starts with `&`, it will be localized. `msg_type` can be `"error"`, `"warning"`, `"success"`, `"section"`, or `"detail"`. `section` renders the line as a bold step header, `detail` renders it dimmed and is meant for sub-lines of a preceding message (e.g. tracebacks).
+- **[`add_section(text_or_id, *args)`](/development/symbols/core.output#add_sectiontext_or_id-args)**: (from `core.output`) Adds a bold step header line (same as `add_text` with `msg_type="section"`).
+- **[`add_detail(text_or_id, *args)`](/development/symbols/core.output#add_detailtext_or_id-args)**: (from `core.output`) Adds a dimmed sub-line (same as `add_text` with `msg_type="detail"`).
+- **[`add_separator()`](/development/symbols/core.output#add_separator)**: Adds a horizontal separator line to the terminal.
+- **[`clean()`](/development/symbols/core.output#clean)**: Clears all history and text from the terminal window.
 
 #### Example: Compiling and Logging
 
 ```python
 import helper
-from ui import terminal
+from core import output
 
 # Compile a folder of raw UI assets into a VPK
 helper.compile_assets(
@@ -236,8 +234,8 @@ helper.compile_assets(
 )
 
 # Log the result to the UI
-terminal.add_text("Compilation finished!", msg_type="success")
-terminal.add_seperator()
+output.add_text("Compilation finished!", msg_type="success")
+output.add_separator()
 ```
 
 #### Example: File Operations

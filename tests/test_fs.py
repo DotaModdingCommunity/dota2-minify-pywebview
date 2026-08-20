@@ -101,7 +101,7 @@ def test_move_path_success(tmp_path):
 def test_move_path_file_not_found(capsys):
     fs.move_path("non_existent_src", "dst")
     captured = capsys.readouterr()
-    assert "Skipped move of: non_existent_src (not found)" in captured.out
+    assert "&fs_skip_move_not_found" in captured.out
 
 
 @patch("shutil.move")
@@ -133,10 +133,39 @@ def test_remove_path_success(tmp_path):
     assert not dir_path.exists()
 
 
-def test_remove_path_file_not_found(capsys):
+def test_remove_path_file_not_found_silent(capsys):
+    from ui import localization
+
+    localization.load_headless("EN")
     fs.remove_path("non_existent")
     captured = capsys.readouterr()
+    assert "Skipped deletion of" not in captured.out
+
+
+def test_remove_path_file_not_found_warns_when_explicit(capsys):
+    from ui import localization
+
+    localization.load_headless("EN")
+    fs.remove_path("non_existent", if_exists=False)
+    captured = capsys.readouterr()
     assert "Skipped deletion of: non_existent" in captured.out
+
+
+def test_remove_path_if_exists_silent(capsys, tmp_path):
+    from ui import localization
+
+    localization.load_headless("EN")
+    file_path = tmp_path / "test.txt"
+    file_path.write_text("content")
+    dir_path = tmp_path / "test_dir"
+    dir_path.mkdir()
+
+    fs.remove_path("non_existent", str(file_path), str(dir_path), if_exists=True)
+
+    assert not file_path.exists()
+    assert not dir_path.exists()
+    captured = capsys.readouterr()
+    assert "Skipped deletion of" not in captured.out
 
 
 @patch("shutil.rmtree")
@@ -158,30 +187,30 @@ def test_remove_path_permission_error_fallback(mock_chmod, mock_remove, mock_rmt
 
 
 @patch("requests.get")
-@patch("dearpygui.dearpygui.set_value")
-def test_download_file_success(mock_set_value, mock_get, tmp_path):
+@patch("core.output.add_text")
+def test_download_file_success(mock_add_text, mock_get, tmp_path):
     target = tmp_path / "downloaded.txt"
 
     class MockResponse:
         def __init__(self):
-            self.headers = {"content-length": "2048"}
+            self.headers = {"content-length": str(2 * 1024 * 1024)}
 
         def raise_for_status(self):
             pass
 
         def iter_content(self, chunk_size):
-            yield b"a" * 1024
-            yield b"b" * 1024
+            yield b"a" * (1024 * 1024)
+            yield b"b" * (1024 * 1024)
 
     mock_get.return_value = MockResponse()
 
-    result = fs.download_file("http://example.com/file", str(target), progress_tag="prog")
+    result = fs.download_file("http://example.com/file", str(target))
 
     assert result is True
     assert target.exists()
-    assert target.read_bytes() == (b"a" * 1024 + b"b" * 1024)
-    # Check that progress was updated
-    assert mock_set_value.call_count > 0
+    assert target.read_bytes() == (b"a" * (1024 * 1024) + b"b" * (1024 * 1024))
+    # No per-chunk terminal progress spam while downloading
+    mock_add_text.assert_not_called()
 
 
 @patch("requests.get")
@@ -195,8 +224,46 @@ def test_download_file_exception(mock_add_text, mock_get, tmp_path):
     assert result is False
     assert not target.exists()
     mock_add_text.assert_called_once()
-    assert "Failed to open" in mock_add_text.call_args[0][0]
-    assert "Network error" in mock_add_text.call_args[0][0]
+    assert mock_add_text.call_args[0][0] == "&fs_download_failed"
+    assert "Network error" in str(mock_add_text.call_args[0][2])
+
+
+@patch("requests.get")
+@patch("core.fs.output.add_text")
+def test_download_file_exception_custom_log_level(mock_add_text, mock_get, tmp_path):
+    target = tmp_path / "failed_download.txt"
+    mock_get.side_effect = Exception("Network error")
+
+    result = fs.download_file("http://example.com/fail", str(target), log_level="warning")
+
+    assert result is False
+    mock_add_text.assert_called_once()
+    assert mock_add_text.call_args.kwargs.get("msg_type") == "warning"
+
+
+@patch("requests.get")
+@patch("core.fs.output.add_text")
+def test_download_file_exception_silent(mock_add_text, mock_get, tmp_path):
+    target = tmp_path / "failed_download.txt"
+    mock_get.side_effect = Exception("Network error")
+
+    result = fs.download_file("http://example.com/fail", str(target), log_level=None)
+
+    assert result is False
+    mock_add_text.assert_not_called()
+
+
+@patch("requests.get")
+@patch("core.fs.output.add_text")
+def test_download_file_exception_dedupes_unique_errors(mock_add_text, mock_get, tmp_path):
+    target = tmp_path / "failed_download.txt"
+    mock_get.side_effect = Exception("Network error")
+    seen: set = set()
+
+    assert fs.download_file("http://example.com/fail", str(target), log_level="warning", dedupe_set=seen) is False
+    assert fs.download_file("http://example.com/fail", str(target), log_level="warning", dedupe_set=seen) is False
+
+    mock_add_text.assert_called_once()
 
 
 import tarfile
@@ -231,6 +298,56 @@ def test_extract_archive_zip_target(tmp_path):
     assert result is True
     assert not (extract_dir / "file1.txt").exists()
     assert (extract_dir / "file2.txt").read_text() == "content2"
+
+
+def test_extract_archive_zip_progress_callback(tmp_path):
+    zip_path = tmp_path / "prog.zip"
+    extract_dir = tmp_path / "extract_prog"
+
+    with zipfile.ZipFile(zip_path, "w") as zf:
+        zf.writestr("a.txt", "a" * 1000)
+        zf.writestr("b.txt", "b" * 2000)
+        zf.writestr("dir/c.txt", "c" * 3000)
+
+    calls: list[tuple[float, str]] = []
+    result = fs.extract_archive(
+        str(zip_path), extract_dir=str(extract_dir), progress_callback=lambda f, s: calls.append((f, s))
+    )
+
+    assert result is True
+    assert len(calls) == 3
+    assert [name for _, name in calls] == ["a.txt", "b.txt", "dir/c.txt"]
+    assert all(f >= 0.0 for f, _ in calls)
+    assert all(calls[i][0] <= calls[i + 1][0] for i in range(len(calls) - 1))
+    assert calls[-1][0] == 1.0
+    assert (extract_dir / "a.txt").read_text() == "a" * 1000
+    assert (extract_dir / "dir/c.txt").read_text() == "c" * 3000
+
+
+def test_copy_file_progress(tmp_path):
+    src = tmp_path / "src.vpk"
+    dst = tmp_path / "nested" / "dst.vpk"
+    src.write_bytes(b"x" * (1024 * 1024 + 100))
+
+    calls: list[tuple[float, str]] = []
+    result = fs.copy_file(str(src), str(dst), progress_callback=lambda f, s: calls.append((f, s)))
+
+    assert result is True
+    assert dst.read_bytes() == b"x" * (1024 * 1024 + 100)
+    assert len(calls) > 1
+    assert calls[-1][0] == 1.0
+    assert calls[0][0] < calls[-1][0]
+
+
+def test_copy_file_no_callback(tmp_path):
+    src = tmp_path / "src.vpk"
+    dst = tmp_path / "dst.vpk"
+    src.write_bytes(b"y" * 1000)
+
+    result = fs.copy_file(str(src), str(dst))
+
+    assert result is True
+    assert dst.read_bytes() == b"y" * 1000
 
 
 def test_extract_archive_tar_all(tmp_path):
@@ -276,7 +393,7 @@ def test_extract_archive_unsupported(mock_add_text, tmp_path):
 
     assert result is False
     mock_add_text.assert_called_once()
-    assert "Unsupported archive format" in mock_add_text.call_args[0][0]
+    assert mock_add_text.call_args[0][0] == "&fs_unsupported_archive"
 
 
 @patch("core.fs.output.add_text")
@@ -287,11 +404,11 @@ def test_extract_archive_exception(mock_add_text, tmp_path):
 
     assert result is False
     mock_add_text.assert_called_once()
-    assert "Extraction failed" in mock_add_text.call_args[0][0]
+    assert mock_add_text.call_args[0][0] == "&fs_extraction_failed"
 
 
-@patch("core.base.OS", "windows")
-@patch("core.base.WIN", "windows")
+@patch("core.base.is_win", True)
+@patch("core.base.is_mac", False)
 @patch("os.startfile", create=True)
 def test_open_thing_windows_dir(mock_startfile, tmp_path):
     dir_path = tmp_path / "test_dir"
@@ -301,8 +418,8 @@ def test_open_thing_windows_dir(mock_startfile, tmp_path):
     mock_startfile.assert_called_once_with(str(dir_path))
 
 
-@patch("core.base.OS", "windows")
-@patch("core.base.WIN", "windows")
+@patch("core.base.is_win", True)
+@patch("core.base.is_mac", False)
 @patch("os.startfile", create=True)
 def test_open_thing_windows_file(mock_startfile, tmp_path):
     file_path = tmp_path / "test.txt"
@@ -312,8 +429,8 @@ def test_open_thing_windows_file(mock_startfile, tmp_path):
     mock_startfile.assert_called_once_with(str(file_path))
 
 
-@patch("core.base.OS", "windows")
-@patch("core.base.WIN", "windows")
+@patch("core.base.is_win", True)
+@patch("core.base.is_mac", False)
 @patch("os.startfile", create=True)
 def test_open_thing_windows_with_args(mock_startfile, tmp_path):
     file_path = tmp_path / "test.exe"
@@ -323,8 +440,8 @@ def test_open_thing_windows_with_args(mock_startfile, tmp_path):
     mock_startfile.assert_called_once_with(str(file_path), arguments="-h")
 
 
-@patch("core.base.OS", "mac")
-@patch("core.base.MAC", "mac")
+@patch("core.base.is_win", False)
+@patch("core.base.is_mac", True)
 @patch("subprocess.run")
 def test_open_thing_mac_dir(mock_run, tmp_path):
     dir_path = tmp_path / "test_dir"
@@ -334,8 +451,8 @@ def test_open_thing_mac_dir(mock_run, tmp_path):
     mock_run.assert_called_once_with(["open", str(dir_path)])
 
 
-@patch("core.base.OS", "mac")
-@patch("core.base.MAC", "mac")
+@patch("core.base.is_win", False)
+@patch("core.base.is_mac", True)
 @patch("subprocess.run")
 def test_open_thing_mac_file(mock_run, tmp_path):
     file_path = tmp_path / "test.txt"
@@ -345,9 +462,8 @@ def test_open_thing_mac_file(mock_run, tmp_path):
     mock_run.assert_called_once_with(["open", "-R", str(file_path)])
 
 
-@patch("core.base.OS", "linux")
-@patch("core.base.WIN", "windows")
-@patch("core.base.MAC", "mac")
+@patch("core.base.is_win", False)
+@patch("core.base.is_mac", False)
 @patch("subprocess.run")
 def test_open_thing_linux_dir(mock_run, tmp_path):
     dir_path = tmp_path / "test_dir"
@@ -357,9 +473,8 @@ def test_open_thing_linux_dir(mock_run, tmp_path):
     mock_run.assert_called_once_with(["xdg-open", str(dir_path)])
 
 
-@patch("core.base.OS", "linux")
-@patch("core.base.WIN", "windows")
-@patch("core.base.MAC", "mac")
+@patch("core.base.is_win", False)
+@patch("core.base.is_mac", False)
 @patch("subprocess.run")
 def test_open_thing_linux_file(mock_run, tmp_path):
     file_path = tmp_path / "test.txt"
@@ -369,8 +484,8 @@ def test_open_thing_linux_file(mock_run, tmp_path):
     mock_run.assert_called_once_with(["xdg-open", str(file_path)])
 
 
-@patch("core.base.OS", "linux")
-@patch("core.base.WIN", "windows")
+@patch("core.base.is_win", False)
+@patch("core.base.is_mac", False)
 @patch("os.access")
 @patch("subprocess.Popen")
 def test_open_thing_posix_with_args_executable(mock_popen, mock_access, tmp_path):
@@ -385,8 +500,8 @@ def test_open_thing_posix_with_args_executable(mock_popen, mock_access, tmp_path
     assert mock_popen.call_args[0][0] == [str(file_path), "--help"]
 
 
-@patch("core.base.OS", "linux")
-@patch("core.base.WIN", "windows")
+@patch("core.base.is_win", False)
+@patch("core.base.is_mac", False)
 @patch("os.access")
 @patch("subprocess.run")
 def test_open_thing_posix_with_args_non_executable(mock_run, mock_access, tmp_path):

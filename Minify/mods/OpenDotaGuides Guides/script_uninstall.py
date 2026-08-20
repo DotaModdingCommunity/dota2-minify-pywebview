@@ -22,7 +22,9 @@ def main():
         return
 
     try:
-        with open(os.path.join(dota_itembuilds_path, "default_antimage.txt")) as file:
+        with open(
+            os.path.join(dota_itembuilds_path, "default_antimage.txt"), encoding="utf-8", errors="replace"
+        ) as file:
             lines = file.readlines()
         if len(lines) >= 3 and "OpenDotaGuides" in lines[2]:
             fs.restore_directory(dota_itembuilds_path, odg_bkup_path)

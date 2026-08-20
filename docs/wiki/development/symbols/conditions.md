@@ -9,9 +9,26 @@ Checks for various things
 <details open><summary>Source</summary>
 
 ```python
-def is_dota_running(text_tag, text_type):
-    target = "dota2.exe" if base.OS == base.WIN else "dota2"
-    running = any(p.info.get("name") == target for p in psutil.process_iter(attrs=["name"]))
+def is_dota_running(text_tag: str, text_type: str) -> bool:
+    target = "dota2.exe" if base.is_win else "dota2"
+    if base.is_win:
+        try:
+            result = subprocess.run(
+                ["tasklist", "/FI", f"IMAGENAME eq {target}", "/NH"],
+                capture_output=True,
+                text=True,
+                timeout=5,
+                creationflags=subprocess.CREATE_NO_WINDOW,
+            )
+            running = target.lower() in result.stdout.lower()
+        except subprocess.TimeoutExpired:
+            running = False
+    else:
+        try:
+            result = subprocess.run(["pgrep", "-x", target], capture_output=True, timeout=5)
+            running = result.returncode == 0
+        except subprocess.TimeoutExpired:
+            running = False
 
     if running:
         output.add_text(text_tag, msg_type=text_type)
@@ -21,73 +38,36 @@ def is_dota_running(text_tag, text_type):
 
 </details>
 
-## `get_dota_app_state()`
-
-Reads the Dota 2 appmanifest ACF file and returns the AppState dictionary.
-
-<details open><summary>Source</summary>
-
-```python
-def get_dota_app_state():
-    """
-    Reads the Dota 2 appmanifest ACF file and returns the AppState dictionary.
-    """
-    acf_path = os.path.join(steam.LIBRARY, "steamapps", f"appmanifest_{base.STEAM_DOTA_ID}.acf")
-    try:
-        with open(acf_path, encoding="utf-8") as f:
-            return vdf.load(f).get("AppState", {})
-    except Exception as e:
-        log.write_warning("Failed to read ACF", e)
-        return {}
-
-```
-
-</details>
-
-## `get_workshop_tools_status(app_state)`
-
-Checks if Workshop Tools are enabled (mounted and not disabled) in the app state.
-
-<details open><summary>Source</summary>
-
-```python
-def get_workshop_tools_status(app_state):
-    """
-    Checks if Workshop Tools are enabled (mounted and not disabled) in the app state.
-    """
-    mounted_str = app_state.get("MountedConfig", {}).get("optionaldlc", "")
-    disabled_str = app_state.get("MountedConfig", {}).get("DisabledDLC", "")
-
-    mounted_set = {token.strip() for token in mounted_str.replace(",", " ").split() if token.strip()}
-    disabled_set = {token.strip() for token in disabled_str.replace(",", " ").split() if token.strip()}
-
-    return base.STEAM_DOTA_WORKSHOP_TOOLS_ID in mounted_set and base.STEAM_DOTA_WORKSHOP_TOOLS_ID not in disabled_set
-
-```
-
-</details>
-
 ## `check_workshop_tools()`
 
-Checks if Workshop Tools are fully installed and enabled via ACF appmanifest.
+*No documentation available.*
 
 <details open><summary>Source</summary>
 
 ```python
 def check_workshop_tools():
-    """
-    Checks if Workshop Tools are fully installed and enabled via ACF appmanifest.
-    """
-    app_state = get_dota_app_state()
-    if not app_state:
+    acf_path = os.path.join(steam.LIBRARY, "steamapps", f"appmanifest_{base.STEAM_DOTA_ID}.acf")
+    try:
+        with open(acf_path, encoding="utf-8") as f:
+            app_state = vdf.load(f).get("AppState", {})
+    except Exception as e:
+        log.write_warning(f"Failed to read ACF: {e}")
         return False
 
-    try:
-        state_flags = int(app_state.get("StateFlags", 0))
-    except (ValueError, TypeError):
-        state_flags = 0
+    if not app_state or str(app_state.get("StateFlags", "")) != "4":
+        return False
 
-    return bool(state_flags & 4) and get_workshop_tools_status(app_state)
+    mounted_config = app_state.get("MountedConfig", "")
+    if isinstance(mounted_config, str):
+        return base.STEAM_DOTA_WORKSHOP_TOOLS_ID in mounted_config.split()
+
+    if not isinstance(mounted_config, dict):
+        return False
+    mounted_str = mounted_config.get("optionaldlc") or ""
+    disabled_str = mounted_config.get("DisabledDLC") or ""
+    mounted_set = {token.strip() for token in mounted_str.replace(",", " ").split() if token.strip()}
+    disabled_set = {token.strip() for token in disabled_str.replace(",", " ").split() if token.strip()}
+    return base.STEAM_DOTA_WORKSHOP_TOOLS_ID in mounted_set and base.STEAM_DOTA_WORKSHOP_TOOLS_ID not in disabled_set
 
 ```
 
@@ -100,73 +80,136 @@ def check_workshop_tools():
 <details open><summary>Source</summary>
 
 ```python
-def is_compiler_found():
+def is_compiler_found() -> None:
     global workshop_installed
     workshop_installed = check_workshop_tools()
-    if not workshop_installed and not base.HEADLESS:
+    if not workshop_installed:
+        workshop_installed = os.path.exists(constants.dota_resource_compiler_path)
+    from core import config as _config
+
+    if _config.get("debug_disable_workshop", False):
+        workshop_installed = False
+    if not workshop_installed:
         output.add_text("&error_no_workshop_tools_found_terminal", msg_type="warning")
 
 ```
 
 </details>
 
-## `resolve_dependencies(retries)`
+## `resolve_dependencies(retries, progress_callback, headless)`
 
-Attempts to download dependencies ripgrep and Source2Viewer-CLI(if workshop tools are available)
-for 3 times and opens up their download URLs if they don't exist.
-
-Checks for existence on `PATH` first then checks existence on root.
+Serialize dependency resolution so concurrent callers never write the same binaries.
 
 <details open><summary>Source</summary>
 
 ```python
-def resolve_dependencies(retries=0):
+def resolve_dependencies(
+    retries: int = 0, progress_callback: ProgressCallback | None = None, headless: bool = False
+) -> None:
+    """Serialize dependency resolution so concurrent callers never write the same binaries."""
+    with _dependency_lock:
+        return _resolve_dependencies(retries, progress_callback=progress_callback, headless=headless)
+
+```
+
+</details>
+
+## `_resolve_dependencies(retries, progress_callback, headless)`
+
+Attempts to download dependencies ripgrep and Source2Viewer-CLI(if workshop tools are available)
+for up to 4 times and opens up their download URLs if they don't exist.
+
+<details open><summary>Source</summary>
+
+```python
+def _resolve_dependencies(
+    retries: int = 0, progress_callback: ProgressCallback | None = None, headless: bool = False
+) -> None:
     """
     Attempts to download dependencies ripgrep and Source2Viewer-CLI(if workshop tools are available)
-    for 3 times and opens up their download URLs if they don't exist.
-
-    Checks for existence on `PATH` first then checks existence on root.
+    for up to 4 times and opens up their download URLs if they don't exist.
     """
+    from core import config as _config
+
+    debug = _config.get("debug_env", False)
+    disable_workshop = _config.get("debug_disable_workshop", False)
+    workshop_available = workshop_installed and not disable_workshop
+
     try:
-        if workshop_installed:
-            s2v_on_path = shutil.which(constants.s2v_executable)
+        total_steps = 2 if workshop_available else 1
+        completed_steps = 0
+
+        if workshop_available:
+            s2v_on_path = _which(constants.s2v_executable) if not debug else None
             if s2v_on_path:
                 constants.s2v_executable = s2v_on_path
             else:
                 constants.s2v_executable = os.path.basename(constants.s2v_executable)
 
-            if not os.path.exists(constants.s2v_executable):
-                tag = output.add_text("&downloading_cli_terminal")
+            if s2v_on_path is None or debug:
                 zip_path = constants.s2v_latest.split("/")[-1]
-                if fs.download_file(constants.s2v_latest, zip_path, tag):
-                    output.add_text("&downloaded_cli_terminal", zip_path)
+                file_base = completed_steps / total_steps
+                file_inc = 1.0 / total_steps
+                output.add_text("&deps_downloading_s2v")
+                if progress_callback:
+                    progress_callback(file_base, "&deps_checking_s2v")
+
+                def _s2v_progress(downloaded: int, total: int) -> None:
+                    p = file_base
+                    if total:
+                        p += (downloaded / total) * file_inc * _DL_FRAC
+                    if progress_callback:
+                        progress_callback(p, "&deps_downloading_s2v")
+
+                if fs.download_file(constants.s2v_latest, zip_path, progress_callback=_s2v_progress):
+                    output.add_text("&deps_extracting_s2v")
+                    if progress_callback:
+                        progress_callback(file_base + file_inc * _DL_FRAC, "&deps_extracting_s2v")
                     if fs.extract_archive(zip_path, "."):
                         fs.remove_path(zip_path)
-                        output.add_text("&extracted_cli_terminal", zip_path)
                         constants.s2v_executable = os.path.basename(constants.s2v_executable)
 
-                        if base.OS != base.WIN and not os.access(constants.s2v_executable, os.X_OK):
+                        if progress_callback:
+                            progress_callback(file_base + file_inc * _EXTRACT_FRAC, "&deps_setup_s2v")
+
+                        if not base.is_win and not os.access(constants.s2v_executable, os.X_OK):
                             current_permissions = os.stat(constants.s2v_executable).st_mode
                             os.chmod(
                                 constants.s2v_executable,
                                 current_permissions | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH,
                             )
-        elif os.path.exists(constants.s2v_executable):
-            fs.remove_path(constants.s2v_executable)
 
-        rg_on_path = shutil.which(constants.rg_executable)
+                        completed_steps += 1
+                        output.add_text("&deps_s2v_ready")
+                        if progress_callback:
+                            progress_callback(completed_steps / total_steps, "&deps_s2v_ready")
+
+        rg_on_path = _which(constants.rg_executable) if not debug else None
         if rg_on_path:
             constants.rg_executable = rg_on_path
         else:
             constants.rg_executable = os.path.basename(constants.rg_executable)
 
-        if not os.path.exists(constants.rg_executable):
-            tag = output.add_text("&downloading_ripgrep_terminal")
+        if rg_on_path is None or debug:
             archive_path = constants.rg_latest.split("/")[-1]
             archive_name = archive_path[:-4] if archive_path[-4:] == ".zip" else archive_path[:-7]
+            file_base = completed_steps / total_steps
+            file_inc = 1.0 / total_steps
+            output.add_text("&deps_downloading_rg")
+            if progress_callback:
+                progress_callback(file_base, "&deps_checking_rg")
 
-            if fs.download_file(constants.rg_latest, archive_path, tag):
-                output.add_text("&downloaded_cli_terminal", archive_path)
+            def _rg_progress(downloaded: int, total: int) -> None:
+                p = file_base
+                if total:
+                    p += (downloaded / total) * file_inc * _DL_FRAC
+                if progress_callback:
+                    progress_callback(p, "&deps_downloading_rg")
+
+            if fs.download_file(constants.rg_latest, archive_path, progress_callback=_rg_progress):
+                output.add_text("&deps_extracting_rg")
+                if progress_callback:
+                    progress_callback(file_base + file_inc * _DL_FRAC, "&deps_extracting_rg")
 
                 rg_binary_name = os.path.basename(constants.rg_executable)
                 success = fs.extract_archive(archive_path, ".", f"{archive_name}/{rg_binary_name}")
@@ -177,16 +220,23 @@ def resolve_dependencies(retries=0):
                         rg_binary_name,
                     )
                     fs.remove_path(archive_path, archive_name)
-                    output.add_text("&extracted_cli_terminal", archive_path)
+
+                    if progress_callback:
+                        progress_callback(file_base + file_inc * _EXTRACT_FRAC, "&deps_setup_rg")
 
                     constants.rg_executable = rg_binary_name
 
-                    if base.OS in (base.LINUX, base.MAC) and not os.access(constants.rg_executable, os.X_OK):
+                    if not base.is_win and not os.access(constants.rg_executable, os.X_OK):
                         current_permissions = os.stat(constants.rg_executable).st_mode
                         os.chmod(
                             constants.rg_executable,
                             current_permissions | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH,
                         )
+
+                    completed_steps += 1
+                    output.add_text("&deps_rg_ready")
+                    if progress_callback:
+                        progress_callback(completed_steps / total_steps, "&deps_rg_ready")
         constants.s2v_exec_path = (
             constants.s2v_executable
             if os.path.isabs(constants.s2v_executable)
@@ -198,17 +248,53 @@ def resolve_dependencies(retries=0):
             else os.path.join(".", constants.rg_executable)
         )
 
+        if progress_callback:
+            progress_callback(1.0, "&deps_done")
+
     except Exception:
-        log.write_crashlog()
-        output.add_text("&failed_download_retrying_terminal", msg_type="error")
         if retries < 3:
-            return resolve_dependencies(retries + 1)
-        output.add_text("&failed_download", 3, msg_type="error")
-        output.add_text("&connection_error", msg_type="error")
-        webbrowser.open(constants.rg_latest)
-        if workshop_installed:
-            webbrowser.open(constants.s2v_latest)
+            log.write_warning(f"Download failed (attempt {retries + 1}/3), retrying...")
+            output.add_text("&deps_dl_retry", msg_type="warning")
+            if progress_callback:
+                progress_callback(0, "&deps_retrying", retries + 1)
+            return _resolve_dependencies(retries + 1, progress_callback=progress_callback, headless=headless)
+        log.write_crashlog()
+        output.add_text("&deps_failed_attempts", msg_type="error")
+        if progress_callback:
+            progress_callback(0, "&deps_failed")
+        if not headless:
+            webbrowser.open(constants.rg_latest)
+            if workshop_installed or disable_workshop:
+                webbrowser.open(constants.s2v_latest)
         return
+
+```
+
+</details>
+
+## `_which(name)`
+
+Check if executable exists in CWD. No PATH search (avoids network hangs).
+
+<details open><summary>Source</summary>
+
+```python
+def _which(name: str) -> str | None:
+    """Check if executable exists in CWD. No PATH search (avoids network hangs)."""
+    if os.path.isabs(name):
+        if not os.path.isfile(name):
+            return None
+        found = name
+    else:
+        try:
+            found = os.path.abspath(os.path.basename(name))
+            if not os.path.isfile(found):
+                return None
+        except (OSError, PermissionError):
+            return None
+    if not base.is_win and not os.access(found, os.X_OK):
+        return None
+    return found
 
 ```
 
@@ -216,29 +302,25 @@ def resolve_dependencies(retries=0):
 
 ## `check_binaries()`
 
-Checks if required binaries exist.
+Checks if required binaries exist in CWD (no PATH search).
 
 <details open><summary>Source</summary>
 
 ```python
-def check_binaries():
-    """
-    Checks if required binaries exist.
-    """
+def check_binaries() -> bool:
+    """Checks if required binaries exist in CWD (no PATH search)."""
     if workshop_installed:
-        s2v_on_path = shutil.which(constants.s2v_executable)
-        if not os.path.exists(constants.s2v_executable) and not s2v_on_path:
+        s2v_found = _which(constants.s2v_executable)
+        if s2v_found is None:
             return False
-        if s2v_on_path and not os.path.isabs(constants.s2v_executable):
-            constants.s2v_executable = s2v_on_path
-            constants.s2v_exec_path = s2v_on_path
+        constants.s2v_executable = s2v_found
+        constants.s2v_exec_path = s2v_found
 
-    rg_on_path = shutil.which(constants.rg_executable)
-    if not os.path.exists(constants.rg_executable) and not rg_on_path:
+    rg_found = _which(constants.rg_executable)
+    if rg_found is None:
         return False
-    if rg_on_path and not os.path.isabs(constants.rg_executable):
-        constants.rg_executable = rg_on_path
-        constants.rg_exec_path = rg_on_path
+    constants.rg_executable = rg_found
+    constants.rg_exec_path = rg_found
 
     return True
 
@@ -253,15 +335,25 @@ def check_binaries():
 <details open><summary>Source</summary>
 
 ```python
-def disable_workshop_mods():
+def disable_workshop_mods() -> None:
     if not workshop_installed:
-        for folder in constants.mods_with_order:
-            mod_path = os.path.join(base.mods_dir, folder)
+        from core import mods_shared
+        from patch import manifest_utils
 
+        disabled = []
+        for mod in mods_shared.mods_with_order:
+            if not mods_shared.get_state(mod):
+                continue
+            mod_path = os.path.join(base.mods_dir, mod)
+            if manifest_utils.get_mod(mod_path).get("skip_workshop_check", False):
+                continue
             for method_path in workshop_required_methods:
                 if os.path.exists(os.path.join(mod_path, method_path)):
-                    dpg.configure_item(folder, enabled=False, default_value=False)
+                    disabled.append(mod)
+                    output.add_text("&mod_disabled_requires_workshop", mod, msg_type="warning")
                     break
+        if disabled:
+            mods_shared.set_state_batch({mod: False for mod in disabled})
 
 ```
 

@@ -1,0 +1,1 @@
+<!-- LANG:EN -->2026-07-23 patch workaround which enforces valid languages. Since `english` isn't a valid language code, Minify sets `-language dutch` instead. This mod swaps the Dutch localization files with their English variants so the game still displays English text.

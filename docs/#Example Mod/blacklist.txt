@@ -1,0 +1,33 @@
+# ════════════════════════════════════════════════════════════════════════
+#  blacklist.txt — blank out game files by replacing them with empty
+#  placeholders (see Minify/bin/blank-files/ for the supported extensions).
+# ════════════════════════════════════════════════════════════════════════
+#
+#  Pattern types:
+#    sounds/foo.vsnd_c       exact file path (must end in a blankable ext)
+#    >>sounds/vo/announcer   every file under that directory prefix
+#    **pattern               ripgrep regex against every pak file path
+#    *-pattern               regex exclusions (matches are KEPT, not blanked)
+#    --exact/path.vsnd_c     drop one exact path from the blacklist set
+#    # @key:<name>            gate the following block on the mod setting <name>
+#
+#  Every block below is gated behind a setting that defaults OFF, so nothing
+#  is blanked until you opt in — safe to experiment.
+
+# @key:mute_announcer
+# >>directory — blank every sound under the announcer folder.
+>>sounds/vo/announcer
+
+# @key:mute_tip_sounds
+# **regex — blank any pak file whose path matches.
+**sounds/ui/tip.*\.vsnd_c
+
+# @key:mute_button_clicks
+# Exact path — blank just this one file.
+sounds/ui/buttonclick.vsnd_c
+
+# @key:mute_ui_sounds_except_some
+# Combine ** with *- (keep) and -- (remove) to fine-tune a large match.
+**sounds/ui
+*-sounds/ui/buttonclick.vsnd_c
+--sounds/ui/bottle_pour.vsnd_c

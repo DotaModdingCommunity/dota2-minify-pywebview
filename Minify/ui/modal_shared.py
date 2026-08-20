@@ -1,150 +1,107 @@
-"Unified modal internals"
+"""
+Unified modal internals.
 
+show() blocks a daemon thread on a threading.Event
+until JS calls api.modal_respond().
+"""
+
+import json
 import threading
-import time
-import traceback
+import uuid
 
-import dearpygui.dearpygui as dpg
-
-from ui import shared
-
-modal_queue = []
-active_modal_callback = None
+_modal_lock = threading.Lock()
+_waiters: dict[str, tuple[threading.Event, str | None]] = {}
 
 
-def show(title, messages, buttons, width=shared.MODAL_WIDTH, height=shared.MODAL_HEIGHT):
+def _wait_for_response(event: threading.Event) -> None:
+    """Wait for JS to respond. Indefinite — the modal is user-driven; the
+    thread only resumes when the user clicks (or the app exits)."""
+    event.wait()
+
+
+def show(title: str, messages: list[str], buttons: list[dict[str, object] | str], **_: object) -> str | None:
     """
-    Shows a unified modal popup or queues it if one is already active.
-    messages: list of strings
-    buttons: list of dicts {"label": str, "callback": func, "user_data": any, "width": int}
+    Push a blocking modal to the JS side and wait for the user to click.
+    Returns the label string of the clicked button.
+    MUST be called from a daemon worker thread — blocks until JS responds.
     """
-    modal_queue.append({"messages": messages, "buttons": buttons, "width": width, "height": height})
-    if not dpg.is_item_shown("modal_popup") or not dpg.is_item_shown("modal_button_wrapper"):
-        show_next_from_queue()
-
-
-def show_progress(messages, width=shared.MODAL_WIDTH, height=shared.MODAL_HEIGHT):
-    """Shows the modal with a progress bar and status text."""
-    if dpg.does_item_exist("modal_text_wrapper"):
-        dpg.delete_item("modal_text_wrapper", children_only=True)
-
-    with dpg.child_window(
-        parent="modal_text_wrapper",
-        width=width - shared.MODAL_TEXT_WIDTH_PADDING,
-        height=(height - shared.MODAL_TEXT_HEIGHT_PADDING) / 2,
-        border=False,
-    ):
-        for msg in messages:
-            dpg.add_text(msg, wrap=width - shared.MODAL_TEXT_WRAP_PADDING)
-
-    dpg.configure_item("modal_progress_wrapper", show=True)
-    dpg.configure_item("modal_button_wrapper", show=False)
-    dpg.configure_item("modal_popup", show=True)
-    configure(width, height)
-
-
-def set_progress(value, status_text=None):
-    """Updates the progress bar value (0.0 to 1.0) and status text."""
-    if dpg.does_item_exist("modal_progress"):
-        dpg.set_value("modal_progress", value)
-    if status_text is not None and dpg.does_item_exist("modal_progress_status"):
-        dpg.set_value("modal_progress_status", status_text)
-
-
-def show_next_from_queue():
-    if not modal_queue:
-        return
-
-    modal_data = modal_queue.pop(0)
-    messages = modal_data["messages"]
-    buttons = modal_data["buttons"]
-    width = modal_data.get("width", shared.MODAL_WIDTH)
-    height = modal_data.get("height", shared.MODAL_HEIGHT)
-
-    if dpg.does_item_exist("modal_progress_wrapper"):
-        dpg.configure_item("modal_progress_wrapper", show=False)
-
-    if dpg.does_item_exist("modal_text_wrapper"):
-        dpg.delete_item("modal_text_wrapper", children_only=True)
-    if dpg.does_item_exist("modal_button_wrapper"):
-        dpg.delete_item("modal_button_wrapper", children_only=True)
-
-    dpg.configure_item("modal_button_wrapper", show=True)
-
-    with dpg.child_window(
-        parent="modal_text_wrapper",
-        width=width - shared.MODAL_TEXT_WIDTH_PADDING,
-        height=height - shared.MODAL_TEXT_HEIGHT_PADDING,
-        border=False,
-    ):
-        for msg in messages:
-            dpg.add_text(msg, wrap=width - shared.MODAL_TEXT_WRAP_PADDING)
-
-    global active_modal_callback
-    for i, btn in enumerate(buttons):
-        _inner_cb = btn.get("callback")
-
-        def create_wrapped_callback(inner_cb):
-            def wrapped_callback(sender=None, app_data=None, user_data=None):
-                global active_modal_callback
-                try:
-                    active_modal_callback = None
-                    dpg.configure_item("modal_popup", show=False)
-                    if inner_cb:
-                        inner_cb(sender, app_data, user_data)
-                except Exception:
-                    traceback.print_exc()
-
-                threading.Timer(0.1, show_next_from_queue).start()
-
-            return wrapped_callback
-
-        _wrapped = create_wrapped_callback(_inner_cb)
-        if i == 0:
-            active_modal_callback = _wrapped
-
-        dpg.add_button(
-            label=btn["label"],
-            callback=_wrapped,
-            user_data=btn.get("user_data"),
-            width=btn.get("width", 100),
-            parent="modal_button_wrapper",
-        )
-
-    dpg.configure_item("modal_popup", show=True)
-    time.sleep(0.1)
-    configure(width, height)
-    time.sleep(0.1)
-
-    from ui import window
-
-    window.on_resize()
-
-
-def configure(width=None, height=None):
-    if not dpg.does_item_exist("modal_popup"):
-        return
-
-    if width is None:
-        width = dpg.get_item_width("modal_popup") or shared.MODAL_WIDTH
-    if height is None:
-        height = dpg.get_item_height("modal_popup") or shared.MODAL_HEIGHT
-
-    dpg.configure_item(
-        "modal_popup",
-        width=width,
-        height=height,
-        autosize=False,
-        pos=(
-            dpg.get_viewport_width() / 2 - width / 2,
-            dpg.get_viewport_height() / 2 - height / 2,
-        ),
+    assert threading.current_thread() is not threading.main_thread(), (
+        "modal_shared.show() must not be called from the main thread (it blocks waiting for a JS response)."
     )
+    button_labels = [b["label"] if isinstance(b, dict) else b for b in buttons]
 
-    dpg.configure_item("modal_text_wrapper", pos=[shared.MODAL_TEXT_POS_X, shared.MODAL_TEXT_POS_Y])
+    waiter_id = str(uuid.uuid4())
+    event = threading.Event()
 
-    btn_width, _ = dpg.get_item_rect_size("modal_button_wrapper")
-    dpg.configure_item(
-        "modal_button_wrapper",
-        pos=(width / 2 - btn_width / 2 - shared.MODAL_BTN_X_PADDING, height - shared.MODAL_BTN_Y_PADDING),
+    with _modal_lock:
+        _waiters[waiter_id] = (event, None)
+
+    from ui import output_bridge
+
+    payload = json.dumps({"title": title, "messages": messages, "buttons": button_labels, "id": waiter_id})
+    output_bridge.send_js(f"window.__modalPush({payload})")
+    _wait_for_response(event)
+
+    with _modal_lock:
+        return _waiters.pop(waiter_id, (None, None))[1]
+
+
+def respond(waiter_id: str, label: str) -> None:
+    """Called by api.modal_respond() from the JS side."""
+    with _modal_lock:
+        if waiter_id in _waiters:
+            event, _ = _waiters[waiter_id]
+            _waiters[waiter_id] = (event, label)
+            event.set()
+
+
+def show_setup_flow(pending: list[tuple[str, str]]) -> str | None:
+    """Send a list of (mod_name, message) tuples to the JS setup wizard and block."""
+    assert threading.current_thread() is not threading.main_thread(), (
+        "modal_shared.show_setup_flow() must not be called from the main thread."
     )
+    waiter_id = str(uuid.uuid4())
+    event = threading.Event()
+
+    with _modal_lock:
+        _waiters[waiter_id] = (event, None)
+
+    from ui import output_bridge
+
+    payload = json.dumps({"pending": [{"name": n, "message": m} for n, m in pending], "id": waiter_id})
+    output_bridge.send_js(f"window.__setupFlowPush({payload})")
+    _wait_for_response(event)
+
+    with _modal_lock:
+        result = _waiters.pop(waiter_id, (None, None))[1]
+    return result
+
+
+def setup_flow_done(waiter_id: str, result: str) -> None:
+    """Called by api.setup_flow_done() from the JS side."""
+    with _modal_lock:
+        if waiter_id in _waiters:
+            event, _ = _waiters[waiter_id]
+            _waiters[waiter_id] = (event, result)
+            event.set()
+
+
+def show_progress(messages: list[str], **_: object) -> None:
+    """Push a non-blocking progress HUD."""
+    from ui import output_bridge
+
+    payload = json.dumps({"messages": messages, "value": 0, "status": ""})
+    output_bridge.send_js(f"window.__hudPush({payload})")
+
+
+def set_progress(value: float, status_text: str | None = None, *args: object) -> None:
+    from ui import output_bridge
+
+    payload = json.dumps({"value": value, "status": status_text or "", "args": list(args)})
+    output_bridge.send_js(f"window.__hudSetProgress({payload})")
+
+
+def hide_progress() -> None:
+    from ui import output_bridge
+
+    output_bridge.send_js("window.__hudHide()")

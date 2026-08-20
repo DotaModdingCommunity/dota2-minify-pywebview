@@ -1,0 +1,10 @@
+/* example_mod_extra.css — compiled to example_mod_extra.vcss_c at patch time
+   by the Resource Compiler and included via xml.json's add_style_include
+   action. Styles the .ExampleModBanner label that xml.json adds. */
+
+.ExampleModBanner {
+    color: #c92424;
+    font-size: 18px;
+    font-weight: bold;
+    horizontal-align: center;
+}

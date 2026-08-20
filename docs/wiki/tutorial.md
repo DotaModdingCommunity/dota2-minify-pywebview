@@ -28,4 +28,15 @@ After the sound, Steam may restart while Minify is adjusting your Dota2 launch o
 
 You can find more mods, tooling and skins at our [website](https://egezenn.github.io/dota2-minify/community.html) or [Discord server](https://discord.com/invite/9867CPv7cy).
 
-<!-- TODO: settings, dev panel, pictures.. -->
+You can also install mods directly by **dragging and dropping** a mod folder, `.zip`, or `.vpk` file into the Minify window. (`.7z`, `.rar`, `.tar` and `.tgz` archives are not supported.)
+
+## Settings & Dev Tools
+
+The **Settings** panel (gear icon) holds per-mod settings and the global options (UI zoom, language, launch options). Mods that ship a `manifest.json` render their own settings here.
+
+The **Dev Tools** panel (hammer icon) is mostly for bug reports and power users:
+
+- **Create debug zip** — bundles your logs and configs into a single archive for bug reports.
+- **File/path openers and compilation utilities** — quick access to the game files, logs, and asset compilation.
+
+Advanced options there (like inspecting the JS runtime) are only visible when running from source with `debug_env` set to `true` in `config/minify_config.json`.

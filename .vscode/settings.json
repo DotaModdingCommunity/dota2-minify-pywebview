@@ -1,6 +1,5 @@
 {
   "basedpyright.analysis.typeCheckingMode": "off",
-  "black-formatter.args": ["--line-length", "120"],
   "editor.inlayHints.enabled": "offUnlessPressed",
   "basedpyright.disableLanguageServices": false,
   "basedpyright.analysis.extraPaths": ["./Minify"]

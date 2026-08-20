@@ -5,7 +5,7 @@
       "label": "Run with uv",
       "icon": { "id": "beaker", "color": "terminal.ansiGreen" },
       "type": "shell",
-      "command": "uv run Minify",
+      "command": "uv run python -m Minify",
       "group": { "kind": "build", "isDefault": true }
     },
     {

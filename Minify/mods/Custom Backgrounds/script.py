@@ -69,7 +69,7 @@ def main():
                 if (magick_path := shutil.which("magick")) is not None:
                     subprocess.run(
                         [magick_path, source_file, target_file],
-                        creationflags=subprocess.CREATE_NO_WINDOW if base.OS == base.WIN else 0,
+                        creationflags=subprocess.CREATE_NO_WINDOW if base.is_win else 0,
                     )
                 else:
                     output.add_text(
@@ -91,11 +91,11 @@ def main():
 
                 shutil.copy(target_file, os.path.join(compile_location, "background.png"))
 
-                with open(os.path.join(compile_location, "imgref.xml"), "w") as xml:
+                with open(os.path.join(compile_location, "imgref.xml"), "w", encoding="utf-8") as xml:
                     xml.write(xml_template)
 
                 # Use placeholder for background image style
-                config.set_mod(
+                config.save_mod_config(
                     mod_name,
                     {
                         "bg_img_style": 'url("s2r://panorama/images/backgrounds/background_png.vtex"), url("s2r://panorama/images/loadingscreens/international_2025_ls_3/loadingscreen.vtex")'
@@ -125,7 +125,7 @@ def main():
                             "0",
                             target_file,
                         ],
-                        creationflags=subprocess.CREATE_NO_WINDOW if base.OS == base.WIN else 0,
+                        creationflags=subprocess.CREATE_NO_WINDOW if base.is_win else 0,
                     )
                 else:
                     output.add_text(
@@ -140,4 +140,4 @@ def main():
                 shutil.copy(target_file, os.path.join(compile_location, "background.webm"))
 
                 # Use placeholder to collapse background image when video is present
-                config.set_mod(mod_name, {"bg_img_style": "none"})
+                config.save_mod_config(mod_name, {"bg_img_style": "none"})

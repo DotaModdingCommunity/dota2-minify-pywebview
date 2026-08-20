@@ -24,7 +24,7 @@ body:
     attributes:
       label: Minify Version
       description: What's your Minify version?
-      placeholder: 1.xx.x | 1.xx.xrcx | commit-sha
+      placeholder: 2.xx.x | 2.xx.xrcx | commit-sha
     validations:
       required: true
 
@@ -47,6 +47,7 @@ body:
         - Windows 10
         - Windows 8.x
         - Linux
+        - macOS
         - Other (specify)
       default: 0
     validations:
@@ -70,6 +71,6 @@ body:
     attributes:
       label: Debug Zip
       description: |
-        **IMPORTANT**: Please provide a **debug zip**. If one is already cretaed, attach it to this issue. You can create one manually by clicking the **Hammer Icon** and clicking **Create debug zip** in Minify.
+        **IMPORTANT**: Please provide a **debug zip**. If one is already created, attach it to this issue. You can create one manually by clicking the **Hammer Icon** and clicking **Create debug zip** in Minify.
     validations:
       required: true

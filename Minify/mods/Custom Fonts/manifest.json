@@ -1,10 +1,7 @@
 {
   "settings": [
-    {
-      "key": "font_string",
-      "text": "Font String",
-      "default": "Calibri, sans-serif",
-      "type": "inputbox"
-    }
+    { "key": "font_file", "text": "Font File", "default": "", "type": "file", "file_types": "Fonts (*.ttf;*.otf)" },
+    { "key": "place_font", "text": "Place Font", "type": "button" },
+    { "key": "font_string", "text": "Font String", "default": "Calibri", "type": "inputbox" }
   ]
 }

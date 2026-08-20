@@ -9,21 +9,69 @@ If you encounter errors while patching, it's most likely that your CSS is invali
 For Source 2 flavored CSS properties, refer to: [Valve Developer Community Wiki](https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Panorama/CSS_Properties).  
 To live inspect the layout, open the workshop tools and press <kbd>F6</kbd> and select the element you'd like to select from the XML.
 
+Keep your `styling.css` readable: one declaration per line with an indented block, and each path / gate marker comment on its own single line (see below). The parser is whitespace-insensitive, and `scripts/format_styling_css.py` reformats any mod's file for you:
+
+```
+python scripts/format_styling_css.py --check          # verify all mods
+python scripts/format_styling_css.py Minify/mods/X    # format one mod
+```
+
 Syntax:
 
 ```css
+/* g:panorama/styles/hud/hud_reborn */
+example_selector {
+    property: value;
+}
+
 /* g|c:path/to/vcss_file_without_extension */
-example_selector { property: value; }
 /* it can also override definitions */
 @define foo: bar;
-@keyframes 'anim-name'
-{
-  progress
-  {
-    property: value;
-  }
+
+@keyframes example_pulse {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 ```
+
+### `styling_mode`
+
+The `styling_mode` field in `manifest.json` controls how `styling.css` is handled:
+
+| Value      | Behavior                                                                           |
+| ---------- | ---------------------------------------------------------------------------------- |
+| `direct`   | Default. `styling.css` is parsed for path markers and `<&placeholder>` substitution. |
+| `source`   | Everything `direct` does, plus `@key` gates are applied.                             |
+| `disabled` | The file is ignored entirely.                                                       |
+
+`@key` gates are the only behavior that requires `"styling_mode": "source"`; markers and placeholders work in both `direct` and `source`.
+
+### Path markers
+
+A single-line comment opens each style region; everything after it belongs to that file until the next marker. The letter is the only part that differs:
+
+- `/* g:path */` — game pak (e.g. `panorama/styles/...`)
+- `/* c:path */` — core pak (e.g. `panorama/styles/...`)
+
+The path excludes the extension (`.vcss_c` is implied). Markers must stay on their **own single line** — the parser regex is non-DOTALL.
+
+### Settings-gated blocks (`@key`)
+
+Requires `"styling_mode": "source"`. A `/* @key:<setting_key> */` comment opens a block that is only included while that mod setting is truthy; blocks without a gate (or with a setting that is missing or truthy) always apply:
+
+```css
+/* g:panorama/styles/dashboard_page_credits */
+/* @key:accent_title */
+#MText1 {
+    color: #c92424;
+}
+```
+
+Because a missing setting defaults to *enabled*, a mod that gates everything should persist its defaults (e.g. via `script.py` or the settings setup flow) if it wants blocks to stay off until the user opts in. `Example Mod` demonstrates this.
 
 ### Dynamic Styling (Placeholders)
 
@@ -36,7 +84,7 @@ If you have a color picker in `manifest.json`:
 {
   "key": "my_custom_color",
   "text": "Header Color",
-  "default": "#00FF00FF",
+  "default": "#00FF00",
   "type": "color"
 }
 ```
@@ -46,13 +94,15 @@ You can use it in your `styling.css`:
 ```css
 /* g:panorama/styles/main_styles */
 .HeaderLabel {
-  color: <&my_custom_color>;
+    color: <&my_custom_color>;
 }
 ```
 
-## `xml_mod.json`
+`@define` constants referenced by a gated block keep working whether or not the block is included — the `@define` line itself should live outside the gate.
 
-This file allows you to modify Valve's XML (Panorama) files dynamically. It uses a key-value structure where the key is the path to the XML file in the VPK (e.g., `panorama/layout/popups/popup_accept_match.xml`) and the value is a list of modification actions.
+## `xml.json`
+
+This file allows you to modify Valve's XML (Panorama) files dynamically. It uses a key-value structure where the key is the path to the XML file in the VPK (e.g., `panorama/layout/popups/popup_accept_match.xml`) and the value is a list of modification actions. Files are JSONC — `//` and `/* */` comments are allowed.
 
 Example:
 

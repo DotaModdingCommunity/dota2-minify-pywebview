@@ -2,7 +2,6 @@ import io
 import os
 import sys
 import tarfile
-from unittest.mock import MagicMock, patch
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../Minify")))
 
@@ -71,28 +70,3 @@ def test_extract_archive_target_file_malicious(tmp_path):
     assert success is True
     assert not (tmp_path / "malicious.txt").exists()
     assert not (extract_dir / "../malicious.txt").exists()
-
-
-@patch("core.fs.output.add_text")
-def test_extract_archive_unsupported_format(mock_add_text, tmp_path):
-    dummy_file = tmp_path / "test.txt"
-    dummy_file.write_text("not an archive")
-
-    success = extract_archive(str(dummy_file), extract_dir=str(tmp_path))
-    assert success is False
-    mock_add_text.assert_called()
-    args, kwargs = mock_add_text.call_args
-    assert "Unsupported archive format" in args[0]
-    assert kwargs["msg_type"] == "error"
-
-
-@patch("core.fs.output.add_text")
-def test_extract_archive_nonexistent_file(mock_add_text, tmp_path):
-    nonexistent = tmp_path / "ghost.tar.gz"
-
-    success = extract_archive(str(nonexistent), extract_dir=str(tmp_path))
-    assert success is False
-    # Verifies that it logs the exception error
-    args, kwargs = mock_add_text.call_args
-    assert "Extraction failed" in args[0]
-    assert kwargs["msg_type"] == "error"

@@ -2,46 +2,75 @@
 
 Agnostic output interface
 
-## `register_output_callback(callback)`
+## `_resolve(text_or_id)`
 
-*No documentation available.*
+Resolve &-prefixed localization key with format args.
 
 <details open><summary>Source</summary>
 
 ```python
-def register_output_callback(callback):
-    global _output_callback
-    _output_callback = callback
+def _resolve(text_or_id: str, *args: Any) -> str:
+    """Resolve &-prefixed localization key with format args."""
+    try:
+        from ui import localization
+    except ImportError:
+        localization = None
+    text = text_or_id
+    if localization is not None and text_or_id.startswith("&"):
+        text = localization.localization_dict.get(text_or_id.replace("&", ""), text_or_id)
+    if args:
+        try:
+            text = text.format(*args)
+        except (IndexError, KeyError):
+            pass
+    return text
 
 ```
 
 </details>
 
-## `register_separator_callback(callback)`
+## `capture_thread(sink)`
 
-*No documentation available.*
+Route only THIS thread's add_text to `sink` while the context is active.
 
 <details open><summary>Source</summary>
 
 ```python
-def register_separator_callback(callback):
-    global _separator_callback
-    _separator_callback = callback
+def capture_thread(sink: Sink):
+    """Route only THIS thread's add_text to `sink` while the context is active."""
+    previous = getattr(_local, "sink", None)
+    _local.sink = sink
+    try:
+        yield
+    finally:
+        if previous is None:
+            try:
+                delattr(_local, "sink")
+            except AttributeError:
+                pass
+        else:
+            _local.sink = previous
 
 ```
 
 </details>
 
-## `register_clean_callback(callback)`
+## `_console_line(text, msg_type)`
 
 *No documentation available.*
 
 <details open><summary>Source</summary>
 
 ```python
-def register_clean_callback(callback):
-    global _clean_callback
-    _clean_callback = callback
+def _console_line(text: str, msg_type: str | None) -> None:
+    prefix = PREFIX.get(msg_type or "", "")
+    color = _STYLE.get(msg_type or "", "")
+    try:
+        if sys.stdout is not None:
+            print(f"{color}{prefix}{text}{RESET}")
+    except UnicodeEncodeError:
+        if sys.stdout is not None:
+            print(f"{color}{prefix}{text.encode('ascii', 'replace').decode('ascii')}{RESET}")
 
 ```
 
@@ -54,33 +83,44 @@ def register_clean_callback(callback):
 <details open><summary>Source</summary>
 
 ```python
-def add_text(text_or_id, *args, msg_type: str | None = None, **kwargs):
-    if _output_callback:
-        return _output_callback(text_or_id, *args, msg_type=msg_type, **kwargs)
-
-    # Fallback to console if no callback registered
-    from ui import localization
-
-    text = text_or_id
-    if text_or_id.startswith("&"):
-        text = localization.localization_dict.get(text_or_id.replace("&", ""), text_or_id)
-
-    if args:
-        text = text.format(*args)
-
-    prefix = ""
-    if msg_type == "error":
-        prefix = "[ERROR] "
-    elif msg_type == "warning":
-        prefix = "[WARNING] "
-    elif msg_type == "success":
-        prefix = "[SUCCESS] "
-
-    try:
-        print(f"{prefix}{text}")
-    except UnicodeEncodeError:
-        print(f"{prefix}{text.encode('ascii', 'replace').decode('ascii')}")
+def add_text(text_or_id: str, *args: Any, msg_type: str | None = None) -> Any:
+    local_sink = getattr(_local, "sink", None)
+    if local_sink is not None:
+        return local_sink(text_or_id, *args, msg_type=msg_type)
+    if _send is not None:
+        return _send(text_or_id, *args, msg_type=msg_type)
+    _console_line(_resolve(text_or_id, *args), msg_type)
     return None
+
+```
+
+</details>
+
+## `add_section(text_or_id)`
+
+Emit a phase/section header line (styled bold in both renderers).
+
+<details open><summary>Source</summary>
+
+```python
+def add_section(text_or_id: str, *args: Any) -> Any:
+    """Emit a phase/section header line (styled bold in both renderers)."""
+    return add_text(text_or_id, *args, msg_type="section")
+
+```
+
+</details>
+
+## `add_detail(text_or_id)`
+
+Emit a dimmed secondary line (paths, tracebacks, list items).
+
+<details open><summary>Source</summary>
+
+```python
+def add_detail(text_or_id: str, *args: Any) -> Any:
+    """Emit a dimmed secondary line (paths, tracebacks, list items)."""
+    return add_text(text_or_id, *args, msg_type="detail")
 
 ```
 
@@ -93,9 +133,9 @@ def add_text(text_or_id, *args, msg_type: str | None = None, **kwargs):
 <details open><summary>Source</summary>
 
 ```python
-def add_separator():
-    if _separator_callback:
-        _separator_callback()
+def add_separator() -> None:
+    if _send is not None:
+        _send(None, msg_type="__sep__")
     else:
         print("-" * 50)
 
@@ -110,9 +150,9 @@ def add_separator():
 <details open><summary>Source</summary>
 
 ```python
-def clean():
-    if _clean_callback:
-        _clean_callback()
+def clean() -> None:
+    if _send is not None:
+        _send(None, msg_type="__clean__")
 
 ```
 

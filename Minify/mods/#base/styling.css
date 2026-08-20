@@ -1,22 +1,32 @@
+/* ══════════════════════════════════════════════════════════════════════════════
+   styling.css — Adds the Minify credits panel to the main-menu credits page.
+   ══════════════════════════════════════════════════════════════════════════════
+   Path markers must stay on their own single line:
+     "g:" targets a GAME pak style path, "c:" a CORE pak style path.
+   Everything below a marker belongs to that file until the next marker.
+   NOTE: never write the literal marker forms in prose comments inside this
+   file — the parser will mistake them for real markers.
+   ══════════════════════════════════════════════════════════════════════════════ */
 /* g:panorama/styles/dashboard_page_credits */
 #Minify {
-	flow-children: down;
-	horizontal-align: center;
-	margin-bottom: 40px;
-	width: 800px;
+    flow-children: down;
+    horizontal-align: center;
+    margin-bottom: 40px;
+    width: 800px;
 }
 
 #MTitle {
-	color: white;
-	font-size: 36px;
-	horizontal-align: center;
-	text-align: center;
-	text-transform: uppercase;
+    color: white;
+    font-size: 36px;
+    horizontal-align: center;
+    text-align: center;
+    text-transform: uppercase;
 }
 
-#MText1,#MText2 {
-	color: #aaa;
-	font-size: 24px;
-	horizontal-align: center;
-	text-align: center;
+#MText1,
+#MText2 {
+    color: #aaa;
+    font-size: 24px;
+    horizontal-align: center;
+    text-align: center;
 }

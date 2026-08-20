@@ -53,10 +53,7 @@ This project wouldn't be available without the work of the community. Thanks to 
 | [`Minify Base Attacks`](./Minify/mods/Minify%20Base%20Attacks)                                  | [robbyz512](https://github.com/robbyz512)          |                                                                                                              |
 | [`Minify Spells & Items`](./Minify/mods/Minify%20Spells%20&%20Items)                            | [robbyz512](https://github.com/robbyz512)          |                                                                                                              |
 | [`Misc Optimization`](./Minify/mods/Misc%20Optimization)                                        | [robbyz512](https://github.com/robbyz512)          |                                                                                                              |
-| [`Mute Ambient Sounds`](./Minify/mods/Mute%20Ambient%20Sounds)                                  | [robbyz512](https://github.com/robbyz512)          |                                                                                                              |
-| [`Mute Default Announcer`](./Minify/mods/Mute%20Default%20Announcer)                            | [Egezenn](https://github.com/Egezenn)              |                                                                                                              |
-| [`Mute Taunt Sounds`](./Minify/mods/Mute%20Taunt%20Sounds)                                      | [robbyz512](https://github.com/robbyz512)          |                                                                                                              |
-| [`Mute Voice Line Sounds`](./Minify/mods/Mute%20Voice%20Line%20Sounds)                          | [robbyz512](https://github.com/robbyz512)          |                                                                                                              |
+| [`Mute Sounds`](./Minify/mods/Mute%20Sounds)                                                       | [robbyz512](https://github.com/robbyz512)           |                                                                                                               |
 | [`OpenDotaGuides Guides`](./Minify/mods/OpenDotaGuides%20Guides)                                | [Egezenn](https://github.com/Egezenn)              | [Project](https://github.com/Egezenn/OpenDotaGuides)                                                         |
 | [`Remove Foilage`](./Minify/mods/Remove%20Foilage)                                              | [robbyz512](https://github.com/robbyz512)          |                                                                                                              |
 | [`Remove Hero Renders`](./Minify/mods/Remove%20Hero%20Renders)                                  | [Egezenn](https://github.com/Egezenn)              |                                                                                                              |
@@ -88,6 +85,7 @@ This project wouldn't be available without the work of the community. Thanks to 
 | Name                                                                          | Usage                        | License                                                                                                                                                 |
 | ----------------------------------------------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [Inno Setup](https://jrsoftware.org/isinfo.php)                               | Windows Installer generation | [Inno Setup License](https://jrsoftware.org/islicense.php)                                                                                              |
+| [Node.js](https://nodejs.org) + npm                                         | Svelte frontend build        | [MIT license](https://github.com/nodejs/node/blob/main/LICENSE)                                                                                        |
 | [Noto Fonts](https://github.com/notofonts)                                    | Fallback general fonts       | [OFL-1.1 license](https://github.com/notofonts/noto-fonts/blob/main/OFL.txt)                                                                            |
 | [PyInstaller](https://pyinstaller.org)                                        | Compilation                  | [GPLv2 or later + additional properties](https://github.com/pyinstaller/pyinstaller/blob/develop/COPYING.txt)                                           |
 | [Python](https://www.python.org)                                              | Core language                | [PSFL license](https://github.com/python/cpython/blob/main/LICENSE)                                                                                     |
@@ -98,20 +96,36 @@ This project wouldn't be available without the work of the community. Thanks to 
 
 | Name                                                                   | Usage                                     | License                                                                           |
 | ---------------------------------------------------------------------- | ----------------------------------------- | --------------------------------------------------------------------------------- |
-| [dearpygui](https://github.com/hoffstadt/DearPyGui)                    | GUI                                       | [MIT license](https://github.com/hoffstadt/DearPyGui/blob/master/LICENSE)         |
 | [defusedxml](https://github.com/tiran/defusedxml)                      | Secure XML parsing                        | [PSFL license](https://github.com/tiran/defusedxml/blob/main/LICENSE)             |
 | [json-with-comments](https://github.com/n-takumasa/json-with-comments) | JSON parsing with comments                | [MIT license](https://github.com/n-takumasa/json-with-comments/blob/main/LICENSE) |
-| [playsound3](https://github.com/szmikler/playsound3)                   | Playing sounds                            | [MIT license](https://github.com/szmikler/playsound3/blob/main/LICENSE)           |
-| [psutil](https://github.com/giampaolo/psutil)                          | Checking processes existences             | [BSD-3-Clause license](https://github.com/giampaolo/psutil/blob/master/LICENSE)   |
+| [packaging](https://packaging.pypa.io)                                | Version parsing/comparison                 | [Apache-2.0 AND BSD-2-Clause](https://github.com/pypa/packaging/blob/main/LICENSE)  |
+| [pywebview](https://github.com/r0x0r/pywebview)                       | Web-based GUI                             | [BSD-3-Clause license](https://github.com/r0x0r/pywebview/blob/master/LICENSE)    |
 | [requests](https://github.com/psf/requests)                            | Downloading/querying project dependencies | [Apache-2.0 license](https://github.com/psf/requests/blob/main/LICENSE)           |
-| [screeninfo](https://github.com/rr-/screeninfo)                        | Position calculation                      | [MIT license](https://github.com/rr-/screeninfo/blob/master/LICENSE.md)           |
+| [typer](https://github.com/fastapi/typer)                              | CLI command interface                     | [MIT license](https://github.com/fastapi/typer/blob/master/LICENSE)                |
 | [vdf](https://github.com/ValvePython/vdf)                              | Serializing VDFs                          | [MIT license](https://github.com/ValvePython/vdf/blob/master/LICENSE)             |
 | [vpk](https://github.com/ValvePython/vpk)                              | VPK interaction                           | [MIT license](https://github.com/ValvePython/vpk/blob/master/LICENSE)             |
+
+> [!NOTE]
+> After cloning, you must build the Svelte 5 frontend before running the GUI:
+> ```
+> cd Minify/ui/web
+> npm ci
+> npm run build
+> ```
+> Then launch from the repo root with `uv run python -m Minify`. The CLI
+> (`uv run python -m Minify patch --help`) does not require the frontend build.
+
+> [!NOTE]
+> Linux support is best-effort. pywebview needs an explicit GUI backend on Linux — install with `uv sync --extra linux` (or `pip install -e ".[linux]"`) and the system GTK/WebKit packages (`python3-gi python3-gi-cairo gir1.2-gtk-3.0 gir1.2-webkit2-4.1` on Debian/Ubuntu).
+
+> [!NOTE]
+> macOS builds are produced manually on a Mac (`scripts/build_mac.sh`) and uploaded to the release as `Minify-<ver>-macos.zip`; the in-app updater finds them by that suffix. They're ad-hoc signed, so Gatekeeper asks for a right-click → Open on first launch.
 
 ### Development dependencies
 
 | Name                                           | Usage                | License                                                               |
 | ---------------------------------------------- | -------------------- | --------------------------------------------------------------------- |
+| [basedpyright](https://github.com/detachhead/basedpyright) | Static type checking | [MIT license](https://github.com/detachhead/basedpyright/blob/main/LICENSE) |
 | [pytest](https://github.com/pytest-dev/pytest) | Testing framework    | [MIT license](https://github.com/pytest-dev/pytest/blob/main/LICENSE) |
 | [ruff](https://github.com/astral-sh/ruff)      | Linter and formatter | [MIT license](https://github.com/astral-sh/ruff/blob/main/LICENSE)    |
 

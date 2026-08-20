@@ -1,0 +1,2 @@
+# Placeholder — the `files_uncompiled/` directory feeds the Resource Compiler
+# at patch time (e.g. .js → .vjs_c, .css → .vcss_c).

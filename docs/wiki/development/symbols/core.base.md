@@ -2,6 +2,82 @@
 
 Variables that almost never change
 
+## `steam_default_path()`
+
+*No documentation available.*
+
+<details open><summary>Source</summary>
+
+```python
+def steam_default_path():
+    if is_linux:
+        return os.path.join(os.path.expanduser("~"), ".local", "share", "Steam")
+    if is_mac:
+        return os.path.join(os.path.expanduser("~"), "Library", "Application Support", "Steam")
+    return os.path.join("C:\\", "Program Files (x86)", "Steam")
+
+```
+
+</details>
+
+## `resolve_app_root(app_dir)`
+
+Resolves the writable app root the process should chdir into.
+
+`app_dir` (the executable's directory) is used when its config/logs
+subdirectories can be created — the normal portable layout. On POSIX, when
+the app dir is read-only (e.g. a macOS bundle in /Applications or a Linux
+install under /opt), the app falls back to a per-user data directory and
+seeds the bundled mods into it on first run, instead of crashing.
+
+<details open><summary>Source</summary>
+
+```python
+def resolve_app_root(app_dir: str) -> str:
+    """
+    Resolves the writable app root the process should chdir into.
+
+    `app_dir` (the executable's directory) is used when its config/logs
+    subdirectories can be created — the normal portable layout. On POSIX, when
+    the app dir is read-only (e.g. a macOS bundle in /Applications or a Linux
+    install under /opt), the app falls back to a per-user data directory and
+    seeds the bundled mods into it on first run, instead of crashing.
+    """
+    if is_win:
+        os.makedirs(os.path.join(app_dir, "config"), exist_ok=True)
+        os.makedirs(os.path.join(app_dir, "logs"), exist_ok=True)
+        return app_dir
+
+    try:
+        os.makedirs(os.path.join(app_dir, "config"), exist_ok=True)
+        os.makedirs(os.path.join(app_dir, "logs"), exist_ok=True)
+        return app_dir
+    except (PermissionError, OSError):
+        if is_mac:
+            data_dir = os.path.join(os.path.expanduser("~"), "Library", "Application Support", "Minify")
+        else:
+            data_dir = os.path.join(os.path.expanduser("~"), ".local", "share", "minify")
+        os.makedirs(os.path.join(data_dir, "config"), exist_ok=True)
+        os.makedirs(os.path.join(data_dir, "logs"), exist_ok=True)
+
+        src_mods = os.path.join(app_dir, "mods")
+        dst_mods = os.path.join(data_dir, "mods")
+        if os.path.isdir(src_mods) and not os.path.exists(dst_mods):
+            try:
+                shutil.copytree(src_mods, dst_mods)
+            except OSError:
+                pass
+
+        try:
+            print(f"App directory is not writable; using {data_dir} for config, logs and mods.", file=sys.stderr)
+        except Exception:
+            pass
+        return data_dir
+
+```
+
+</details>
+
 ## Variables
 
 ### `VERSION`
@@ -9,7 +85,7 @@ Variables that almost never change
 <details open><summary>Source</summary>
 
 ```python
-VERSION = "1.13.1"
+VERSION = "2.0.0"
 
 ```
 
@@ -42,7 +118,7 @@ OS = platform.system()
 <details open><summary>Source</summary>
 
 ```python
-MACHINE = platform.machine().lower()
+MACHINE = platform.machine().lower().replace("amd64", "x86_64")
 
 ```
 
@@ -59,34 +135,34 @@ ARCHITECTURE = platform.architecture()[0]
 
 </details>
 
-### `WIN`
+### `is_win`
 
 <details open><summary>Source</summary>
 
 ```python
-WIN = "Windows"
+is_win = True if OS == "Windows" else False
 
 ```
 
 </details>
 
-### `LINUX`
+### `is_linux`
 
 <details open><summary>Source</summary>
 
 ```python
-LINUX = "Linux"
+is_linux = True if OS == "Linux" else False
 
 ```
 
 </details>
 
-### `MAC`
+### `is_mac`
 
 <details open><summary>Source</summary>
 
 ```python
-MAC = "Darwin"
+is_mac = True if OS == "Darwin" else False
 
 ```
 
@@ -114,6 +190,17 @@ HEADLESS = False
 
 </details>
 
+### `original_cwd`
+
+<details open><summary>Source</summary>
+
+```python
+original_cwd = ""
+
+```
+
+</details>
+
 ### `OWNER`
 
 <details open><summary>Source</summary>
@@ -131,6 +218,17 @@ OWNER = "Egezenn"
 
 ```python
 REPO = "dota2-minify"
+
+```
+
+</details>
+
+### `STEAM_DEFAULT_INSTALLATION_PATH`
+
+<details open><summary>Source</summary>
+
+```python
+STEAM_DEFAULT_INSTALLATION_PATH = steam_default_path()
 
 ```
 
@@ -185,7 +283,7 @@ STEAM_DOTA_WORKSHOP_TOOLS_ID = "313250"
 <details open><summary>Source</summary>
 
 ```python
-bin_dir = "bin"
+bin_dir = os.path.join(getattr(sys, "_MEIPASS", ""), "bin") if FROZEN else "bin"
 
 ```
 
@@ -279,17 +377,6 @@ blank_files_dir = os.path.join(bin_dir, "blank-files")
 
 </details>
 
-### `img_dir`
-
-<details open><summary>Source</summary>
-
-```python
-img_dir = os.path.join(bin_dir, "images")
-
-```
-
-</details>
-
 ### `localization_file_dir`
 
 <details open><summary>Source</summary>
@@ -306,18 +393,7 @@ localization_file_dir = os.path.join(bin_dir, "localization.json")
 <details open><summary>Source</summary>
 
 ```python
-rescomp_override_dir = os.path.join(bin_dir, "rescomproot")
-
-```
-
-</details>
-
-### `sounds_dir`
-
-<details open><summary>Source</summary>
-
-```python
-sounds_dir = os.path.join(bin_dir, "sounds")
+rescomp_override_dir = os.path.join(config_dir, "rescomp_override")
 
 ```
 
@@ -433,56 +509,12 @@ telegram = "https://t.me/dota2minify"
 
 </details>
 
-### `github`
-
-<details open><summary>Source</summary>
-
-```python
-github = f"https://github.com/{OWNER}/{REPO}"
-
-```
-
-</details>
-
-### `github_latest`
-
-<details open><summary>Source</summary>
-
-```python
-github_latest = github + "/releases/latest"
-
-```
-
-</details>
-
 ### `github_io`
 
 <details open><summary>Source</summary>
 
 ```python
 github_io = f"https://{OWNER}.github.io/{REPO}"
-
-```
-
-</details>
-
-### `main_window_width`
-
-<details open><summary>Source</summary>
-
-```python
-main_window_width = 550
-
-```
-
-</details>
-
-### `main_window_height`
-
-<details open><summary>Source</summary>
-
-```python
-main_window_height = 440
 
 ```
 

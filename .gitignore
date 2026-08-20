@@ -9,6 +9,7 @@ Minify/logs
 Minify/backup
 Minify/mods/*
 scripts/ffi_*.txt
+scripts/*.zip
 
 ## Dependencies
 Minify/*blake3_dotnet*
@@ -27,6 +28,8 @@ steam_appid.txt
 
 ## In-repo mods
 !Minify/mods/#base
+!Minify/mods/#DevTools
+!Minify/mods/#English Fix
 !Minify/mods/Auto Accept Match
 !Minify/mods/Custom Backgrounds
 !Minify/mods/Custom Hero Grids
@@ -35,10 +38,7 @@ steam_appid.txt
 !Minify/mods/Minify Base Attacks
 !Minify/mods/Minify Spells & Items
 !Minify/mods/Misc Optimization
-!Minify/mods/Mute Ambient Sounds
-!Minify/mods/Mute Default Announcer
-!Minify/mods/Mute Taunt Sounds
-!Minify/mods/Mute Voice Line Sounds
+!Minify/mods/Mute Sounds
 !Minify/mods/OpenDotaGuides Guides
 !Minify/mods/Remove Foilage
 !Minify/mods/Remove Hero Renders
@@ -64,6 +64,13 @@ Minify/mods/Custom Backgrounds/*.web[mp]
 Minify/mods/Custom Backgrounds/video_success
 !Minify/mods/Custom Backgrounds/preview.png
 Minify/mods/User Styles/styling.css
+
+# Svelte frontend build
+Minify/ui/web/node_modules/
+Minify/ui/web/dist/
+
+# runtime cache (created at repo root when run from the source tree)
+/cache/
 
 # misc
 __pycache__

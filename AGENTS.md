@@ -3,24 +3,24 @@
 `dota2-minify` is a modding tool and manager for Dota 2, designed to streamline the modification of game files, UI configurations, styling, and application of specific game patches.
 
 > [!NOTE]
-> This file serves as a comprehensive technical guide for both **AI Agents** and **Human Contributors**. It outlines the project's soul, its structural DNA, and the rules that govern its evolution. Whether you are a machine processing these tokens or a human reading these lines, welcome to the team!
+> This file is the technical guide for the project — for AI agents and humans alike. It covers the layout, the rules that keep the codebase consistent, and the gotchas that cost people time. AI or not, welcome aboard!
 
 ## Tech Stack
 
 - **Language**: Python 3.13
 - **Package Manager**: `uv`
-- **GUI Framework**: DearPyGui (DPG)
+- **GUI Framework**: pywebview + Svelte 5 (frontend in `Minify/ui/web/`)
 
 ## Core Directory Structure
 
 - `Minify/`: The main application package.
-  - `__main__.py`: The entry point for the DearPyGui application.
+  - `__main__.py`: The entry point for the pywebview application.
   - `cli.py`: The entry point for the Headless CLI interface.
   - `patch/`: Package handling the compilation, extraction, and patching of Mod files.
     - `__init__.py`: Core patching orchestration logic.
     - `blacklist.py`: Logic for processing mod blacklist rules.
     - `styling.py`: Logic for applying mod CSS styles.
-    - `replacer.py`: Logic for file replacement rules via CSV.
+    - `replacer.py`: Logic for file replacement rules via JSON (`replacer.json`).
     - `vpk_utils.py`: Utility functions for VPK operations and extraction.
     - `manifest_utils.py`: Utilities for loading mod manifests and versioning.
     - `unins.py`: Logic for mod uninstallation and cleanup.
@@ -39,36 +39,31 @@
     - `fs.py`: File system utilities, path manipulation, reading/writing/copying files.
     - `log.py`: Handles unhandled exceptions and writes warnings/crashes to log files.
     - `mods_shared.py`: Shared capabilities specific to handling mods logic.
-    - `registry.py`: Central registry for browsers and plugins.
+    - `net.py`: Thin `requests` wrapper with offline-simulation support for tests and dev runs.
+    - `migrations.py`: One-shot legacy migrations (modcfg→manifest, xml_mod→xml).
     - `steam.py`: Functions to detect Steam directories, game paths, and modify launch options.
     - `utils.py`: Shared utilities
-    - `vpk_utils.py`: Utility functions for VPK operations and metadata generation.
     - `output.py`: Agnostic communication interface between backend and UI/CLI.
 
-  - `ui/`: Contains the DearPyGui interface logic:
-    - `announcements.py`: Fetches and displays global announcements to users on app start.
-    - `checkboxes.py`: Logic for rendering and managing the state of mod enablement checkboxes.
-    - `details.py`: Renders the detailed view of an individual mod (parsing `notes.md` and preview image).
-    - `dev_tools.py`: Helper GUI functionalities intended for developers or advanced debugging.
-    - `fonts.py`: Registers and initializes different custom fonts for DearPyGui.
-    - `gui.py`: Manages the overall layout logic, viewport scaling, and rendering routines.
-    - `localization.py`: Multi-language dynamic text localization support.
-    - `markdown.py`: Custom parser to render markdown files (`notes.md`) using DPG items.
-    - `modal_shared.py`: Base components for pop-up dialogs and modals.
+  - `ui/`: Contains the pywebview + Svelte interface logic:
+    - `web_window.py`: Launches the pywebview window, exposes the JS API whitelist, and handles drag-and-drop.
+    - `actions.py`: All JS-facing application logic (patch, settings, D2PFX, mod state) with interactive locking.
+    - `modal_shared.py`: Blocking modal/waiter primitives shared between GUI and CLI workers.
+    - `output_bridge.py`: Bridges `core/output.py` messages to the JS terminal, buffering until the frontend is ready.
     - `modals.py`: Implementations of specific modals (Uninstall, Announcements, Update dialogs).
-    - `settings.py`: The powerhouse for rendering the global settings menu, including the dynamic generation of mod-specific configuration options.
-    - `shared.py`: Stores minimal state shared across UI modules.
-    - `terminal.py`: Draws the "terminal" window in the UI that logs the patching progress in real-time.
-    - `theme.py`: Configures the DearPyGui color maps, styles, and dark-theme configurations.
-    - `window.py`: Window focus logic and drag/drop/resize helper implementations.
+    - `dialogs.py`: Native file dialog helpers for mod scripts and internal use.
+    - `announcements.py`: Fetches and displays global announcements to users on app start.
+    - `localization.py`: Multi-language dynamic text localization support.
+    - `fonts.py`: Registers the web frontend font assets.
+    - `web/`: The Svelte 5 + Vite frontend (`src/`), built to `web/dist/` and loaded from disk at runtime.
   - `mods/`: The root directory for all available mods native to Minify. Each subdirectory represents a standalone mod.
 
 ### Third-Party Dependencies
 
 The application uses external executables downloaded at runtime into the `Minify/` directory:
 
-- **Ripgrep (`rg.exe`)**: Utilized for extremely fast, pattern-based text searching and filtering during the compilation and patching processes. May use it from system if existent.
-- **Source2Viewer (`Source2Viewer-CLI.exe`)**: Used to parse, decompile, or convert proprietary Source 2 engine assets into usable formats. Downloaded only if Workshop Tools are available.
+- **Ripgrep (`rg.exe`)**: Fast pattern-based text searching during the compilation and patching processes. Uses the system one if present.
+- **Source2Viewer (`Source2Viewer-CLI.exe`)**: Parses, decompiles, or converts proprietary Source 2 engine assets into usable formats. Downloaded only if Workshop Tools are available.
 
 Additionally, it interacts with Dota 2 Workshop Tools if the DLC is installed:
 
@@ -77,22 +72,20 @@ Additionally, it interacts with Dota 2 Workshop Tools if the DLC is installed:
 
 ## The Modding System
 
-Mods in Minify are robust and programmatically driven.
-
 ### `manifest.json`
 
 Mods can optionally include a `manifest.json` file. It dictates how the mod interacts with the Minify system and how it is exposed in the Settings UI. For a deeper technical dive into the system design, see [architecture.md](ARCHITECTURE.md).
 Key objects in the `manifest.json` settings array include:
 
 - **Input Types**: `checkbox`, `combo`, `number` (`int`/`float`), `slider`, `color`, `list`, `button`.
-- Settings are rendered dynamically by `Minify/ui/settings.py` based on exactly what is defined in `manifest.json`.
+- Settings are rendered dynamically by the Svelte frontend (`Minify/ui/web/src/lib/components/SettingsWidget.svelte`) based on exactly what is defined in `manifest.json`.
 - **Presets**: The `presets` list allows developers to provide predefined combinations of setting values.
 
 ### Mod Scripts
 
 Mods can execute custom Python behavior via standardized script hooks:
 
-- `script_initial.py`, `script_after_decompile.py`, `script_after_patch.py`, `script_uninstall.py`, etc.
+- `script_setup.py`, `script_initial.py`, `script_after_decompile.py`, `script_after_patch.py`, `script_uninstall.py`, etc.
 When writing custom logic for a mod, hook into these files.
 
 ### XML & CSS Injection
@@ -101,21 +94,23 @@ Mods dynamically patch Dota 2's UI layout (`xml.json`) and styling (`styling.css
 
 ### Browser System
 
-The `Minify/browsers/` package allows for the integration of external mod sources. Browsers register themselves via `core.registry.py` and can provide custom UI components and build hooks (`build_hook.py`) to handle specialized mod types (e.g., VPK-based mods from D2PFX).
+The `Minify/browsers/` package allows for the integration of external mod sources (currently only D2PFX, hardcoded). Browsers provide custom UI components and build hooks (`build_hook.py`) to handle specialized mod types (e.g., VPK-based mods from D2PFX).
+
+### Drag-and-Drop (cross-platform)
+
+Drag-and-drop mod installation is **not** Windows-only. File paths are supplied by pywebview's cross-platform `_dnd_state['paths']` mechanism: every backend (WebView2/Windows, cocoa/macOS, GTK & Qt/Linux) populates it natively, and `pywebview`'s `util.py` attaches `pywebviewFullPath` to the DOM `drop` event it forwards. `ui/web_window.py::_on_drop_files` reads exactly that field — never assume the drop data is Windows-specific. If a platform fails to resolve `pywebviewFullPath`, the code logs a one-time warning instead of crashing.
 
 ## General Advice for Contributors
 
 Regardless of whether you are an AI agent or a human developer, following these guidelines will help ensure consistency and quality:
 
 - Always reference `docs/wiki/development/mod-structure.md`, `docs/wiki/development/scripting.md`, and `docs/wiki/development/ui-modding.md` if you are modifying or debugging how mod folders are structured, what files they support, and how the `__main__.py` patching loop reads them.
-- DearPyGui (`dpg`) has strict state requirements. Do not delete items that are still referenced elsewhere in the DPG registry without proper cleanup.
-- Keep UI operations on the main thread and respect `gui.lock_interaction()` when heavy I/O operations (like extracting/packing VPKs) are running.
+- Keep UI operations on the main thread and respect `actions.lock_interaction()` (the interactive lock) when heavy I/O operations (like extracting/packing VPKs) are running.
 - If the user is experiencing issues, the tracebacks and other info are located in `Minify/logs`.
 - Any features or scripts that require internet connectivity **MUST** be able to fail silently without crashing the application.
-- **Communication**: Always use the `core.output` module for user messaging. Use `output.add_text()` instead of `ui.terminal.add_text()` to ensure your logs are visible in both CLI and GUI modes.
+- **Communication**: Always use the `core.output` module for user messaging. Use `output.add_text()` to ensure your logs are visible in both CLI and GUI modes.
 - **Filesystem Operations**: Prefer using the `os` module (and `os.path`) over `pathlib`. Some project dependencies are older and expect string-based paths; using `pathlib` can lead to subtle bugs or type errors in these contexts.
 - When running or creating standalone scripts in subdirectories (like `tests/` or `scripts/`), always ensure the `Minify/` directory is added to `sys.path` to allow proper imports of `core` and `ui` packages:
-- Always run `scripts/precommit.sh` to check for and resolve any linting or test errors before committing your changes.
 
   ```python
   import os
@@ -123,6 +118,7 @@ Regardless of whether you are an AI agent or a human developer, following these 
   sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../Minify")))
   ```
 
+- Always run `uv run ruff check . && uv run pytest` before committing to catch lint and test errors.
 - All structural or build-related changes must maintain compatibility with the automated release process defined in `.github/workflows/release.yml`.
 - **Dependencies**: If you add any new dependencies (production or dev), you MUST add them to the `README.md` dependencies section.
 
@@ -144,7 +140,7 @@ Regardless of whether you are an AI agent or a human developer, following these 
 
 ## Testing Guidelines
 
-Following these guidelines ensures that our tests are reliable, readable, and maintainable.
+Keep tests independent, fast, and focused on behavior rather than implementation details.
 
 ### 1. Core Principles
 
@@ -192,4 +188,4 @@ Following these guidelines ensures that our tests are reliable, readable, and ma
 The application includes a specialized developer toolbox accessible via the **Hammer Icon** in the UI.
 
 - Use **Create debug zip** to gather logs and configurations for bug reports.
-- Use **Dev Tools** to access utilities (e.g., file openers, path openers, and compilation). (Note: Advanced debugging features like inspecting the DearPyGui item registry, managing window states, and debugging UI layouts in real-time are only available when running **unfrozen** with the `debug_env` key set to `True`).
+- Use **Dev Tools** to access utilities (e.g., file openers, path openers, and compilation). (Note: Advanced debugging features like inspecting the JS runtime, managing window states, and debugging UI layouts in real-time are only available when running **unfrozen** with the `debug_env` key set to `True`).

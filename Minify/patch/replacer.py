@@ -5,14 +5,20 @@ import shutil
 from core import base, constants, fs, log, output, utils
 
 
-def process_replacer(item):
+def process_replacer(item: tuple[str, str]) -> None:
     source, target = item
-    output.add_text("&replacing_terminal", source, target)
-    fs.create_dirs(os.path.dirname(target_dir := os.path.join(constants.minify_dota_compile_output_path, target)))
-    shutil.copy(os.path.join(base.replace_dir, source), target_dir)
+    output.add_detail("&replacing_terminal", source, target)
+    dest_path = os.path.join(constants.minify_dota_compile_output_path, target)
+    fs.create_dirs(os.path.dirname(dest_path))
+    shutil.copy(os.path.join(base.replace_dir, source), dest_path)
 
 
-def process(replacer_file, folder, replacer_source_extracts, replacer_targets):
+def process(
+    replacer_file: str,
+    folder: str,
+    replacer_source_extracts: list[str],
+    replacer_targets: list[tuple[str, str]],
+) -> None:
     if not os.path.exists(replacer_file):
         return
 

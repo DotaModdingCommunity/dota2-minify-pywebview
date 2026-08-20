@@ -13,24 +13,28 @@ if minify_root not in sys.path:
 
 import conditions
 import requests
-from core import constants, fs
+from core import constants, fs, output
 
-before_workshop_req = "https://github.com/Egezenn/dota2-minify/blob/Minify-v1.11.2/mods/Auto%20Accept%20Match/files/panorama/layout/popups/popup_accept_match.vxml_c"
+before_workshop_req = "https://raw.githubusercontent.com/Egezenn/dota2-minify/Minify-v1.11.2/mods/Auto%20Accept%20Match/files/panorama/layout/popups/popup_accept_match.vxml_c"
+
+_TARGET = ("panorama", "layout", "popups", "popup_accept_match.vxml_c")
 
 
 def main():
-    if not conditions.workshop_installed:
-        response = requests.get(before_workshop_req)
-        if response.status_code == 200:
-            fs.create_dirs(os.path.join(constants.minify_dota_compile_output_path, "panoroma", "layout", "popups"))
-            with open(
-                os.path.join(
-                    constants.minify_dota_compile_output_path,
-                    "panoroma",
-                    "layout",
-                    "popups",
-                    "popup_accept_match.vxml_c",
-                ),
-                "wb",
-            ) as file:
-                file.write(response.content)
+    if conditions.workshop_installed:
+        return
+    try:
+        response = requests.get(before_workshop_req, timeout=15)
+        if response.status_code != 200 or response.headers.get("content-type", "").startswith("text/html"):
+            output.add_text(
+                "Failed to download the precompiled Auto Accept Match file; continuing without it.", msg_type="warning"
+            )
+            return
+        target = os.path.join(constants.minify_dota_compile_output_path, *_TARGET)
+        fs.create_dirs(os.path.dirname(target))
+        with open(target, "wb") as file:
+            file.write(response.content)
+    except Exception:
+        output.add_text(
+            "Failed to download the precompiled Auto Accept Match file; continuing without it.", msg_type="warning"
+        )

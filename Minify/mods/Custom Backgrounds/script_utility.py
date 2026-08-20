@@ -1,8 +1,6 @@
 import os
 import shutil
 import sys
-import tkinter as tk
-from tkinter import filedialog
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 mod_name = os.path.basename(current_dir)
@@ -14,18 +12,14 @@ if minify_root not in sys.path:
     sys.path.insert(0, minify_root)
 
 from core import base, fs
-from ui import modal_shared
+from ui import dialogs, modal_shared
 
 
 def select_background():
-    root = tk.Tk()
-    root.withdraw()
-    file_path = filedialog.askopenfilename(
-        title="Select Background Image or Video",
-        filetypes=[("Media Files", "*.png *.jpg *.jpeg *.webp *.mp4 *.webm")],
-        initialdir=os.getcwd(),
+    file_path = dialogs.select_file(
+        file_types="Media Files (*.png;*.jpg;*.jpeg;*.webp;*.mp4;*.webm)",
+        directory=os.getcwd(),
     )
-    root.destroy()
 
     if not file_path:
         return

@@ -27,34 +27,6 @@
     "ZH-CN": "修补",
     "ZH-TW": "修補"
   },
-  "button_select_mods": {
-    "EN": "Select Mods",
-    "BG": "Изберете модове",
-    "CS": "Vyberte mody",
-    "DA": "Vælg Mods",
-    "DE": "Mods auswählen",
-    "EL": "Επιλογή τροποποιήσεων",
-    "ES": "Seleccionar Mods",
-    "FI": "Valitse modit",
-    "FR": "Sélectionner les mods",
-    "HU": "Modok kiválasztása",
-    "IT": "Seleziona Mod",
-    "NL": "Selecteer Mods",
-    "NO": "Velg modifikasjoner",
-    "PL": "Wybierz mody",
-    "PT": "Selecionar Mods",
-    "RO": "Selectați Moduri",
-    "RU": "Выбрать Моды",
-    "SV": "Välj mods",
-    "TR": "Modları seç",
-    "UK": "Обрати моди",
-    "JA": "モッドを選択",
-    "KO": "모드 선택",
-    "TH": "เลือกม็อด",
-    "VI": "Chọn Mod",
-    "ZH-CN": "选择模组",
-    "ZH-TW": "選擇模組"
-  },
   "button_uninstall": {
     "EN": "Uninstall",
     "BG": "Деинсталиране",
@@ -139,33 +111,93 @@
     "ZH-CN": "-> 检查语言参数",
     "ZH-TW": "-> 檢查語言參數"
   },
-  "clean_lang_dirs": {
-    "EN": "Deleted path {}",
-    "BG": "Изтрит път {}",
-    "CS": "Smazaná cesta {}",
-    "DA": "Slettet sti {}",
-    "DE": "Gelöschter Pfad {}",
-    "EL": "Διαγραμμένη διαδρομή {}",
-    "ES": "Ruta eliminada {}",
-    "FI": "Poistettu polku {}",
-    "FR": "Chemin supprimé {}",
-    "HU": "Törölt elérési út {}",
-    "IT": "Percorso eliminato {}",
-    "NL": "Verwijderd pad {}",
-    "NO": "Slettet sti {}",
-    "PL": "Usunięta ścieżka {}",
-    "PT": "Caminho excluído {}",
-    "RO": "Calea ștearsă {}",
-    "RU": "Удаленный путь {}",
-    "SV": "Borttagen sökväg {}",
-    "TR": "{} silindi",
-    "UK": "Видалено шлях {}",
-    "JA": "削除されたパス {}",
-    "KO": "삭제된 경로 {}",
-    "TH": "เส้นทางที่ถูกลบ {}",
-    "VI": "Đã xóa đường dẫn {}",
-    "ZH-CN": "已删除路径 {}",
-    "ZH-TW": "已刪除路徑 {}"
+  "steam_not_found": {
+    "EN": "Steam installation not found.",
+    "RU": "Установка Steam не найдена."
+  },
+  "steam_not_found_instructions": {
+    "EN": "{0}",
+    "BG": "{0}",
+    "CS": "{0}",
+    "DA": "{0}",
+    "DE": "{0}",
+    "EL": "{0}",
+    "ES": "{0}",
+    "FI": "{0}",
+    "FR": "{0}",
+    "HU": "{0}",
+    "IT": "{0}",
+    "NL": "{0}",
+    "NO": "{0}",
+    "PL": "{0}",
+    "PT": "{0}",
+    "RO": "{0}",
+    "RU": "{0}",
+    "SV": "{0}",
+    "TR": "{0}",
+    "UK": "{0}",
+    "JA": "{0}",
+    "KO": "{0}",
+    "TH": "{0}",
+    "VI": "{0}",
+    "ZH-CN": "{0}",
+    "ZH-TW": "{0}"
+  },
+  "skipped_deletion": {
+    "EN": "Skipped deletion of: {0}",
+    "BG": "Пропуснато изтриването на: {0}",
+    "CS": "Přeskočeno odstranění: {0}",
+    "DA": "Skipped sletning af: {0}",
+    "DE": "Löschen übersprungen: {0}",
+    "EL": "Παραλείφθηκε η διαγραφή του: {0}",
+    "ES": "Se omitió la eliminación de: {0}",
+    "FI": "Poisto ohitettiin: {0}",
+    "FR": "Suppression ignorée de : {0}",
+    "HU": "A törlés kihagyva: {0}",
+    "IT": "Eliminazione saltata di: {0}",
+    "NL": "Verwijdering overgeslagen: {0}",
+    "NO": "Sletting hoppet over: {0}",
+    "PL": "Pominięto usuwanie: {0}",
+    "PT": "Exclusão ignorada de: {0}",
+    "RO": "Ștergerea omisă: {0}",
+    "RU": "Пропущено удаление: {0}",
+    "SV": "Radering hoppades över: {0}",
+    "TR": "Silme atlandı: {0}",
+    "UK": "Пропущено видалення: {0}",
+    "JA": "削除をスキップしました: {0}",
+    "KO": "삭제를 건너뜀: {0}",
+    "TH": "ข้ามการลบ: {0}",
+    "VI": "Bỏ qua xóa: {0}",
+    "ZH-CN": "跳过删除: {0}",
+    "ZH-TW": "跳過刪除: {0}"
+  },
+  "mods_count": {
+    "EN": "{}/{} mods",
+    "BG": "{}/{} мода",
+    "CS": "{}/{} módů",
+    "DA": "{}/{} mods",
+    "DE": "{}/{} Mods",
+    "EL": "{}/{} mods",
+    "ES": "{}/{} mods",
+    "FI": "{}/{} modia",
+    "FR": "{}/{} mods",
+    "HU": "{}/{} mod",
+    "IT": "{}/{} mod",
+    "NL": "{}/{} mods",
+    "NO": "{}/{} mods",
+    "PL": "{}/{} modów",
+    "PT": "{}/{} mods",
+    "RO": "{}/{} moduri",
+    "RU": "{}/{} модов",
+    "SV": "{}/{} moddar",
+    "TR": "{}/{} mod",
+    "UK": "{}/{} модів",
+    "JA": "{}/{} モッド",
+    "KO": "{}/{} 모드",
+    "TH": "{}/{} ม็อด",
+    "VI": "{}/{} mods",
+    "ZH-CN": "{}/{} 个模组",
+    "ZH-TW": "{}/{} 個模組"
   },
   "close_dota_terminal": {
     "EN": "Please close Dota 2 first and then patch.",
@@ -336,7 +368,7 @@
     "ZH-TW": "-> 透過資源編譯器編譯提取的文件"
   },
   "compiling_terminal": {
-    "EN": "-> Compiling VPK",
+    "EN": "-> Compiling VPK...",
     "BG": "-> Компилиране на VPK",
     "CS": "-> Kompilace VPK",
     "DA": "-> Kompilering af VPK",
@@ -419,6 +451,9 @@
     "ZH-CN": "GitHub 似乎已被屏蔽或无法访问.请使用 VPN 下载必要文件并运行脚本.",
     "ZH-TW": "GitHub 似乎已被封鎖或無法存取.請使用 VPN 下載必要檔案並執行腳本."
   },
+  "created_vpk_terminal": {
+    "EN": "-> Created {}"
+  },
   "creating_merged_vpk": {
     "EN": "-> Creating merged vpk...",
     "BG": "-> Създаване на обединен vpk...",
@@ -475,33 +510,89 @@
     "ZH-CN": "-> 通过 Source2Viewer 反编译提取的文件",
     "ZH-TW": "-> 透過 Source2Viewer 反編譯提取的文件"
   },
-  "details_button_label_var": {
-    "EN": "Details",
-    "BG": "Детайли",
-    "CS": "Podrobnosti",
-    "DA": "Detaljer",
-    "DE": "Details",
-    "EL": "Καθέκαστα",
-    "ES": "Detalles",
-    "FI": "Tiedot",
-    "FR": "Détails",
-    "HU": "Részletek",
-    "IT": "Dettagli",
-    "NL": "Details",
-    "NO": "Detaljer",
-    "PL": "Bliższe dane",
-    "PT": "Detalhes",
-    "RO": "Detalii",
-    "RU": "Подробнее",
-    "SV": "Detaljer",
-    "TR": "Ayrıntılar",
-    "UK": "Деталі",
-    "JA": "詳細",
-    "KO": "세부",
-    "TH": "รายละเอียด",
-    "VI": "Chi tiết",
-    "ZH-CN": "细节",
-    "ZH-TW": "細節"
+  "deps_checking_rg": {
+    "EN": "Checking for ripgrep...",
+    "RU": "Проверяем ripgrep..."
+  },
+  "deps_checking_s2v": {
+    "EN": "Checking for Source2Viewer-CLI...",
+    "RU": "Проверяем Source2Viewer-CLI..."
+  },
+  "deps_dl_fail_msg1": {
+    "EN": "Failed to download required dependencies.",
+    "RU": "Не удалось загрузить необходимые зависимости."
+  },
+  "deps_dl_fail_msg2": {
+    "EN": "Source2Viewer-CLI and/or ripgrep are missing.",
+    "RU": "Source2Viewer-CLI и/или ripgrep не найдены."
+  },
+  "deps_dl_fail_msg3": {
+    "EN": "Download links have been opened in your browser.",
+    "RU": "Ссылки для загрузки открыты в твоем браузере."
+  },
+  "deps_dl_fail_msg4": {
+    "EN": "You can retry by restarting the app or running a patch.",
+    "RU": "Ты можешь попробовать снова перезапустив приложение или запустив процесс патча."
+  },
+  "deps_dl_fail_title": {
+    "EN": "Download Failed",
+    "RU": "Загрузка не удалась"
+  },
+  "deps_dl_retry": {
+    "EN": "Download failed, retrying...",
+    "RU": "Ошибка загрузки, пробуем снова..."
+  },
+  "deps_done": {
+    "EN": "Done",
+    "RU": "Завершено"
+  },
+  "deps_downloading": {
+    "EN": "Downloading dependencies...",
+    "RU": "Загрузка зависимостей..."
+  },
+  "deps_downloading_rg": {
+    "EN": "Downloading ripgrep...",
+    "RU": "Загружаем ripgrep..."
+  },
+  "deps_downloading_s2v": {
+    "EN": "Downloading Source2Viewer-CLI...",
+    "RU": "Загружаем Source2Viewer-CLI..."
+  },
+  "deps_extracting_rg": {
+    "EN": "Extracting ripgrep...",
+    "RU": "Извлекаем ripgrep..."
+  },
+  "deps_extracting_s2v": {
+    "EN": "Extracting Source2Viewer-CLI...",
+    "RU": "Извлекаем Source2Viewer-CLI..."
+  },
+  "deps_failed": {
+    "EN": "Failed",
+    "RU": "Провал"
+  },
+  "deps_failed_attempts": {
+    "EN": "Download failed after 3 attempts",
+    "RU": "Ошибка загрузки после 3-х попыток"
+  },
+  "deps_retrying": {
+    "EN": "Retrying ({}/3)...",
+    "RU": "Пробуем снова ({}/3)..."
+  },
+  "deps_rg_ready": {
+    "EN": "ripgrep ready",
+    "RU": "ripgrep готов"
+  },
+  "deps_s2v_ready": {
+    "EN": "Source2Viewer-CLI ready",
+    "RU": "Source2Viewer-CLI готов"
+  },
+  "deps_setup_rg": {
+    "EN": "Setting up ripgrep...",
+    "RU": "Подготавливаем ripgrep..."
+  },
+  "deps_setup_s2v": {
+    "EN": "Setting up Source2Viewer-CLI...",
+    "RU": "Подготавливаем Source2Viewer-CLI..."
   },
   "discrepancy_launch_options": {
     "EN": "   Discrepancy detected for the current user, switching parameters...\n   {} -> {}",
@@ -530,90 +621,6 @@
     "VI": "   Đã phát hiện sự không nhất quán đối với người dùng hiện tại, đang chuyển đổi tham số...\n   {} -> {}",
     "ZH-CN": "   检测到当前用户存在差异,正在切换参数……\n   {} -> {}",
     "ZH-TW": "   偵測到目前使用者有差異,正在切換參數…\n   {} -> {}"
-  },
-  "downloaded_cli_terminal": {
-    "EN": "-> Downloaded ",
-    "BG": "-> Изтеглено",
-    "CS": "-> Staženo",
-    "DA": "-> Downloadet",
-    "DE": "-> Heruntergeladen",
-    "EL": "-> Λήψη",
-    "ES": "-> Descargado ",
-    "FI": "-> Ladattu",
-    "FR": "-> Téléchargé",
-    "HU": "-> Letöltve",
-    "IT": "-> Scaricato",
-    "NL": "-> Gedownload",
-    "NO": "-> Nedlastet",
-    "PL": "-> Pobrano",
-    "PT": "-> Baixado",
-    "RO": "-> Descărcat",
-    "RU": "-> Скачано",
-    "SV": "-> Nedladdad",
-    "TR": "-> Yüklendi ",
-    "UK": "-> Завантажено ",
-    "JA": "-> ダウンロード済み",
-    "KO": "-> 다운로드됨",
-    "TH": "-> ดาวน์โหลดแล้ว",
-    "VI": "-> Đã tải xuống",
-    "ZH-CN": "-> 已下载",
-    "ZH-TW": "-> 已下載"
-  },
-  "downloading_cli_terminal": {
-    "EN": "-> Downloading Source2Viewer-CLI...",
-    "BG": "-> Изтегляне на Source2Viewer-CLI...",
-    "CS": "-> Stahování CLI Source2Viewer...",
-    "DA": "-> Downloader Source2Viewer-CLI...",
-    "DE": "-> Source2Viewer-CLI wird heruntergeladen...",
-    "EL": "-> Λήψη του Source2Viewer-CLI...",
-    "ES": "-> Descargando Source2Viewer-CLI...",
-    "FI": "-> Ladataan Source2Viewer-CLI: tä...",
-    "FR": "-> Téléchargement de Source2Viewer-CLI...",
-    "HU": "-> Source2Viewer-CLI letöltése...",
-    "IT": "-> Scaricamento di Source2Viewer-CLI...",
-    "NL": "-> Source2Viewer-CLI downloaden...",
-    "NO": "-> Laster ned Source2Viewer-CLI...",
-    "PL": "-> Pobieranie Source2Viewer-CLI...",
-    "PT": "-> Baixando Source2Viewer-CLI...",
-    "RO": "-> Se descarcă Source2Viewer-CLI...",
-    "RU": "-> Скачивание Source2Viewer-CLI...",
-    "SV": "-> Laddar ner Source2Viewer-CLI...",
-    "TR": "-> Source2Viewer-CLI yükleniyor...",
-    "UK": "-> Завантаження Source2Viewer-CLI...",
-    "JA": "-> Source2Viewer-CLIをダウンロードしています...",
-    "KO": "-> Source2Viewer-CLI 다운로드 중...",
-    "TH": "-> กำลังดาวน์โหลด Source2Viewer-CLI...",
-    "VI": "-> Đang tải xuống Source2Viewer-CLI...",
-    "ZH-CN": "-> 正在下载 Source2Viewer-CLI...",
-    "ZH-TW": "-> 正在下載 Source2Viewer-CLI..."
-  },
-  "downloading_ripgrep_terminal": {
-    "EN": "-> Downloading ripgrep...",
-    "BG": "-> Изтегляне на ripgrep...",
-    "CS": "-> Stahování ripgrepu...",
-    "DA": "-> Downloader ripgrep...",
-    "DE": "-> ripgrep wird heruntergeladen...",
-    "EL": "-> Λήψη του ripgrep...",
-    "ES": "-> Descargando ripgrep...",
-    "FI": "-> Ladataan ripgrepiä...",
-    "FR": "-> Téléchargement de ripgrep...",
-    "HU": "-> Ripgrep letöltése...",
-    "IT": "-> Scaricamento ripgrep...",
-    "NL": "-> Ripgrep downloaden...",
-    "NO": "-> Laster ned ripgrep...",
-    "PL": "-> Pobieranie ripgrep...",
-    "PT": "-> Baixando ripgrep...",
-    "RO": "-> Se descarcă ripgrep...",
-    "RU": "-> Загрузка ripgrep...",
-    "SV": "-> Laddar ner ripgrep...",
-    "TR": "-> ripgrep indiriliyor...",
-    "UK": "-> Завантаження ripgrep...",
-    "JA": "-> ripgrepをダウンロード中...",
-    "KO": "-> ripgrep 다운로드 중...",
-    "TH": "-> กำลังดาวน์โหลด ripgrep...",
-    "VI": "-> Đang tải xuống ripgrep...",
-    "ZH-CN": "-> 正在下载 ripgrep...",
-    "ZH-TW": "-> 正在下載 ripgrep..."
   },
   "error_no_workshop_tools_found_terminal": {
     "EN": "Some mods have been disabled because have Workshop Tools aren't installed.",
@@ -699,36 +706,11 @@
     "ZH-CN": "工作坊工具已取出!",
     "ZH-TW": "工作坊工具已取出!"
   },
-  "extracted_cli_terminal": {
-    "EN": "-> Extracted {}",
-    "BG": "-> Извлечено {}",
-    "CS": "-> Extrahováno {}",
-    "DA": "-> Udtrukket {}",
-    "DE": "-> Extrahiert {}",
-    "EL": "-> Εξάγεται {}",
-    "ES": "-> Extraído {}",
-    "FI": "-> Uutettu {}",
-    "FR": "-> Extrait {}",
-    "HU": "-> Kivont {}",
-    "IT": "-> Estratto {}",
-    "NL": "-> Geëxtraheerd {}",
-    "NO": "-> Utvunnet {}",
-    "PL": "-> Wyekstrahowano {}",
-    "PT": "-> Extraído {}",
-    "RO": "-> Extras {}",
-    "RU": "-> Распаковка завершена {}",
-    "SV": "-> Extraherad {}",
-    "TR": "-> Çıkartıldı {}",
-    "UK": "-> Розпаковано {}",
-    "JA": "-> 抽出された {}",
-    "KO": "-> 추출됨 {}",
-    "TH": "-> แยกออกมาแล้ว {}",
-    "VI": "-> Đã trích xuất {}",
-    "ZH-CN": "-> 已提取 {}",
-    "ZH-TW": "-> 已擷取 {}"
+  "extracted_terminal": {
+    "EN": "-> Extracted {} files"
   },
   "extracting_terminal": {
-    "EN": "   Extracting: {}",
+    "EN": "Extracting: {}",
     "BG": "   Извличане: {}",
     "CS": "   Extrahování: {}",
     "DA": "   Udtrækker: {}",
@@ -783,62 +765,6 @@
     "ZH-CN": "无法提取 {},路径或文件不存在!",
     "ZH-TW": "無法提取 {},路徑或檔案不存在!"
   },
-  "failed_download": {
-    "EN": "Failed to download dependencies after {} retries. Please download `rg` or `Source2Viewer-CLI` manually.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "BG": "Неуспешно изтегляне на зависимости след {} опита. Моля, изтеглете `rg` или `Source2Viewer-CLI` ръчно.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "CS": "Stažení závislostí se nezdařilo po {} pokusech. Stáhněte si prosím ručně `rg` nebo `Source2Viewer-CLI`.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "DA": "Kunne ikke downloade afhængigheder efter {} forsøg. Download venligst `rg` eller `Source2Viewer-CLI` manuelt.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "DE": "Die Abhängigkeiten konnten nach {} Versuchen nicht heruntergeladen werden. Bitte laden Sie `rg` oder `Source2Viewer-CLI` manuell herunter.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "EL": "Αποτυχία λήψης εξαρτήσεων μετά από {} επαναλήψεις. Παρακαλώ κατεβάστε το `rg` ή το `Source2Viewer-CLI` χειροκίνητα.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "ES": "Error al descargar dependencias después de {} intentos. Por favor descarga `rg`o `Source2Viewer-CLI` manualmente.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "FI": "Riippuvuuksien lataus epäonnistui {} uudelleenyrityksen jälkeen. Lataa `rg` tai `Source2Viewer-CLI` manuaalisesti.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "FR": "Échec du téléchargement des dépendances après {} tentatives. Veuillez télécharger `rg` ou `Source2Viewer-CLI` manuellement.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "HU": "{} újrapróbálkozás után nem sikerült letölteni a függőségeket. Kérjük, töltse le manuálisan az `rg` vagy a `Source2Viewer-CLI` fájlt.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "IT": "Impossibile scaricare le dipendenze dopo {} tentativi. Scaricare `rg` o `Source2Viewer-CLI` manualmente.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "NL": "Het downloaden van de afhankelijkheden is na {} pogingen mislukt. Download `rg` of `Source2Viewer-CLI` handmatig.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "NO": "Klarte ikke å laste ned avhengigheter etter {} nye forsøk. Last ned `rg` eller `Source2Viewer-CLI` manuelt.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "PT": "Falha ao baixar as dependências após {} tentativas. Faça o download de `rg` ou `Source2Viewer-CLI` manualmente.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "RO": "Descărcarea dependențelor nu a reușit după {} reîncercări. Vă rugăm să descărcați manual `rg` sau `Source2Viewer-CLI`.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "RU": "Не удалось загрузить зависимости после {} повторных попыток. Пожалуйста, загрузите `rg` или `Source2Viewer-CLI` вручную.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "SV": "Misslyckades med att ladda ner beroenden efter {} försök. Ladda ner `rg` eller `Source2Viewer-CLI` manuellt.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "TR": "{} deneme sonrasında bağımlılıklar indirilemedi. Lütfen `rg` veya `Source2Viewer-CLI`'yi manuel olarak indirin.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "UK": "Не вдалося завантажити залежності після {} спроб. Будь ласка, завантажте `rg` або `Source2Viewer-CLI` вручну.\n(https://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "PL": "Nie udało się pobrać zależności po {} próbach. Pobierz ręcznie `rg` lub `Source2Viewer-CLI`.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "JA": "{}回の再試行後も依存関係のダウンロードに失敗しました.`rg`または`Source2Viewer-CLI`を手動でダウンロードしてください.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "KO": "{}번 재시도 후에도 종속성 다운로드에 실패했습니다. `rg` 또는 `Source2Viewer-CLI`를 수동으로 다운로드하십시오.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "TH": "ไม่สามารถดาวน์โหลดส่วนประกอบที่จำเป็นได้หลังจากลองใหม่ {} ครั้ง โปรดดาวน์โหลด `rg` หรือ `Source2Viewer-CLI` ด้วยตนเอง\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "VI": "Không thể tải xuống các thư viện phụ thuộc sau {} lần thử lại. Vui lòng tải xuống `rg` hoặc `Source2Viewer-CLI` theo cách thủ công.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "ZH-CN": "尝试 {} 次后仍无法下载依赖项.请手动下载 `rg` 或 `Source2Viewer-CLI`.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases",
-    "ZH-TW": "嘗試 {} 次後仍無法下載依賴項.請手動下載 `rg` 或 `Source2Viewer-CLI`.\nhttps://github.com/BurntSushi/ripgrep/releases\nhttps://github.com/ValveResourceFormat/ValveResourceFormat/releases"
-  },
-  "failed_download_retrying_terminal": {
-    "EN": "Failed to download, retrying.",
-    "BG": "Неуспешно изтегляне, повторен опит.",
-    "CS": "Stažení se nezdařilo, pokus o opětovné stažení.",
-    "DA": "Kunne ikke downloade, prøver igen.",
-    "DE": "Download fehlgeschlagen, erneuter Versuch.",
-    "EL": "Αποτυχία λήψης, επανάληψη προσπάθειας.",
-    "ES": "Error al descargar, reintentando.",
-    "FI": "Lataus epäonnistui, yritetään uudelleen.",
-    "FR": "Échec du téléchargement, nouvelle tentative.",
-    "HU": "Nem sikerült letölteni, újrapróbálom.",
-    "IT": "Impossibile scaricare, nuovo tentativo.",
-    "NL": "Downloaden mislukt, opnieuw proberen.",
-    "NO": "Kunne ikke laste ned, prøver på nytt.",
-    "PL": "Nie udało się pobrać, próbuję ponownie.",
-    "PT": "Falha ao baixar, tentando novamente.",
-    "RO": "Descărcarea nu a reușit, se încearcă din nou.",
-    "RU": "Не удалось загрузить, повторная попытка.",
-    "SV": "Misslyckades med nedladdningen, försöker igen.",
-    "TR": "İndirme başarısız oldu, tekrar deneniyor.",
-    "UK": "Не вдалося завантажити, повторна спроба.",
-    "JA": "ダウンロードに失敗しました.再試行します.",
-    "KO": "다운로드에 실패했습니다. 다시 시도합니다.",
-    "TH": "ดาวน์โหลดไม่สำเร็จ กำลังลองใหม่อีกครั้ง",
-    "VI": "Quá trình tải xuống thất bại, đang thử lại.",
-    "ZH-CN": "下载失败,正在重试.",
-    "ZH-TW": "下載失敗,正在重試."
-  },
   "failed_merge": {
     "EN": "   Failed to merge {}",
     "BG": "   Неуспешно сливане {}",
@@ -866,34 +792,6 @@
     "VI": "   Không thể hợp nhất {}",
     "ZH-CN": "   合并失败 {}",
     "ZH-TW": "   合併失敗 {}"
-  },
-  "failed_steam_close": {
-    "EN": "  Failed to wait for Steam to close after {} retries, please close it manually.",
-    "BG": "  Неуспешно изчакване Steam да се затвори след {} опита. Моля, затворете го ръчно.",
-    "CS": "  Po {} pokusech se nepodařilo čekat na zavření služby Steam, zavřete ji prosím ručně.",
-    "DE": "  Steam konnte nach {} Wiederholungsversuchen nicht beendet werden. Bitte beenden Sie es manuell.",
-    "ES": "  Error al esperar que Steam se cierre después de {} intentos, por favor ciérralo manualmente.",
-    "FR": "  Impossible d'attendre la fermeture de Steam après {} tentatives, veuillez le fermer manuellement.",
-    "HU": "  Nem sikerült megvárni a Steam bezárását {} újrapróbálkozás után, kérlek, zárd be manuálisan.",
-    "IT": "  Impossibile attendere la chiusura di Steam dopo {} tentativi, chiuderlo manualmente.",
-    "NL": "  Het is niet gelukt om Steam na {} pogingen te laten afsluiten. Sluit het programma handmatig af.",
-    "NO": "  Kunne ikke vente på at Steam skulle lukkes etter {} nye forsøk. Lukk den manuelt.",
-    "PL": "  Nie udało się poczekać na zamknięcie Steam po {} próbach. Zamknij go ręcznie.",
-    "PT": "  Não foi possível aguardar o fechamento do Steam após {} tentativas. Por favor, feche-o manualmente.",
-    "RO": "  Nu s-a putut aștepta închiderea Steam după {} reîncercări. Vă rugăm să îl închideți manual.",
-    "RU": "  Не удалось дождаться закрытия Steam после {} повторных попыток, пожалуйста, закройте его вручную.",
-    "SV": "  Kunde inte vänta på att Steam skulle stängas efter {} försök, vänligen stäng manuellt.",
-    "TR": "  Steam'in kapanmasını bekleme aşaması {} denemeden sonra başarısız oldu, lütfen manuel olarak kapatın.",
-    "DA": "  Kunne ikke vente på, at Steam lukkede efter {} forsøg. Luk venligst manuelt.",
-    "EL": "  Αποτυχία αναμονής για κλείσιμο του Steam μετά από {} επαναλήψεις, κλείστε το χειροκίνητα.",
-    "FI": "  Steamin sulkeutumisen odottaminen epäonnistui {} uudelleenyrityksen jälkeen. Sulje se manuaalisesti.",
-    "UK": "  Не вдалося дочекатися закриття Steam після {} спроб, будь ласка, закрийте його вручну.",
-    "JA": "  {}回の再試行後もSteamの終了を待てませんでした.手動で終了してください.",
-    "KO": "  {}번의 재시도 후에도 Steam이 자동으로 종료되지 않았습니다. 수동으로 종료해 주세요.",
-    "TH": "  ไม่สามารถรอให้ Steam ปิดหลังจากลองใหม่ {} ครั้ง โปรดปิดด้วยตนเอง",
-    "VI": "  Không thể chờ Steam đóng sau {} lần thử lại, vui lòng đóng ứng dụng theo cách thủ công.",
-    "ZH-CN": "  尝试 {} 次后仍无法等待 Steam 关​​闭,请手动关闭.",
-    "ZH-TW": "  嘗試 {} 次後仍無法等待 Steam 關閉,請手動關閉."
   },
   "failure_terminal": {
     "EN": "Patching failed!",
@@ -979,64 +877,8 @@
     "ZH-CN": "-> 正在安装 {}",
     "ZH-TW": "-> 正在安裝 {}"
   },
-  "language_select": {
-    "EN": "Language:",
-    "BG": "Език:",
-    "CS": "Jazyk:",
-    "DA": "Sprog:",
-    "DE": "Sprache:",
-    "EL": "Γλώσσα:",
-    "ES": "Lenguaje:",
-    "FI": "Kieli:",
-    "FR": "Langue:",
-    "HU": "Nyelv:",
-    "IT": "Lingua:",
-    "NL": "Taal:",
-    "NO": "Språk:",
-    "PL": "Język:",
-    "PT": "Linguagem:",
-    "RO": "Limbă:",
-    "RU": "Язык:",
-    "SV": "Språk:",
-    "TR": "Dil:",
-    "UK": "Мова:",
-    "JA": "言語:",
-    "KO": "언어:",
-    "TH": "ภาษา:",
-    "VI": "Ngôn ngữ:",
-    "ZH-CN": "语言:",
-    "ZH-TW": "語言:"
-  },
-  "launch_option": {
-    "EN": "Remember to add '-language {}' to Dota 2 launch options",
-    "BG": "Не забравяйте да добавите '-language {}' към опциите за стартиране на Dota 2",
-    "CS": "Nezapomeňte přidat '-language {}' do možností spuštění Dota 2",
-    "DA": "Husk at tilføje '-language {}' til Dota 2-lanceringsindstillingerne",
-    "DE": "Vergessen Sie nicht, '-language {}' zu den Dota 2-Startoptionen hinzuzufügen.",
-    "EL": "Θυμηθείτε να προσθέσετε την επιλογή '-language {}' στις επιλογές εκκίνησης του Dota 2",
-    "ES": "Recuerda agregar `-language {}` a los parámetros de lanzamiento de Dota 2",
-    "FI": "Muista lisätä '-language {}' Dota 2:n käynnistysasetuksiin",
-    "FR": "N'oubliez pas d'ajouter '-language {}' aux options de lancement de Dota 2",
-    "HU": "Ne felejtsd el hozzáadni a '-language {}' opciót a Dota 2 indítási beállításaihoz",
-    "IT": "Ricordati di aggiungere '-language {}' alle opzioni di avvio di Dota 2",
-    "NL": "Vergeet niet om '-language {}' toe te voegen aan de startopties van Dota 2",
-    "NO": "Husk å legge til '-language {}' i Dota 2-lanseringsalternativene",
-    "PL": "Pamiętaj o dodaniu „-language {}” do opcji uruchamiania Dota 2",
-    "PT": "Lembre-se de adicionar '-language {}' às opções de inicialização do Dota 2.",
-    "RO": "Nu uita să adaugi „-language {}” la opțiunile de lansare Dota 2",
-    "RU": "Не забудьте добавить '-language {}' в параметры запуска Dota 2",
-    "SV": "Kom ihåg att lägga till '-language {}' i Dota 2:s startalternativ",
-    "TR": "Dota2 komutlarına '-language {}' eklemeyi unutmayın",
-    "UK": "Не забудьте додати '-language {}' до параметрів запуску Dota 2",
-    "JA": "Dota 2の起動オプションに「-language {}」を追加することを忘れないでください.",
-    "KO": "Dota 2 실행 옵션에 '-language {}'를 추가하는 것을 잊지 마세요.",
-    "TH": "อย่าลืมเพิ่ม '-language {}' ในตัวเลือกการเปิดเกม Dota 2",
-    "VI": "Hãy nhớ thêm '-language {}' vào tùy chọn khởi chạy Dota 2.",
-    "ZH-CN": "请记住在 Dota 2 启动选项中添加“-language {}”参数.",
-    "ZH-TW": "請記得在 Dota 2 啟動選項中加入「-language {}」參數."
-  },
   "merged_mod": {
-    "EN": "   Merged {}",
+    "EN": "Merged {}",
     "BG": "   Обединено {}",
     "CS": "   Sloučeno {}",
     "DA": "   Sammenflettet {}",
@@ -1118,34 +960,6 @@
     "VI": "Quá trình nén gặp lỗi. Vui lòng kiểm tra tệp Minify/logs/warnings.txt để biết chi tiết.",
     "ZH-CN": "压缩过程中遇到错误.请查看 Minify/logs/warnings.txt 文件了解详情.",
     "ZH-TW": "壓縮過程中遇到錯誤.請查看 Minify/logs/warnings.txt 檔案以了解詳情."
-  },
-  "mod_selection_window_var": {
-    "EN": "Mod Selection Menu",
-    "BG": "Меню за избор на мод",
-    "CS": "Menu výběru modů",
-    "DA": "Mod-valgmenu",
-    "DE": "Mod-Auswahlmenü",
-    "EL": "Μενού Επιλογής Mod",
-    "ES": "Menú de selección de mod",
-    "FI": "Mod-valintavalikko",
-    "FR": "Menu de sélection des mods",
-    "HU": "Modválasztó menü",
-    "IT": "Menu di selezione mod",
-    "NL": "Mod-selectiemenu",
-    "NO": "Mod-valgmeny",
-    "PL": "Menu wyboru modów",
-    "PT": "Menu de seleção de mods",
-    "RO": "Meniul de selecție a modurilor",
-    "RU": "Меню выбора модов",
-    "SV": "Modvalsmeny",
-    "TR": "Mod Seçme Menüsü",
-    "UK": "Меню вибору модів",
-    "JA": "モッド選択メニュー",
-    "KO": "모드 선택 메뉴",
-    "TH": "เมนูเลือกม็อด",
-    "VI": "Menu lựa chọn Mod",
-    "ZH-CN": "模组选择菜单",
-    "ZH-TW": "模組選擇選單"
   },
   "mods_removed_terminal": {
     "EN": "All Minify mods have been removed.",
@@ -1232,7 +1046,7 @@
     "ZH-TW": "模組清單已刷新!"
   },
   "replacing_terminal": {
-    "EN": "   Replacing {} -> {}",
+    "EN": "Replacing {} -> {}",
     "BG": "   Замяна на {} -> {}",
     "CS": "   Nahrazení {} -> {}",
     "DA": "   Erstatter {} -> {}",
@@ -1260,7 +1074,7 @@
     "ZH-TW": "   替換 {} -> {}"
   },
   "script_execution": {
-    "EN": "   Executing {} script on step \"{}\".",
+    "EN": "-> Executing {} script on step \"{}\".",
     "BG": "   Изпълняване на {} скрипт на стъпка \"{}\".",
     "CS": "   Spuštění skriptu {} v kroku \"{}\".",
     "DA": "   Udfører {} script på trin \"{}\".",
@@ -1287,36 +1101,8 @@
     "ZH-CN": "   在步骤“{}”上执行{}脚本.",
     "ZH-TW": "   在步驟「{}」上執行{}腳本."
   },
-  "script_no_main": {
-    "EN": "   {} \"{}\" script has no main function!",
-    "BG": "   Скриптът {} \"{}\" няма основна функция!",
-    "CS": "   Skript {} \"{}\" nemá žádnou hlavní funkci!",
-    "DA": "   {} \"{}\"-scriptet har ingen hovedfunktion!",
-    "DE": "   Das Skript {} \"{}\" hat keine Hauptfunktion!",
-    "EL": "   Το {} σενάριο \"{}\" δεν έχει κύρια συνάρτηση!",
-    "ES": "   {} \"{}\" script no tiene función principal!",
-    "FI": "   {} \"{}\"-skriptillä ei ole pääfunktiota!",
-    "FR": "   Le script {} \"{}\" n'a pas de fonction principale !",
-    "HU": "   A {} „{}” szkriptnek nincs fő függvénye!",
-    "IT": "   Lo script {} \"{}\" non ha una funzione principale!",
-    "NL": "   {} \"{}\" script heeft geen hoofdfunctie!",
-    "NO": "   {} «{}»-skriptet har ingen hovedfunksjon!",
-    "PL": "   Skrypt {} \"{}\" nie ma funkcji main!",
-    "PT": "   O script {} \"{}\" não tem função principal!",
-    "RO": "   Scriptul {} „{}” nu are o funcție principală!",
-    "RU": "   {} Скрипт \"{}\" не имеет основной функции!",
-    "SV": "   {} \"{}\"-skriptet har ingen huvudfunktion!",
-    "TR": "   {} \"{}\" betiğinin ana fonksiyonu yoktur!",
-    "UK": "   {} \"{}\" скрипт немає main функції!",
-    "JA": "   {} \"{}\" スクリプトにはメイン関数がありません!",
-    "KO": "   {} \"{}\" 스크립트에는 메인 함수가 없습니다!",
-    "TH": "   สคริปต์ {} \"{}\" ไม่มีฟังก์ชันหลัก!",
-    "VI": "   Tập lệnh {} \"{}\" không có hàm chính!",
-    "ZH-CN": "   {} \"{}\" 脚本没有主函数!",
-    "ZH-TW": "   {} \"{}\" 腳本沒有主函式!"
-  },
   "script_success": {
-    "EN": "   Successfully executed {} \"{}\" script.",
+    "EN": "-> Successfully executed {} \"{}\" script.",
     "BG": "   Скриптът {} \"{}\" е изпълнен успешно.",
     "CS": "   Skript {} \"{}\" byl úspěšně spuštěn.",
     "DA": "   Udført {} \"{}\" script.",
@@ -1343,148 +1129,8 @@
     "ZH-CN": "   脚本执行成功. {} {}",
     "ZH-TW": "   腳本執行成功. {} {}"
   },
-  "start_text_1_var": {
-    "EN": "Want to contribute to the project's growth?",
-    "BG": "Искате ли да допринесете за развитието на проекта?",
-    "CS": "Chcete přispět k růstu projektu?",
-    "DA": "Vil du bidrage til projektets vækst?",
-    "DE": "Möchten Sie zum Wachstum des Projekts beitragen?",
-    "EL": "Θέλετε να συμβάλετε στην ανάπτυξη του έργου;",
-    "ES": "¿Quieres contribuir al crecimiento de proyecto?",
-    "FI": "Haluatko osallistua projektin kasvuun?",
-    "FR": "Vous souhaitez contribuer à la croissance du projet ?",
-    "HU": "Szeretne hozzájárulni a projekt növekedéséhez?",
-    "IT": "Vuoi contribuire alla crescita del progetto?",
-    "NL": "Wilt u bijdragen aan de groei van het project?",
-    "NO": "Ønsker du å bidra til prosjektets vekst?",
-    "PL": "Chcesz przyczynić się do rozwoju projektu?",
-    "PT": "Deseja contribuir para o crescimento do projeto?",
-    "RO": "Vrei să contribui la creșterea proiectului?",
-    "RU": "Хотите помочь проекту развиваться?",
-    "SV": "Vill du bidra till projektets tillväxt?",
-    "TR": "Projenin büyümesine katkıda bulunmak ister misiniz?",
-    "UK": "Бажаєте долучитися до розвитку проекта?",
-    "JA": "プロジェクトの成長に貢献したいですか？",
-    "KO": "프로젝트 성장에 기여하고 싶으신가요?",
-    "TH": "ต้องการสนับสนุนการเติบโตของโครงการหรือไม่?",
-    "VI": "Bạn muốn đóng góp vào sự phát triển của dự án?",
-    "ZH-CN": "想为项目的发展贡献一份力量吗？",
-    "ZH-TW": "想為專案的發展貢獻一份力量嗎？"
-  },
-  "start_text_2_var": {
-    "EN": "-> Join our Discord or Telegram community!",
-    "BG": "-> Присъединете се към нашата Discord или Telegram общност!",
-    "CS": "-> Přidejte se k naší komunitě na Discordu nebo Telegramu!",
-    "DA": "-> Bliv en del af vores Discord- eller Telegram-fællesskab!",
-    "DE": "-> Tritt unserer Discord- oder Telegram-Community bei!",
-    "EL": "-> Γίνετε μέλος της κοινότητάς μας στο Discord ή στο Telegram!",
-    "ES": "-> ¡Únete a nuestra comunidad de Discord o Telegram!",
-    "FI": "-> Liity Discord- tai Telegram-yhteisöömme!",
-    "FR": "-> Rejoignez notre communauté Discord ou Telegram !",
-    "HU": "-> Csatlakozz a Discord vagy Telegram közösségünkhöz!",
-    "NL": "-> Word lid van onze Discord- of Telegram-community!",
-    "NO": "-> Bli med i Discord- eller Telegram-fellesskapet vårt!",
-    "PL": "-> Dołącz do naszej społeczności na Discordzie lub Telegramie!",
-    "PT": "-> Junte-se à nossa comunidade no Discord ou no Telegram!",
-    "RO": "-> Alătură-te comunității noastre de pe Discord sau Telegram!",
-    "RU": "-> Присоединяйтесь к нашему сообществу в Discord или Telegram!",
-    "SV": "-> Gå med i vår Discord- eller Telegram-community!",
-    "TR": "-> Discord veya Telegram topluluğumuza katılın!",
-    "UK": "-> Приєднуйтесь в наш Discord або Telegram!",
-    "IT": "-> Unisciti alla nostra community su Discord o Telegram!",
-    "JA": "-> DiscordまたはTelegramコミュニティにご参加ください!",
-    "KO": "-> 저희 디스코드 또는 텔레그램 커뮤니티에 참여하세요!",
-    "TH": "-> เข้าร่วมชุมชน Discord หรือ Telegram ของเราได้เลย!",
-    "VI": "-> Tham gia cộng đồng Discord hoặc Telegram của chúng tôi!",
-    "ZH-CN": "-> 加入我们的Discord或Telegram社群!",
-    "ZH-TW": "-> 加入我們的Discord或Telegram社群!"
-  },
-  "start_text_3_var": {
-    "EN": "-> Share Minify with your friends and online groups",
-    "BG": "-> Споделете Minify с приятелите си и онлайн групите си",
-    "CS": "-> Sdílejte Minify se svými přáteli a online skupinami",
-    "DA": "-> Del Minify med dine venner og onlinegrupper",
-    "DE": "-> Teile Minify mit deinen Freunden und Online-Gruppen",
-    "EL": "-> Μοιραστείτε το Minify με τους φίλους σας και τις διαδικτυακές σας ομάδες.",
-    "ES": "-> Comparte Minify con tus amigos o grupos en línea",
-    "FI": "-> Jaa Minify ystäviesi ja verkkoryhmiesi kanssa",
-    "FR": "-> Partagez Minify avec vos amis et les groupes en ligne",
-    "HU": "-> Oszd meg a Minify-t barátaiddal és online csoportjaiddal",
-    "IT": "-> Condividi Minify con i tuoi amici e gruppi online",
-    "NL": "-> Deel Minify met je vrienden en online groepen",
-    "NO": "-> Del Minify med vennene dine og nettgruppene dine",
-    "PL": "-> Udostępnij Minify znajomym i grupom internetowym",
-    "PT": "-> Compartilhe o Minify com seus amigos e grupos online.",
-    "RO": "-> Distribuie Minify prietenilor și grupurilor online",
-    "RU": "-> Делитесь Minify со своими друзьями и сообществами",
-    "SV": "-> Dela Minify med dina vänner och onlinegrupper",
-    "TR": "-> Minify'ı arkadaşlarınızla ve çevrimiçi gruplarınızla paylaşın",
-    "UK": "-> Поширюйте Minify між своїми друзями та в онлайн групах",
-    "JA": "-> Minifyを友達やオンライングループと共有しましょう",
-    "KO": "-> Minify를 친구 및 온라인 그룹과 공유하세요.",
-    "TH": "-> แชร์ Minify กับเพื่อนๆ และกลุ่มออนไลน์ของคุณ",
-    "VI": "-> Chia sẻ Minify với bạn bè và các nhóm trực tuyến của bạn",
-    "ZH-CN": "-> 与您的朋友和在线群组分享 Minify",
-    "ZH-TW": "-> 與您的朋友和線上群組分享 Minify"
-  },
-  "start_text_4_var": {
-    "EN": "-> Star the project on GitHub",
-    "BG": "-> Означи проекта със звезда в GitHub",
-    "CS": "-> Označit projekt hvězdičkou na GitHubu",
-    "DA": "-> Stjernemarker projektet på GitHub",
-    "DE": "-> Markiere das Projekt auf GitHub mit einem Stern.",
-    "EL": "-> Προσθήκη αστεριού στο έργο στο GitHub",
-    "ES": "-> Marca el proyecto como favorito en Github",
-    "FI": "-> Merkitse projekti tähdellä GitHubissa",
-    "FR": "-> Mettez le projet en favori sur GitHub",
-    "HU": "-> Csillagozd meg a projektet a GitHubon",
-    "IT": "-> Aggiungi il progetto a una stella su GitHub",
-    "NL": "-> Start het project op GitHub",
-    "NO": "-> Stjernemerk prosjektet på GitHub",
-    "PL": "-> Oznacz projekt gwiazdką na GitHub",
-    "PT": "-> Dê uma estrela ao projeto no GitHub",
-    "RO": "-> Marchează proiectul cu stea pe GitHub",
-    "RU": "-> Ставьте звездочку проекту на GitHub",
-    "SV": "-> Stjärnmärk projektet på GitHub",
-    "TR": "-> Projeyi GitHub'da yıldızlayın",
-    "UK": "-> Додавайте проект в улюблені на GitHub",
-    "JA": "-> GitHubでプロジェクトにスターを付けてください",
-    "KO": "-> GitHub에서 프로젝트에 별표를 눌러주세요",
-    "TH": "-> กดติดดาวให้กับโปรเจ็กต์บน GitHub",
-    "VI": "-> Đánh dấu sao dự án trên GitHub",
-    "ZH-CN": "-> 在 GitHub 上给项目加星标",
-    "ZH-TW": "-> 在 GitHub 上為專案加星標"
-  },
-  "start_text_5_var": {
-    "EN": "-> Create and maintain mods for this project",
-    "BG": "-> Създаване и поддържане на модификации за този проект",
-    "CS": "-> Vytvořit a spravovat mody pro tento projekt",
-    "DA": "-> Opret og vedligehold mods til dette projekt",
-    "DE": "-> Mods für dieses Projekt erstellen und pflegen",
-    "EL": "-> Δημιουργήστε και διατηρήστε mods για αυτό το έργο",
-    "ES": "-> Crea y mantén mods para este proyecto",
-    "FI": "-> Luo ja ylläpidä modeja tälle projektille",
-    "FR": "-> Créer et maintenir des mods pour ce projet",
-    "HU": "-> Modok létrehozása és karbantartása ehhez a projekthez",
-    "IT": "-> Crea e gestisci mod per questo progetto",
-    "NL": "-> Maak en onderhoud mods voor dit project",
-    "NO": "-> Opprett og vedlikehold mods for dette prosjektet",
-    "PL": "-> Twórz i utrzymuj mody dla tego projektu",
-    "PT": "-> Criar e manter mods para este projeto",
-    "RO": "-> Creați și întrețineți moduri pentru acest proiect",
-    "RU": "-> Создавайте и поддерживайте моды для этого проекта",
-    "SV": "-> Skapa och underhåll moddar för detta projekt",
-    "TR": "-> Bu proje için modlar oluşturun ve bakımını üstlenin",
-    "UK": "-> Створюйте та підтримуйте моди для цього проекту",
-    "JA": "-> このプロジェクトのMODを作成および維持する",
-    "KO": "-> 이 프로젝트를 위한 모드를 제작하고 유지 관리합니다.",
-    "TH": "-> สร้างและดูแลรักษา mod สำหรับโปรเจกต์นี้",
-    "VI": "-> Tạo và duy trì các bản mod cho dự án này",
-    "ZH-CN": "-> 为本项目创建和维护模组",
-    "ZH-TW": "-> 為本專案建立和維護模組"
-  },
   "starting_extraction": {
-    "EN": "-> Beginning to extract CSS files",
+    "EN": "-> Beginning to extract game files",
     "BG": "-> Започва се извличането на CSS файлове",
     "CS": "-> Začínáme extrahovat soubory CSS",
     "DA": "-> Begynder at udpakke CSS-filer",
@@ -1567,32 +1213,798 @@
     "ZH-CN": "补丁成功了!",
     "ZH-TW": "補丁成功了!"
   },
-  "waiting_steam_to_close": {
-    "EN": "   Waiting for steam to close...",
-    "BG": "   Чакам steam да затвори...",
-    "CS": "   Čekání na zavření steam...",
-    "DA": "   Venter på at steam lukker...",
-    "DE": "   Warten auf das Schließen von steam...",
-    "EL": "   Αναμονή για το κλείσιμο του steam...",
-    "ES": "   Esperando a que steam se cierre...",
-    "FI": "   Odotetaan steam: n sulkeutumista...",
-    "FR": "   En attente de la fermeture de steam...",
-    "HU": "   Várjuk, hogy a steam bezárjon...",
-    "IT": "   In attesa che steam si chiuda...",
-    "NL": "   Wachten tot steam sluit...",
-    "NO": "   Venter på at steam skal lukkes...",
-    "PL": "   Oczekiwanie na zamknięcie steam...",
-    "PT": "   Aguardando o fechamento do Steam...",
-    "RO": "   Aștept ca steam să se închidă...",
-    "RU": "   Ожидание закрытия steam...",
-    "SV": "   Väntar på att steam ska stängas...",
-    "TR": "   steam'in kapanması bekleniyor...",
-    "UK": "   Чекаємо поки Steam завершить свою роботу...",
-    "JA": "   蒸気が閉じるのを待っています...",
-    "KO": "   스팀이 닫히기를 기다리는 중...",
-    "TH": "   กำลังรอให้ระบบไอน้ำปิด...",
-    "VI": "   Đang chờ hệ thống hơi nước đóng lại...",
-    "ZH-CN": "   等待蒸汽机关闭……",
-    "ZH-TW": "   等待蒸汽機關閉…"
+  "added_conditional_patch_launch": {
+    "EN": "Added conditional-patch to launch options"
+  },
+  "added_prelaunch_launch": {
+    "EN": "Added prelaunch to launch options"
+  },
+  "cli_patch_required": {
+    "EN": "Dota 2 version changed or first run. Starting patch..."
+  },
+  "cli_patch_skipped": {
+    "EN": "Dota 2 version has not changed. Skipping patch."
+  },
+  "cli_starting_patch": {
+    "EN": "Starting patch process..."
+  },
+  "conflict_line": {
+    "EN": "{} -> {}"
+  },
+  "d2pfx_downloaded_all": {
+    "EN": "-> Downloaded {} D2PFX mods"
+  },
+  "d2pfx_mod_downloaded": {
+    "EN": "Downloaded: {}"
+  },
+  "drop_install_failed": {
+    "EN": "Failed to install {}: {}"
+  },
+  "fs_copy_failed": {
+    "EN": "Failed to copy {}: {}"
+  },
+  "fs_download_failed": {
+    "EN": "Failed to download {}: {}"
+  },
+  "fs_extraction_failed": {
+    "EN": "Extraction failed: {}"
+  },
+  "fs_skip_move_not_found": {
+    "EN": "Skipped move of: {} (not found)"
+  },
+  "fs_unsupported_archive": {
+    "EN": "Unsupported archive format: {}"
+  },
+  "installed_mod_from_drop": {
+    "EN": "Installed mod from drop: {}"
+  },
+  "launch_options_already_set": {
+    "EN": "Language parameters are up to date."
+  },
+  "mod_disabled_requires_workshop": {
+    "EN": "'{}' disabled — requires Workshop Tools"
+  },
+  "preview_too_large_file": {
+    "EN": "Preview too large for file '{}': {} bytes"
+  },
+  "preview_too_large_mod": {
+    "EN": "Preview too large for mod '{}': {} bytes"
+  },
+  "selected_compile_path": {
+    "EN": "Selected compile path: {}"
+  },
+  "setup_required_for": {
+    "EN": "Setup required for:"
+  },
+  "status_cleaning_up": {
+    "EN": "Cleaning up..."
+  },
+  "status_collecting_data": {
+    "EN": "Collecting mod data..."
+  },
+  "status_compiling_resources": {
+    "EN": "Compiling resources..."
+  },
+  "status_creating_vpk": {
+    "EN": "Creating VPK..."
+  },
+  "status_decompiling": {
+    "EN": "Decompiling..."
+  },
+  "status_done": {
+    "EN": "Done"
+  },
+  "status_download_complete": {
+    "EN": "Download complete!"
+  },
+  "status_downloading_update": {
+    "EN": "Downloading update..."
+  },
+  "status_extracting": {
+    "EN": "Extracting files..."
+  },
+  "status_extracting_to": {
+    "EN": "Extracting to {}..."
+  },
+  "status_finalizing": {
+    "EN": "Finalizing..."
+  },
+  "status_installing_mod": {
+    "EN": "Installing mod..."
+  },
+  "status_launching_installer": {
+    "EN": "Launching installer..."
+  },
+  "status_merging_high": {
+    "EN": "Merging high priority mods..."
+  },
+  "status_merging_mods": {
+    "EN": "Merging mods..."
+  },
+  "status_merging_normal": {
+    "EN": "Merging normal priority mods..."
+  },
+  "status_patching": {
+    "EN": "Patching..."
+  },
+  "status_processing_d2pfx": {
+    "EN": "Processing D2PFX mods..."
+  },
+  "status_processing_mods": {
+    "EN": "Processing mods... ({}/{})"
+  },
+  "status_progress_mb": {
+    "EN": "Progress: {}MB / {}MB"
+  },
+  "status_removing_launch_options": {
+    "EN": "Removing launch options"
+  },
+  "status_resolving_deps": {
+    "EN": "Resolving dependencies..."
+  },
+  "status_running_scripts": {
+    "EN": "Running patch scripts..."
+  },
+  "status_running_uninstall_scripts": {
+    "EN": "Running mod uninstall scripts"
+  },
+  "status_scanning_outputs": {
+    "EN": "Scanning output directories"
+  },
+  "status_uninstalling": {
+    "EN": "Uninstalling mods..."
+  },
+  "steam_library_not_found_terminal": {
+    "EN": "Steam library path not found. Path-dependent features will be unavailable until configured."
+  },
+  "starting_d2pfx": {
+    "EN": "-> Processing D2PFX mods"
+  },
+  "localization_swaps_section": {
+    "EN": "-> Checking localization swaps"
+  },
+  "localization_swaps_skipped": {
+    "EN": "Build version hasn't changed, skipping."
+  },
+  "localization_swaps_no_files": {
+    "EN": "No *_english.txt files found in game VPK or game files."
+  },
+  "localization_swaps_extracted": {
+    "EN": "Extracted and renamed {} localization files ({} from game files)."
+  },
+  "localization_swaps_saved": {
+    "EN": "Saved pak to {}"
+  },
+  "accounts_selected": {
+    "EN": "account(s) selected"
+  },
+  "advanced": {
+    "EN": "Advanced"
+  },
+  "advanced_dev": {
+    "EN": "Developer"
+  },
+  "author": {
+    "EN": "Author"
+  },
+  "back": {
+    "EN": "Back",
+    "RU": "Назад"
+  },
+  "cancel": {
+    "EN": "Cancel",
+    "RU": "Отмена"
+  },
+  "mod_conflict_title": {
+    "EN": "Mod Conflict"
+  },
+  "mod_conflict_msg": {
+    "EN": "Enabling \"{0}\" conflicts with enabled mods: {1}. Disable them and enable \"{0}\"?",
+    "RU": "Включение \"{0}\" конфликтует с включёнными модами: {1}. Отключить их и включить \"{0}\"?",
+    "DE": "\"{0}\" steht im Konflikt mit aktivierten Mods: {1}. Diese deaktivieren und \"{0}\" aktivieren?"
+  },
+  "mod_conflict_confirm": {
+    "EN": "Proceed"
+  },
+  "change": {
+    "EN": "Change"
+  },
+  "check_terminal": {
+    "EN": "Check the terminal above for full error details"
+  },
+  "close_panel": {
+    "EN": "Close panel"
+  },
+  "configure": {
+    "EN": "Configure"
+  },
+  "confirm": {
+    "EN": "Confirm"
+  },
+  "d2pfx": {
+    "EN": "D2PFX"
+  },
+  "d2pfx_catalogue": {
+    "EN": "Catalogue"
+  },
+  "d2pfx_clear_cache": {
+    "EN": "Clear cached previews"
+  },
+  "d2pfx_clear_cache_msg": {
+    "EN": "This will delete all cached D2PFX preview images. They will be re-downloaded on demand."
+  },
+  "d2pfx_empty_category": {
+    "EN": "No mods in this category."
+  },
+  "d2pfx_no_categories": {
+    "EN": "No categories"
+  },
+  "d2pfx_no_search_results": {
+    "EN": "No mods match your search."
+  },
+  "d2pfx_refresh_done": {
+    "EN": "Catalogue refresh started in the background."
+  },
+  "d2pfx_refresh_now": {
+    "EN": "Refresh now"
+  },
+  "d2pfx_search_categories": {
+    "EN": "Search categories…"
+  },
+  "deselect_all": {
+    "EN": "Deselect all",
+    "RU": "Убрать все"
+  },
+  "devtools_debugging": {
+    "EN": "Debugging"
+  },
+  "devtools_nav": {
+    "EN": "Navigation"
+  },
+  "devtools_workarounds": {
+    "EN": "Workarounds"
+  },
+  "disabled": {
+    "EN": "Disabled"
+  },
+  "enabled": {
+    "EN": "Enabled"
+  },
+  "finish": {
+    "EN": "Finish",
+    "RU": "Завершить"
+  },
+  "general": {
+    "EN": "General"
+  },
+  "help": {
+    "EN": "Help"
+  },
+  "keyboard_shortcuts": {
+    "EN": "Keyboard Shortcuts"
+  },
+  "language": {
+    "EN": "Interface"
+  },
+  "loading": {
+    "EN": "Loading…"
+  },
+  "loading_accounts": {
+    "EN": "Locating Steam installation...",
+    "RU": "Ищем установленный Steam..."
+  },
+  "mod_details_error": {
+    "EN": "Failed to load details."
+  },
+  "mod_settings_error": {
+    "EN": "Failed to load settings."
+  },
+  "next": {
+    "EN": "Next",
+    "RU": "Дальше"
+  },
+  "no_accounts": {
+    "EN": "No Steam accounts found. Make sure Steam is installed and logged in.",
+    "RU": "Аккаунт Steam не найдет. Убедись что Steam установлен и произведен вход в аккаунт."
+  },
+  "no_details": {
+    "EN": "No details available."
+  },
+  "no_mods": {
+    "EN": "No mods found."
+  },
+  "no_mods_search": {
+    "EN": "No mods match your search."
+  },
+  "no_preview": {
+    "EN": "No preview available."
+  },
+  "no_settings": {
+    "EN": "No settings available."
+  },
+  "preset": {
+    "EN": "Preset"
+  },
+  "select_preset": {
+    "EN": "Select preset…"
+  },
+  "custom": {
+    "EN": "Custom"
+  },
+  "default": {
+    "EN": "Default"
+  },
+  "default_apply_confirm": {
+    "EN": "Apply default values? Your current changes will be reset."
+  },
+  "apply": {
+    "EN": "Apply"
+  },
+  "preset_apply_confirm": {
+    "EN": "Apply preset '{preset}'? Your current changes will be reset."
+  },
+  "terminal": {
+    "EN": "Terminal"
+  },
+  "close": {
+    "EN": "Close"
+  },
+  "ok": {
+    "EN": "OK",
+    "RU": "Ок"
+  },
+  "patch_complete": {
+    "EN": "Patch Complete"
+  },
+  "patch_failed": {
+    "EN": "Patch Failed"
+  },
+  "start_text_1_var": {
+    "EN": "Want to contribute to the project's growth?",
+    "BG": "Искате ли да допринесете за развитието на проекта?",
+    "CS": "Chcete přispět k růstu projektu?",
+    "DA": "Vil du bidrage til projektets vækst?",
+    "DE": "Möchten Sie zum Wachstum des Projekts beitragen?",
+    "EL": "Θέλετε να συμβάλετε στην ανάπτυξη του έργου;",
+    "ES": "¿Quieres contribuir al crecimiento de proyecto?",
+    "FI": "Haluatko osallistua projektin kasvuun?",
+    "FR": "Vous souhaitez contribuer à la croissance du projet ?",
+    "HU": "Szeretne hozzájárulni a projekt növekedéséhez?",
+    "IT": "Vuoi contribuire alla crescita del progetto?",
+    "JA": "プロジェクトの成長に貢献したいですか？",
+    "KO": "프로젝트 성장에 기여하고 싶으신가요?",
+    "NL": "Wilt u bijdragen aan de groei van het project?",
+    "NO": "Ønsker du å bidra til prosjektets vekst?",
+    "PL": "Chcesz przyczynić się do rozwoju projektu?",
+    "PT": "Deseja contribuir para o crescimento do projeto?",
+    "RO": "Vrei să contribui la creșterea proiectului?",
+    "RU": "Хотите помочь проекту развиваться?",
+    "SV": "Vill du bidra till projektets tillväxt?",
+    "TH": "ต้องการสนับสนุนการเติบโตของโครงการหรือไม่?",
+    "TR": "Projenin büyümesine katkıda bulunmak ister misiniz?",
+    "UK": "Бажаєте долучитися до розвитку проекта?",
+    "VI": "Bạn muốn đóng góp vào sự phát triển của dự án?",
+    "ZH-CN": "想为项目的发展贡献一份力量吗？",
+    "ZH-TW": "想為專案的發展貢獻一份力量嗎？"
+  },
+  "start_text_2_var": {
+    "EN": "-> Join our Discord or Telegram community!",
+    "BG": "-> Присъединете се към нашата Discord или Telegram общност!",
+    "CS": "-> Přidejte se k naší komunitě na Discordu nebo Telegramu!",
+    "DA": "-> Bliv en del af vores Discord- eller Telegram-fællesskab!",
+    "DE": "-> Tritt unserer Discord- oder Telegram-Community bei!",
+    "EL": "-> Γίνετε μέλος της κοινότητάς μας στο Discord ή στο Telegram!",
+    "ES": "-> ¡Únete a nuestra comunidad de Discord o Telegram!",
+    "FI": "-> Liity Discord- tai Telegram-yhteisöömme!",
+    "FR": "-> Rejoignez notre communauté Discord ou Telegram !",
+    "HU": "-> Csatlakozz a Discord vagy Telegram közösségünkhöz!",
+    "IT": "-> Unisciti alla nostra community su Discord o Telegram!",
+    "JA": "-> DiscordまたはTelegramコミュニティにご参加ください!",
+    "KO": "-> 저희 디스코드 또는 텔레그램 커뮤니티에 참여하세요!",
+    "NL": "-> Word lid van onze Discord- of Telegram-community!",
+    "NO": "-> Bli med i Discord- eller Telegram-fellesskapet vårt!",
+    "PL": "-> Dołącz do naszej społeczności na Discordzie lub Telegramie!",
+    "PT": "-> Junte-se à nossa comunidade no Discord ou no Telegram!",
+    "RO": "-> Alătură-te comunității noastre de pe Discord sau Telegram!",
+    "RU": "-> Присоединяйтесь к нашему сообществу в Discord или Telegram!",
+    "SV": "-> Gå med i vår Discord- eller Telegram-community!",
+    "TH": "-> เข้าร่วมชุมชน Discord หรือ Telegram ของเราได้เลย!",
+    "TR": "-> Discord veya Telegram topluluğumuza katılın!",
+    "UK": "-> Приєднуйтесь в наш Discord або Telegram!",
+    "VI": "-> Tham gia cộng đồng Discord hoặc Telegram của chúng tôi!",
+    "ZH-CN": "-> 加入我们的Discord或Telegram社群!",
+    "ZH-TW": "-> 加入我們的Discord或Telegram社群!"
+  },
+  "start_text_3_var": {
+    "EN": "-> Share Minify with your friends and online groups",
+    "BG": "-> Споделете Minify с приятелите си и онлайн групите си",
+    "CS": "-> Sdílejte Minify se svými přáteli a online skupinami",
+    "DA": "-> Del Minify med dine venner og onlinegrupper",
+    "DE": "-> Teile Minify mit deinen Freunden und Online-Gruppen",
+    "EL": "-> Μοιραστείτε το Minify με τους φίλους σας και τις διαδικτυακές σας ομάδες.",
+    "ES": "-> Comparte Minify con tus amigos o grupos en línea",
+    "FI": "-> Jaa Minify ystäviesi ja verkkoryhmiesi kanssa",
+    "FR": "-> Partagez Minify avec vos amis et les groupes en ligne",
+    "HU": "-> Oszd meg a Minify-t barátaiddal és online csoportjaiddal",
+    "IT": "-> Condividi Minify con i tuoi amici e gruppi online",
+    "JA": "-> Minifyを友達やオンライングループと共有しましょう",
+    "KO": "-> Minify를 친구 및 온라인 그룹과 공유하세요.",
+    "NL": "-> Deel Minify met je vrienden en online groepen",
+    "NO": "-> Del Minify med vennene dine og nettgruppene dine",
+    "PL": "-> Udostępnij Minify znajomym i grupom internetowym",
+    "PT": "-> Compartilhe o Minify com seus amigos e grupos online.",
+    "RO": "-> Distribuie Minify prietenilor și grupurilor online",
+    "RU": "-> Делитесь Minify со своими друзьями и сообществами",
+    "SV": "-> Dela Minify med dina vänner och onlinegrupper",
+    "TH": "-> แชร์ Minify กับเพื่อนๆ และกลุ่มออนไลน์ของคุณ",
+    "TR": "-> Minify'ı arkadaşlarınızla ve çevrimiçi gruplarınızla paylaşın",
+    "UK": "-> Поширюйте Minify між своїми друзями та в онлайн групах",
+    "VI": "-> Chia sẻ Minify với bạn bè và các nhóm trực tuyến của bạn",
+    "ZH-CN": "-> 与您的朋友和在线群组分享 Minify",
+    "ZH-TW": "-> 與您的朋友和線上群組分享 Minify"
+  },
+  "start_text_4_var": {
+    "EN": "-> Star the project on GitHub",
+    "BG": "-> Означи проекта със звезда в GitHub",
+    "CS": "-> Označit projekt hvězdičkou na GitHubu",
+    "DA": "-> Stjernemarker projektet på GitHub",
+    "DE": "-> Markiere das Projekt auf GitHub mit einem Stern.",
+    "EL": "-> Προσθήκη αστεριού στο έργο στο GitHub",
+    "ES": "-> Marca el proyecto como favorito en Github",
+    "FI": "-> Merkitse projekti tähdellä GitHubissa",
+    "FR": "-> Mettez le projet en favori sur GitHub",
+    "HU": "-> Csillagozd meg a projektet a GitHubon",
+    "IT": "-> Aggiungi il progetto a una stella su GitHub",
+    "JA": "-> GitHubでプロジェクトにスターを付けてください",
+    "KO": "-> GitHub에서 프로젝트에 별표를 눌러주세요",
+    "NL": "-> Start het project op GitHub",
+    "NO": "-> Stjernemerk prosjektet på GitHub",
+    "PL": "-> Oznacz projekt gwiazdką na GitHub",
+    "PT": "-> Dê uma estrela ao projeto no GitHub",
+    "RO": "-> Marchează proiectul cu stea pe GitHub",
+    "RU": "-> Ставьте звездочку проекту на GitHub",
+    "SV": "-> Stjärnmärk projektet på GitHub",
+    "TH": "-> กดติดดาวให้กับโปรเจ็กต์บน GitHub",
+    "TR": "-> Projeyi GitHub'da yıldızlayın",
+    "UK": "-> Додавайте проект в улюблені на GitHub",
+    "VI": "-> Đánh dấu sao dự án trên GitHub",
+    "ZH-CN": "-> 在 GitHub 上给项目加星标",
+    "ZH-TW": "-> 在 GitHub 上為專案加星標"
+  },
+  "start_text_5_var": {
+    "EN": "-> Create and maintain mods for this project",
+    "BG": "-> Създаване и поддържане на модификации за този проект",
+    "CS": "-> Vytvořit a spravovat mody pro tento projekt",
+    "DA": "-> Opret og vedligehold mods til dette projekt",
+    "DE": "-> Mods für dieses Projekt erstellen und pflegen",
+    "EL": "-> Δημιουργήστε και διατηρήστε mods για αυτό το έργο",
+    "ES": "-> Crea y mantén mods para este proyecto",
+    "FI": "-> Luo ja ylläpidä modeja tälle projektille",
+    "FR": "-> Créer et maintenir des mods pour ce projet",
+    "HU": "-> Modok létrehozása és karbantartása ehhez a projekthez",
+    "IT": "-> Crea e gestisci mod per questo progetto",
+    "JA": "-> このプロジェクトのMODを作成および維持する",
+    "KO": "-> 이 프로젝트를 위한 모드를 제작하고 유지 관리합니다.",
+    "NL": "-> Maak en onderhoud mods voor dit project",
+    "NO": "-> Opprett og vedlikehold mods for dette prosjektet",
+    "PL": "-> Twórz i utrzymuj mody dla tego projektu",
+    "PT": "-> Criar e manter mods para este projeto",
+    "RO": "-> Creați și întrețineți moduri pentru acest proiect",
+    "RU": "-> Создавайте и поддерживайте моды для этого проекта",
+    "SV": "-> Skapa och underhåll moddar för detta projekt",
+    "TH": "-> สร้างและดูแลรักษา mod สำหรับโปรเจกต์นี้",
+    "TR": "-> Bu proje için modlar oluşturun ve bakımını üstlenin",
+    "UK": "-> Створюйте та підтримуйте моди для цього проекту",
+    "VI": "-> Tạo và duy trì các bản mod cho dự án này",
+    "ZH-CN": "-> 为本项目创建和维护模组",
+    "ZH-TW": "-> 為本專案建立和維護模組"
+  },
+  "refresh_mods": {
+    "EN": "Refresh mods"
+  },
+  "reset": {
+    "EN": "Reset"
+  },
+  "save": {
+    "EN": "Save"
+  },
+  "search_mods": {
+    "EN": "Search mods"
+  },
+  "search_placeholder": {
+    "EN": "Search mods…"
+  },
+  "select_all": {
+    "EN": "Select all",
+    "RU": "Выбрать все"
+  },
+  "settings": {
+    "EN": "Settings"
+  },
+  "setup_error_load_accounts": {
+    "EN": "Failed to load Steam accounts. Check that Steam is running.",
+    "RU": "Не удалось загрузить аккаунты Steam. Убедись что Steam запущен."
+  },
+  "setup_error_load_languages": {
+    "EN": "Failed to load language options.",
+    "RU": "Не удалось загрузить языковые опции."
+  },
+  "setup_error_save": {
+    "EN": "Failed to save setup. Please try again.",
+    "RU": "Ошибка сохранение параметров. Пожалуйста попробуй снова."
+  },
+  "setup_launch_already_set": {
+    "EN": "{name} - Already set correctly",
+    "RU": "{name} - Уже установлен корректно"
+  },
+  "setup_launch_already_set_label": {
+    "EN": "Already set",
+    "RU": "Уже установлен"
+  },
+  "setup_launch_apply": {
+    "EN": "Apply",
+    "RU": "Применить"
+  },
+  "setup_launch_applying": {
+    "EN": "Applying launch options...",
+    "RU": "Применяем параметры  запуск..."
+  },
+  "setup_launch_cancelled": {
+    "EN": "Operation cancelled.",
+    "RU": "Операция отменнена."
+  },
+  "setup_launch_error": {
+    "EN": "{name} - Unexpected error",
+    "RU": "{name} - Неожиданная ошибка"
+  },
+  "setup_launch_error_label": {
+    "EN": "Unexpected error",
+    "RU": "Неожиданная ошибка"
+  },
+  "setup_launch_failure_instructions": {
+    "EN": "To set manually: add `-language {locale}` to Dota 2 launch options in Steam.\n\n1. Open Steam\n2. Right-click Dota 2 in your Library\n3. Select Properties\n4. Under General, add `-language {locale}` to Launch Options\n5. Restart Steam",
+    "RU": "Чтобы установить вручную: добавь `-language {locale}` в параметры запуска Dota 2 в Steam.\n1. Открой Steam\n2. Кликни правой кнопкой мыши на Dota 2 в библиотеке\n3. Выбери Свойства\n4. Под общими, добавь `-language {locale}` в параметры запуска\n5. Перезапусти Steam"
+  },
+  "setup_launch_failure_instructions_modal": {
+    "EN": "To set manually: add `-language {locale}` to Dota 2 launch options in Steam.\n\n1. Open Steam\n2. Right-click Dota 2 in your Library\n3. Select Properties\n4. Under General, add `-language {locale}` to Launch Options\n5. Click OK",
+    "RU": "Чтобы установить вручную: добавь `-language {locale}` в параметры запуска Dota 2 в Steam.\n1. Открой Steam\n2. Кликни правой кнопкой мыши на Dota 2 в библиотеке\n3. Выбери Свойства\n4. Под общими, добавь `-language {locale}` в параметры запуска\n5. Нажми ОК"
+  },
+  "setup_launch_idle": {
+    "EN": "Click the button below to set the -language launch option for your Steam accounts. Steam will restart automatically.",
+    "RU": "Нажми на кнопку ниже для установку параметра запуска -language для твоих аккаунтов Steam. Steam перезапустится автоматически."
+  },
+  "setup_launch_manual_title": {
+    "EN": "Manual Setup Required",
+    "RU": "Необходима установка в ручную"
+  },
+  "setup_launch_no_dota_data": {
+    "EN": "{name} - No Dota 2 data found",
+    "RU": "{name} - Информация Dota 2 не найдено."
+  },
+  "setup_launch_no_dota_data_label": {
+    "EN": "No Dota 2 data",
+    "RU": "Нет данных Dota 2"
+  },
+  "setup_launch_no_steam_root": {
+    "EN": "{name} - Steam path not configured. Set Steam Root in Settings.",
+    "RU": "{name} - Путь Steam не установлен. Укажи путь к Steam в настройках."
+  },
+  "setup_launch_no_steam_root_label": {
+    "EN": "Steam path not set",
+    "RU": "Путь Steam не установлен"
+  },
+  "setup_launch_no_vdf": {
+    "EN": "{name} - Steam config not found",
+    "RU": "{name} - Конфигурация Steam не найдена"
+  },
+  "setup_launch_no_vdf_label": {
+    "EN": "Steam config not found",
+    "RU": "Конфигурация не найдена"
+  },
+  "setup_launch_ok": {
+    "EN": "-language {locale} was set successfully for {name}",
+    "RU": "-language {locale} был успешно установлен для {name}"
+  },
+  "setup_launch_ok_label": {
+    "EN": "-language {locale} set",
+    "RU": "-language {locale} установлен"
+  },
+  "setup_launch_permission_error": {
+    "EN": "{name} - Permission denied. Run Minify as Administrator or set manually.",
+    "RU": "{name} - Доступ запрещён. Запусти Minify от имени администратора или установи параметр запуска в ручную."
+  },
+  "setup_launch_permission_error_label": {
+    "EN": "Permission denied",
+    "RU": "Доступ запрещён"
+  },
+  "setup_launch_steam_not_exited": {
+    "EN": "Steam did not exit within timeout.",
+    "RU": "Steam не закрылся за необходимый период времени."
+  },
+  "setup_launch_steam_not_found": {
+    "EN": "Steam executable not found. Set Steam Root in Settings.",
+    "RU": "Steam не найден. Укажи путь к  Steam в настройках."
+  },
+  "setup_launch_step_already_set_title": {
+    "EN": "All launch options are already set correctly",
+    "RU": "Все параметры запуска уже установлены корректно"
+  },
+  "setup_launch_step_options_heading": {
+    "EN": "Launch options:",
+    "RU": "Параметры запуска:"
+  },
+  "setup_launch_step_restart_title": {
+    "EN": "Steam restarted with `-language {locale}` set in Dota 2 launch options",
+    "RU": "Steam перезапущен с  установленным `-language {locale}` в параметрах запуска Dota 2 "
+  },
+  "setup_launch_timed_out": {
+    "EN": "The operation timed out. Try again or set the launch option manually.",
+    "RU": "Время операции истекло. Попробуй снова или укажи параметр запуска в ручную."
+  },
+  "setup_step_1_desc": {
+    "EN": "Select your preferred language for the application.",
+    "RU": "Выбери предпочитаемый язык приложения."
+  },
+  "setup_step_1_title": {
+    "EN": "Choose Minify Language",
+    "RU": "Выбери язык Minify"
+  },
+  "setup_step_2_desc": {
+    "EN": "Choose the language for Dota 2 in-game text.",
+    "RU": "Выбери язык для внутриигрового текста Dota 2."
+  },
+  "setup_step_2_title": {
+    "EN": "Choose Dota 2 Language",
+    "RU": "Выбери язык Dota 2"
+  },
+  "setup_step_3_desc": {
+    "EN": "Select your Steam account.",
+    "RU": "Выбери аккаунт Steam."
+  },
+  "setup_step_3_title": {
+    "EN": "Choose Steam Profiles",
+    "RU": "Выбери профили Steam"
+  },
+  "setup_step_4_title": {
+    "EN": "Setting Up Launch Options",
+    "RU": "Настройка параметров запуска"
+  },
+  "settings_locale_section": {
+    "EN": "Language",
+    "RU": "Язык"
+  },
+  "settings_game_language": {
+    "EN": "Game Language",
+    "RU": "Язык игры"
+  },
+  "step": {
+    "EN": "Step",
+    "RU": "Шаг "
+  },
+  "tab_d2pfx_mods": {
+    "EN": "D2PFX Mods"
+  },
+  "tab_devtools": {
+    "EN": "Dev Tools"
+  },
+  "tab_minify_mods": {
+    "EN": "Minify Mods"
+  },
+  "utility_completed": {
+    "EN": "Completed"
+  },
+  "welcome_changelog_1": {
+    "EN": "Redesigned card-based mod browser"
+  },
+  "welcome_changelog_2": {
+    "EN": "Streamlined 4-step onboarding setup"
+  },
+  "welcome_changelog_3": {
+    "EN": "Improved performance and stability"
+  },
+  "welcome_get_started": {
+    "EN": "Get Started"
+  },
+  "welcome_how_to": {
+    "EN": "How to Use"
+  },
+  "welcome_howto_1": {
+    "EN": "Browse mods in the grid and enable the ones you want"
+  },
+  "welcome_howto_2": {
+    "EN": "Click Patch to apply changes to Dota 2"
+  },
+  "welcome_howto_3": {
+    "EN": "Adjust per-mod settings from the Settings button"
+  },
+  "welcome_title": {
+    "EN": "Welcome to Dota 2 Minify!"
+  },
+  "welcome_whats_new": {
+    "EN": "What’s New"
+  },
+  "confirm_fetch_msg": {
+    "EN": "Are you sure you want to {label}?",
+    "BG": "Сигурни ли сте, че искате да {label}?",
+    "CS": "Opravdu chcete {label}?",
+    "DA": "Er du sikker på, at du vil {label}?",
+    "DE": "Möchten Sie wirklich {label}?",
+    "EL": "Είστε σίγουροι ότι θέλετε να {label};",
+    "ES": "¿Seguro que quieres {label}?",
+    "FI": "Haluatko varmasti {label}?",
+    "FR": "Voulez-vous vraiment {label} ?",
+    "HU": "Biztosan {label}?",
+    "IT": "Vuoi davvero {label}?",
+    "NL": "Weet je zeker dat je {label}?",
+    "NO": "Er du sikker på at du vil {label}?",
+    "PL": "Na pewno chcesz {label}?",
+    "PT": "Tem certeza de que deseja {label}?",
+    "RO": "Sigur că doriți să {label}?",
+    "RU": "Вы уверены, что хотите {label}?",
+    "SV": "Är du säker på att du vill {label}?",
+    "TR": "{label} istediğinize emin misiniz?",
+    "UK": "Ви впевнені, що хочете {label}?",
+    "JA": "本当に{label}しますか？",
+    "KO": "정말 {label}하시겠습니까?",
+    "TH": "คุณแน่ใจหรือว่าต้องการ{label}?",
+    "VI": "Bạn có chắc chắn muốn {label}?",
+    "ZH-CN": "确定要{label}吗？",
+    "ZH-TW": "確定要{label}嗎？"
+  },
+  "uninstall_complete": {
+    "EN": "Uninstall Complete",
+    "BG": "Деинсталирането завърши",
+    "CS": "Odinstalace dokončena",
+    "DA": "Afinstallation fuldført",
+    "DE": "Deinstallation abgeschlossen",
+    "EL": "Η απεγκατάσταση ολοκληρώθηκε",
+    "ES": "Desinstalación completada",
+    "FI": "Poisto valmis",
+    "FR": "Désinstallation terminée",
+    "HU": "Az eltávolítás befejeződött",
+    "IT": "Disinstallazione completata",
+    "NL": "Verwijdering voltooid",
+    "NO": "Avinstallering fullført",
+    "PL": "Odinstalowanie zakończone",
+    "PT": "Desinstalação concluída",
+    "RO": "Dezinstalare finalizată",
+    "RU": "Удаление завершено",
+    "SV": "Avinstallation slutförd",
+    "TR": "Kaldırma tamamlandı",
+    "UK": "Видалення завершено",
+    "JA": "アンインストールが完了しました",
+    "KO": "제거가 완료되었습니다",
+    "TH": "ถอนการติดตั้งเสร็จสิ้น",
+    "VI": "Đã gỡ cài đặt xong",
+    "ZH-CN": "卸载完成",
+    "ZH-TW": "解除安裝完成"
+  },
+  "uninstall_done": {
+    "EN": "All mods have been removed from the game.",
+    "BG": "Всички модове са премахнати от играта.",
+    "CS": "Všechny mody byly odebrány ze hry.",
+    "DA": "Alle mods er fjernet fra spillet.",
+    "DE": "Alle Mods wurden aus dem Spiel entfernt.",
+    "EL": "Όλα τα mods αφαιρέθηκαν από το παιχνίδι.",
+    "ES": "Todos los mods se han eliminado del juego.",
+    "FI": "Kaikki modit on poistettu pelistä.",
+    "FR": "Tous les mods ont été retirés du jeu.",
+    "HU": "Az összes mod eltávolításra került a játékból.",
+    "IT": "Tutti i mod sono stati rimossi dal gioco.",
+    "NL": "Alle mods zijn uit het spel verwijderd.",
+    "NO": "Alle mods er fjernet fra spillet.",
+    "PL": "Wszystkie mody zostały usunięte z gry.",
+    "PT": "Todos os mods foram removidos do jogo.",
+    "RO": "Toate modurile au fost eliminate din joc.",
+    "RU": "Все моды были удалены из игры.",
+    "SV": "Alla mods har tagits bort från spelet.",
+    "TR": "Tüm modlar oyundan kaldırıldı.",
+    "UK": "Усі моди було видалено з гри.",
+    "JA": "すべてのMODがゲームから削除されました。",
+    "KO": "모든 모드가 게임에서 제거되었습니다.",
+    "TH": "โมดทั้งหมดถูกลบออกจากเกมแล้ว",
+    "VI": "Tất cả các mod đã được gỡ khỏi trò chơi.",
+    "ZH-CN": "所有模组都已从游戏中移除。",
+    "ZH-TW": "所有模組都已從遊戲中移除。"
   }
 }

@@ -119,7 +119,7 @@ def _patch_font(font_path, family, fullname, postscript):
 
 
 def main():
-    mod_data = config.get_mod("Custom Fonts")
+    mod_data = config.get_mod_config("Custom Fonts")
 
     found_font = None
 
@@ -130,7 +130,7 @@ def main():
             found_font = path
 
     if not found_font:
-        font_string = mod_data.get("font_string", "")
+        font_string = mod_data.get("font_string", "Calibri")
         if font_string.strip():
             for name in font_string.split(","):
                 found_font = find_system_font(name.strip().strip("'\""))
@@ -150,9 +150,9 @@ def main():
         dest = os.path.join(dota_fonts_path, name)
         shutil.copy2(found_font, dest)
         _patch_font(dest, family, fullname, postscript)
-        output.add_text(f"Installed: {name}")
+        output.add_detail(f"Installed: {name}")
 
-    with open(os.path.join(dota_fonts_path, ".uuid"), "w") as f:
+    with open(os.path.join(dota_fonts_path, ".uuid"), "w", encoding="utf-8") as f:
         f.write(str(uuid.uuid4()))
 
 

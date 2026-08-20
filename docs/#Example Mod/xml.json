@@ -1,0 +1,46 @@
+{
+  // ═══════════════════════════════════════════════════════════════════════
+  //  xml.json — UI layout modifications
+  // ═══════════════════════════════════════════════════════════════════════
+  //  Read with a JSONC parser, so // and /* */ comments are allowed.
+  //
+  //  Each key is a GAME pak layout file (panorama/layout/...). The value is
+  //  a list of actions applied in order. A missing file or selector only
+  //  logs a warning — it never crashes a patch.
+  //
+  //  Actions & their params:
+  //    add_script ......... src: s2r:// path to a compiled Panorama script
+  //                          (the .vjs_c produced from files_uncompiled/).
+  //    add_style_include . src: s2r:// path to a compiled style file
+  //                          (the .vcss_c produced from files_uncompiled/).
+  //    set_attribute ...... selector | tag, attribute, value.
+  //    add_child .......... selector | parent_id, xml: snippet appended as
+  //                          the last child of the matched element.
+  //    move_into .......... selector | target_id, and the new parent via
+  //                          new_parent_selector | new_parent_id.
+  //    insert_after ....... selector | target_id, xml: snippet placed right
+  //                          AFTER the matched element.
+  //    insert_before ...... selector | target_id, xml: snippet placed right
+  //                          BEFORE the matched element.
+  //  Selectors support #id, .class, TagName and combinations of them.
+  "panorama/layout/dashboard_page_credits.xml": [
+    // Compile files_uncompiled/panorama/scripts/example_mod.js into
+    // example_mod.vjs_c and hook it into the credits screen.
+    { "action": "add_script", "src": "s2r://panorama/scripts/example_mod.vjs_c" },
+
+    // Same for the style file — it styles .ExampleModBanner (see add_child).
+    { "action": "add_style_include", "src": "s2r://panorama/styles/example_mod_extra.vcss_c" },
+
+    // #Minify and #MTitle exist here because #base inserts them (order 0 < 1).
+    { "action": "add_child", "selector": "#Minify", "xml": "<Label id='ExampleModBanner' class='ExampleModBanner' text='Example Mod' />" },
+
+    { "action": "insert_after", "selector": "#MTitle", "xml": "<Label id='ExampleModAfter' text='After Title' />" },
+
+    { "action": "insert_before", "selector": "#MTitle", "xml": "<Label id='ExampleModBefore' text='Before Title' />" },
+
+    { "action": "set_attribute", "selector": "#MTitle", "attribute": "hittest", "value": "false" },
+
+    // Relocate the credits' third line into the example banner.
+    { "action": "move_into", "selector": "#MText2", "new_parent_selector": "#ExampleModBanner" }
+  ]
+}

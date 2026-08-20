@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       release_name:
-        description: "Name the release"
+        description: "Name the release (format: Minify-vX.Y[.Z])"
         required: true
-        default: "Minify-v1." # DEPRECATE: bad tag name
+        default: "Minify-v1.0"
       prerelease:
         description: "Whether or not release candidate"
         required: true
@@ -23,6 +23,17 @@ on:
           - release-signing
           - test-signing
         default: "release-signing"
+      # TODO: re-enable SignPath signing (secrets + artifact configs) before the
+      # final 2.0.0 release. The signing_policy input below is unused while the
+      # signing steps are commented out.
+      # signing_policy:
+      #   description: "Signing policy"
+      #   required: true
+      #   type: choice
+      #   options:
+      #     - release-signing
+      #     - test-signing
+      #   default: "release-signing"
 
 permissions:
   contents: write
@@ -38,42 +49,72 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.13"
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
       - name: Set version
         shell: pwsh
         run: |
           $releaseName = "${{ github.event.inputs.release_name }}"
-          $version = $releaseName.Substring(8)  # DEPRECATE: bad tag name, replace with 1
+          if ($releaseName -notmatch '^Minify-v?\d+\.\d+(\.\d+)?$') {
+            throw "release_name must match 'Minify-vX.Y[.Z]' (got: $releaseName)"
+          }
+          $version = ($releaseName -replace '^Minify-', '').TrimStart('v')
           (Get-Content Minify/core/base.py) -replace '^VERSION = .*', "VERSION = `"$version`"" | Set-Content Minify/core/base.py
-      - uses: stefanzweifel/git-auto-commit-action@v5
-        if: ${{ inputs.prerelease == 'false' && matrix.os == 'ubuntu-latest' }}
-        with:
-          commit_message: "Version change"
-          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
-          commit_user_name: "github-actions[bot]"
-          commit_user_email: "github-actions[bot]@users.noreply.github.com"
-
-      - name: Make and activate virtual environment (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          python -m venv .venv
-          .\.venv\Scripts\activate
-      - name: Make and activate virtual environment (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          python -m venv .venv
-          source ./.venv/bin/activate
+          (Get-Content pyproject.toml) -replace '^version = .*', "version = `"$version`"" | Set-Content pyproject.toml
+          uv lock
 
       - name: Install dependencies
         shell: pwsh
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          Set-Location Minify
+
+      - name: Install Linux GUI backend and tooling
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            p7zip-full libwebkit2gtk-4.1-0 gir1.2-webkit2-4.1 gir1.2-gtk-3.0 \
+            python3-gi python3-gi-cairo \
+            libglib2.0-dev libgirepository1.0-dev libgirepository-2.0-dev \
+            libcairo2-dev python3-dev pkg-config gcc
+          pip install "pywebview[gtk]"
+
+      - name: Linux import smoke test
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          pip install pytest
+          python -m pytest tests/test_web_window_import.py -q
+          # Force-load the real GTK backend: PyGObject is compiled from an
+          # sdist in the previous step, and the frozen binary depends on the
+          # gi bindings + WebKit2 typelib resolving — an import that only
+          # touches ui.web_window never exercises any of that (pywebview
+          # loads backends lazily), so it can pass with a broken backend.
+          python -c "import gi; gi.require_version('WebKit2', '4.1'); from gi.repository import WebKit2, Gtk; import webview.platforms.gtk; print('GTK backend OK')"
+
+      - name: Install Inno Setup (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: choco install innosetup -y --no-progress
+
+      - name: Build frontend
+        if: hashFiles('Minify/ui/web/package.json') != ''
+        working-directory: Minify/ui/web
+        run: |
+          npm ci
+          npm run build
 
       - name: Build executable
         shell: pwsh
@@ -85,38 +126,37 @@ jobs:
         shell: pwsh
         run: |
           Set-Location scripts
-          Copy-Item -Path "..\Minify\bin" -Destination "dist\Minify\bin" -Recurse
-          Copy-Item -Path "..\Minify\mods" -Destination "dist\Minify\mods" -Recurse
-          Copy-Item -Path "..\README.md" -Destination "dist\Minify\README.md"
-          Copy-Item -Path "..\LICENSE" -Destination "dist\Minify\LICENSE"
+          Copy-Item -Path "../Minify/mods" -Destination "dist/Minify/mods" -Recurse
+          Copy-Item -Path "../README.md" -Destination "dist/Minify/README.md"
+          Copy-Item -Path "../LICENSE" -Destination "dist/Minify/LICENSE"
 
-      # --- SIGNING STEP 1: Sign Minify.exe ---
-      - name: Upload unsigned Minify binary for SignPath
-        if: matrix.os == 'windows-latest'
-        id: upload-unsigned-minify
-        uses: actions/upload-artifact@v4
-        with:
-          name: unsigned-minify
-          path: scripts/dist/Minify/Minify.exe
-
-      - name: Sign Minify.exe via SignPath
-        if: matrix.os == 'windows-latest'
-        uses: signpath/github-action-submit-signing-request@v2
-        with:
-          api-token: "${{ secrets.SIGNPATH_API_TOKEN }}"
-          organization-id: "${{ secrets.SIGNPATH_ORGANIZATION_ID }}"
-          project-slug: "dota2-minify"
-          signing-policy-slug: "${{ github.event.inputs.signing_policy }}"
-          artifact-configuration-slug: "dota2-minify-binary"
-          github-artifact-id: "${{ steps.upload-unsigned-minify.outputs.artifact-id }}"
-          wait-for-completion: true
-          output-artifact-directory: "signed-minify"
-
-      - name: Copy signed Minify binary
-        if: matrix.os == 'windows-latest'
-        shell: pwsh
-        run: |
-          Copy-Item -Path signed-minify/Minify.exe -Destination scripts/dist/Minify/Minify.exe -Force
+      # --- SIGNING STEP 1: Sign Minify.exe (disabled for 2.0.0rc1; re-enable before final) ---
+      # - name: Upload unsigned Minify binary for SignPath
+      #   if: matrix.os == 'windows-latest'
+      #   id: upload-unsigned-minify
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: unsigned-minify
+      #     path: scripts/dist/Minify/Minify.exe
+      #
+      # - name: Sign Minify.exe via SignPath
+      #   if: matrix.os == 'windows-latest'
+      #   uses: signpath/github-action-submit-signing-request@v2
+      #   with:
+      #     api-token: "${{ secrets.SIGNPATH_API_TOKEN }}"
+      #     organization-id: "${{ secrets.SIGNPATH_ORGANIZATION_ID }}"
+      #     project-slug: "dota2-minify"
+      #     signing-policy-slug: "${{ github.event.inputs.signing_policy }}"
+      #     artifact-configuration-slug: "dota2-minify-binary"
+      #     github-artifact-id: "${{ steps.upload-unsigned-minify.outputs.artifact-id }}"
+      #     wait-for-completion: true
+      #     output-artifact-directory: "signed-minify"
+      #
+      # - name: Copy signed Minify binary
+      #   if: matrix.os == 'windows-latest'
+      #   shell: pwsh
+      #   run: |
+      #     Copy-Item -Path signed-minify/Minify.exe -Destination scripts/dist/Minify/Minify.exe -Force
 
       # --- PORTABLE BUNDLES & INSTALLER COMPILE ---
       - name: Build Installer (Inno Setup)
@@ -127,34 +167,34 @@ jobs:
           python version_util.py
           & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
 
-      # --- SIGNING STEP 2: Sign Installer ---
-      - name: Upload unsigned installer for SignPath
-        if: matrix.os == 'windows-latest'
-        id: upload-unsigned-installer
-        uses: actions/upload-artifact@v4
-        with:
-          name: unsigned-installer
-          path: scripts/Minify-Setup-*.exe
-
-      - name: Sign Installer via SignPath
-        if: matrix.os == 'windows-latest'
-        uses: signpath/github-action-submit-signing-request@v2
-        with:
-          api-token: "${{ secrets.SIGNPATH_API_TOKEN }}"
-          organization-id: "${{ secrets.SIGNPATH_ORGANIZATION_ID }}"
-          project-slug: "dota2-minify"
-          signing-policy-slug: "${{ github.event.inputs.signing_policy }}"
-          artifact-configuration-slug: "dota2-minify-installer"
-          github-artifact-id: "${{ steps.upload-unsigned-installer.outputs.artifact-id }}"
-          wait-for-completion: true
-          output-artifact-directory: "signed-installer"
-
-      - name: Copy signed installer
-        if: matrix.os == 'windows-latest'
-        shell: pwsh
-        run: |
-          Remove-Item scripts/*.exe
-          Copy-Item -Path signed-installer/*.exe -Destination scripts/ -Force
+      # --- SIGNING STEP 2: Sign Installer (disabled for 2.0.0rc1; re-enable before final) ---
+      # - name: Upload unsigned installer for SignPath
+      #   if: matrix.os == 'windows-latest'
+      #   id: upload-unsigned-installer
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: unsigned-installer
+      #     path: scripts/Minify-Setup-*.exe
+      #
+      # - name: Sign Installer via SignPath
+      #   if: matrix.os == 'windows-latest'
+      #   uses: signpath/github-action-submit-signing-request@v2
+      #   with:
+      #     api-token: "${{ secrets.SIGNPATH_API_TOKEN }}"
+      #     organization-id: "${{ secrets.SIGNPATH_ORGANIZATION_ID }}"
+      #     project-slug: "dota2-minify"
+      #     signing-policy-slug: "${{ github.event.inputs.signing_policy }}"
+      #     artifact-configuration-slug: "dota2-minify-installer"
+      #     github-artifact-id: "${{ steps.upload-unsigned-installer.outputs.artifact-id }}"
+      #     wait-for-completion: true
+      #     output-artifact-directory: "signed-installer"
+      #
+      # - name: Copy signed installer
+      #   if: matrix.os == 'windows-latest'
+      #   shell: pwsh
+      #   run: |
+      #     Remove-Item scripts/*.exe
+      #     Copy-Item -Path signed-installer/*.exe -Destination scripts/ -Force
 
       - name: Bundle Portable Release (Windows)
         if: matrix.os == 'windows-latest'

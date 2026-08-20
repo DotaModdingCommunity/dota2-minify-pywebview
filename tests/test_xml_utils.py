@@ -49,6 +49,19 @@ def test_find_by_selector_attribute(sample_xml):
     assert elem.get("id") == "Submit"
 
 
+def test_find_by_selector_bare_attribute_presence(sample_xml):
+    elem = xml_utils.find_by_selector(sample_xml, "[hittest]")
+    assert elem is not None
+    assert elem.get("id") == "Submit"
+
+
+def test_find_by_selector_bare_attribute_empty_value():
+    root = ET.fromstring("<root><Panel empty=''></Panel><Panel></Panel></root>")
+    elem = xml_utils.find_by_selector(root, "[empty]")
+    assert elem is not None
+    assert elem.tag == "Panel"
+
+
 def test_find_by_selector_complex(sample_xml):
     elem = xml_utils.find_by_selector(sample_xml, "DOTAXThing#Thing.Thing[attrib=val]")
     assert elem is not None

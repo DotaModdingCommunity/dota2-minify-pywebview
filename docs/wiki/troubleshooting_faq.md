@@ -8,7 +8,7 @@ No one has ever been banned for the use of these mods and alike. Minify strictly
 
 ### How
 
-Minify utilizes Valve's approved methods for creating assets, as documented on the [official Valve Wiki](https://developer.valvesoftware.com/wiki/VPK). These are then enabled by a method that the game uses (low violence patches, voiceline localizations etc).
+Minify uses Valve's approved methods for creating assets, as documented on the [official Valve Wiki](https://developer.valvesoftware.com/wiki/VPK). These are then enabled by a method that the game uses (low violence patches, voiceline localizations etc).
 
 Historically Valve has only disabled assets from loading and some methods but have never punished modders using VPKs. The worst thing that can happen is a mod may stop working and that's it.
 
@@ -83,3 +83,15 @@ If those don't work, try using the feature below (it'll delete all the contents 
 ## Not working / Crashes
 
 Make a bug report on [GitHub](https://github.com/Egezenn/dota2-minify/issues) or [Discord](https://discord.com/invite/9867CPv7cy) with `minify_debug_<timestamp>.zip` that's created on crashes or the contents of your `logs` folder.
+
+## macOS
+
+macOS builds are produced manually (on a Mac, via `scripts/build_mac.sh`) and uploaded to the release as `Minify-<ver>-macos.zip` — the in-app updater finds them by that suffix.
+
+> [!WARNING]
+> macOS builds are ad-hoc signed for now. The first launch will be blocked by Gatekeeper: right-click the app and choose **Open**, then confirm. This happens once per build until proper Developer ID signing + notarization is set up.
+
+Other macOS notes:
+
+- Dota 2 on Apple Silicon runs through Rosetta; the app itself builds for both `arm64` and `x64`.
+- The Workshop Tools DLC is Windows-only — mods that need resource compilation won't work on macOS (same as on Linux without Wine).
