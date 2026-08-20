@@ -225,18 +225,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create Release (Codeberg Windows)
-        if: matrix.os == 'windows-latest'
-        continue-on-error: true
-        uses: akkuman/gitea-release-action@v1
-        with:
-          server_url: https://codeberg.org
-          token: ${{ secrets.CODEBERG_TOKEN }}
-          tag_name: ${{ github.event.inputs.release_name }}
-          files: |
-            ${{ github.event.inputs.release_name }}-windows.zip
-            scripts/*.exe
-          prerelease: ${{ inputs.prerelease }}
+      # --- CODEBERG RELEASES (disabled on the fork; re-enable when running on
+      # upstream where CODERBERG_TOKEN is configured) ---
+      # - name: Create Release (Codeberg Windows)
+      #   if: matrix.os == 'windows-latest'
+      #   continue-on-error: true
+      #   uses: akkuman/gitea-release-action@v1
+      #   with:
+      #     server_url: https://codeberg.org
+      #     token: ${{ secrets.CODEBERG_TOKEN }}
+      #     tag_name: ${{ github.event.inputs.release_name }}
+      #     files: |
+      #       ${{ github.event.inputs.release_name }}-windows.zip
+      #       scripts/*.exe
+      #     prerelease: ${{ inputs.prerelease }}
       - name: Create Portable Release (Linux)
         if: matrix.os == 'ubuntu-latest'
         uses: softprops/action-gh-release@v1
@@ -247,16 +249,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create Release (Codeberg Linux)
-        if: matrix.os == 'ubuntu-latest'
-        continue-on-error: true
-        uses: akkuman/gitea-release-action@v1
-        with:
-          server_url: https://codeberg.org
-          token: ${{ secrets.CODEBERG_TOKEN }}
-          tag_name: ${{ github.event.inputs.release_name }}
-          files: "${{ github.event.inputs.release_name }}-linux.zip"
-          prerelease: ${{ inputs.prerelease }}
+      # - name: Create Release (Codeberg Linux)
+      #   if: matrix.os == 'ubuntu-latest'
+      #   continue-on-error: true
+      #   uses: akkuman/gitea-release-action@v1
+      #   with:
+      #     server_url: https://codeberg.org
+      #     token: ${{ secrets.CODEBERG_TOKEN }}
+      #     tag_name: ${{ github.event.inputs.release_name }}
+      #     files: "${{ github.event.inputs.release_name }}-linux.zip"
+      #     prerelease: ${{ inputs.prerelease }}
 
   update-docs:
     needs: build
