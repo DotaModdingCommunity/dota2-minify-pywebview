@@ -9,8 +9,6 @@ from ui import modal_shared
 
 PAK_PATTERN = re.compile(r"^pak\d{2}_dir\.vpk$")
 
-from patch import vpk_utils
-
 
 def _uninstall(progress: bool = False) -> None:
     output.clean()
@@ -33,6 +31,7 @@ def _uninstall(progress: bool = False) -> None:
     if progress:
         modal_shared.set_progress(60, "&status_removing_launch_options")
     steam.remove_minify_lang()
+    steam.restore_boot_language()
 
     if progress:
         modal_shared.set_progress(80, "&status_running_uninstall_scripts")

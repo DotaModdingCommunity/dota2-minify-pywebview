@@ -38,11 +38,6 @@ _STYLE = {
     "detail": DIM,
 }
 
-RED = "\033[38;2;255;0;0m"
-YELLOW = "\033[38;2;255;255;0m"
-GREEN = "\033[38;2;0;255;0m"
-RESET = "\033[0m"
-
 
 def _resolve(text_or_id: str, *args: Any) -> str:
     """Resolve &-prefixed localization key with format args."""
