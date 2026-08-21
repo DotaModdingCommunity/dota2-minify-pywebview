@@ -1,0 +1,101 @@
+name: macOS app
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_name:
+        description: "Optional release tag (format: Minify-vX.Y[.Z])"
+        required: false
+        default: ""
+      prerelease:
+        description: "Whether or not release candidate"
+        required: false
+        type: boolean
+        default: true
+  workflow_call:
+    inputs:
+      release_name:
+        required: false
+        type: string
+        default: ""
+      prerelease:
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - runner: macos-15
+            arch: arm64
+          - runner: macos-15-intel
+            arch: x86_64
+    runs-on: ${{ matrix.runner }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: Minify/ui/web/package-lock.json
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set release version
+        if: inputs.release_name != ''
+        env:
+          RELEASE_NAME: ${{ inputs.release_name }}
+        run: |
+          if [[ ! "$RELEASE_NAME" =~ ^Minify-v?[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
+            echo "release_name must match 'Minify-vX.Y[.Z]' (got: $RELEASE_NAME)" >&2
+            exit 1
+          fi
+          version="${RELEASE_NAME#Minify-}"
+          version="${version#v}"
+          sed -i '' -E "s/^VERSION = .*/VERSION = \"$version\"/" Minify/core/base.py
+          sed -i '' -E "s/^version = .*/version = \"$version\"/" pyproject.toml
+          uv lock
+
+      - name: Build ${{ matrix.arch }} app
+        run: |
+          test "$(uname -m)" = "${{ matrix.arch }}"
+          chmod +x scripts/build_macos_app.sh
+          ./scripts/build_macos_app.sh
+
+      - name: Name release asset
+        if: inputs.release_name != ''
+        env:
+          RELEASE_NAME: ${{ inputs.release_name }}
+        run: |
+          version="${RELEASE_NAME#Minify-}"
+          version="${version#v}"
+          mv -f "Minify-$version-macos-${{ matrix.arch }}.zip" "$RELEASE_NAME-macos-${{ matrix.arch }}.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Minify-macos-${{ matrix.arch }}
+          path: Minify-*-macos-${{ matrix.arch }}.zip
+          if-no-files-found: error
+
+      - name: Add app to GitHub release
+        if: inputs.release_name != ''
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ inputs.release_name }}
+          prerelease: ${{ inputs.prerelease }}
+          files: Minify-*-macos-${{ matrix.arch }}.zip
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
