@@ -42,6 +42,12 @@ permissions:
   actions: read
 
 jobs:
+  build-macos:
+    uses: ./.github/workflows/macos.yml
+    with:
+      release_name: ${{ inputs.release_name }}
+      prerelease: ${{ inputs.prerelease == 'true' }}
+
   build:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -261,7 +267,7 @@ jobs:
       #     prerelease: ${{ inputs.prerelease }}
 
   update-docs:
-    needs: build
+    needs: [build, build-macos]
     if: ${{ github.event.inputs.prerelease == 'false' }}
     uses: ./.github/workflows/deploy.yml
     secrets: inherit
