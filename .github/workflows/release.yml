@@ -58,7 +58,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.13"
           cache: "pip"
@@ -222,7 +222,7 @@ jobs:
 
       - name: Create Portable Release (Windows)
         if: matrix.os == 'windows-latest'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           prerelease: ${{ inputs.prerelease }}
           tag_name: ${{ github.event.inputs.release_name }}
@@ -248,7 +248,7 @@ jobs:
       #     prerelease: ${{ inputs.prerelease }}
       - name: Create Portable Release (Linux)
         if: matrix.os == 'ubuntu-latest'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           prerelease: ${{ inputs.prerelease }}
           tag_name: ${{ github.event.inputs.release_name }}
