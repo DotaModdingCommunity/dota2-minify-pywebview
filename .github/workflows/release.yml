@@ -55,21 +55,22 @@ jobs:
         os: [windows-latest, ubuntu-latest]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          enable-cache: true
           python-version: "3.13"
+          cache: "pip"
+
 
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 20
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v10.0.1
 
       - name: Set version
         shell: pwsh
@@ -221,7 +222,7 @@ jobs:
 
       - name: Create Portable Release (Windows)
         if: matrix.os == 'windows-latest'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           prerelease: ${{ inputs.prerelease }}
           tag_name: ${{ github.event.inputs.release_name }}
@@ -247,7 +248,7 @@ jobs:
       #     prerelease: ${{ inputs.prerelease }}
       - name: Create Portable Release (Linux)
         if: matrix.os == 'ubuntu-latest'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           prerelease: ${{ inputs.prerelease }}
           tag_name: ${{ github.event.inputs.release_name }}
